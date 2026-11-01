@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trening za decu</title>
+<meta name="description" content="Trening sa sopstvenom težinom za decu: vežbe unutra ili napolju, tajmer za odmor i nedeljni ciljevi.">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trening">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F5F7; --s1:#FFFFFF; --s2:#E8E8ED; --line:#DCDCE1; --ink:#0B0B0D; --mut:#6E6E73; --dim:#B4B4BA;
+  --neon:#1FD873; --neon-ink:#00140A; --neon-txt:#0E9F50; --neon-d:#CFEFDC; --red:#E5372B; --warn:#FFF4D6; --warn-ink:#6B4E00; --glow:none;
+  --pic:#121215;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#000000; --s1:#0C0C0E; --s2:#16161A; --line:#1E1E22; --ink:#F5F5F7; --mut:#8A8A90; --dim:#3C3C42;
+    --neon:#3DFF8F; --neon-ink:#000000; --neon-txt:#3DFF8F; --neon-d:#123A24; --red:#FF5B4F; --warn:#1F1A0A; --warn-ink:#FFD66B;
+    --glow:drop-shadow(0 0 10px rgba(61,255,143,.5)) drop-shadow(0 0 2px rgba(61,255,143,.9));
+    --pic:#0C0C0E;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#000000; --s1:#0C0C0E; --s2:#16161A; --line:#1E1E22; --ink:#F5F5F7; --mut:#8A8A90; --dim:#3C3C42;
+  --neon:#3DFF8F; --neon-ink:#000000; --neon-txt:#3DFF8F; --neon-d:#123A24; --red:#FF5B4F; --warn:#1F1A0A; --warn-ink:#FFD66B;
+  --glow:drop-shadow(0 0 10px rgba(61,255,143,.5)) drop-shadow(0 0 2px rgba(61,255,143,.9));
+  --pic:#0C0C0E;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:400 17px/1.45 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--neon);outline-offset:3px;border-radius:6px}
+#app{max-width:560px;margin:0 auto;padding-bottom:200px}
+body.focusing #app{padding-bottom:0}
+.pad{padding:28px 24px 0}
+.pad2{padding:18px 24px 0}
+.eyebrow{font-size:14px;color:var(--mut);font-weight:500}
+h1{font-size:36px;line-height:1.1;font-weight:700;letter-spacing:-.03em;margin:4px 0 0}
+h2{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0}
+.lead{margin:20px 24px 0;color:var(--mut);font-size:16px;max-width:36ch}
+.link{font-size:15px;font-weight:500;color:var(--mut);min-height:44px;display:inline-flex;align-items:center}
+.link:active{color:var(--ink)}
+.danger{color:var(--red)}
+.safety{display:flex;gap:12px;align-items:flex-start;margin:22px 24px 0;padding:14px 16px;border-radius:18px;background:var(--warn);color:var(--warn-ink);font-size:15.5px;font-weight:500;line-height:1.4}
+.safety svg{flex:none;width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-top:-1px}
+
+/* hero ring */
+.hero{position:relative;width:220px;height:220px;margin:18px auto 0}
+.hero svg{width:100%;height:100%;overflow:visible}
+.seg{fill:none;stroke:var(--neon-d);stroke-width:14;stroke-linecap:round}
+.seg.on{stroke:var(--neon);filter:var(--glow)}
+.hero-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hero-n{font-size:64px;font-weight:200;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.hero-n span{color:var(--dim)}
+.hero-l{font-size:14px;color:var(--mut);margin-top:6px}
+.month{display:flex;align-items:center;gap:12px;margin:18px 24px 0;font-size:14px;color:var(--mut)}
+.mbar{flex:1;height:4px;background:var(--s2);border-radius:2px;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--ink);border-radius:2px;transition:width .4s}
+.mbar i.met{background:var(--neon)}
+.month b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* lists */
+.list{margin:24px 24px 0}
+.sec{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:14px;color:var(--mut);margin-bottom:2px}
+.sec .lnks{display:flex;gap:18px}
+.row{display:flex;align-items:center;gap:14px;width:100%;min-height:72px;text-align:left;padding:10px 0;border-bottom:1px solid var(--line)}
+.row .n{width:18px;font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums}
+.thumb{flex:none;width:68px;height:51px;border-radius:12px;background:var(--pic);display:block;object-fit:contain}
+.row .nm{flex:1;min-width:0;font-size:16.5px;font-weight:600;line-height:1.3}
+.row .nm small{display:block;font-size:13.5px;color:var(--mut);font-weight:400;margin-top:2px}
+.row .m{display:flex;align-items:center;gap:12px;font-size:14.5px;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
+.row .m b{color:var(--ink);font-weight:500}
+.row .m b.dim{color:var(--mut);font-weight:400}
+.row.done .nm{color:var(--mut)}
+.row .ok svg{width:22px;height:22px;stroke:var(--neon-txt);display:block}
+.row .part{color:var(--neon-txt);font-weight:600}
+.row.static{cursor:default}
+.list-foot{display:flex;flex-wrap:wrap;gap:4px 24px;padding:10px 0 0}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:9px;background:var(--s2);color:var(--mut);margin-left:6px;vertical-align:1px}
+.tag.j{background:var(--neon-d);color:var(--neon-txt)}
+
+/* dock + buttons */
+.dock{position:fixed;left:0;right:0;bottom:calc(76px + env(safe-area-inset-bottom,0px));padding:28px 24px 14px;background:linear-gradient(to bottom,transparent,var(--bg) 40%);z-index:15;max-width:560px;margin:0 auto}
+.cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:64px;border-radius:32px;background:var(--neon);color:var(--neon-ink);font-weight:700;font-size:19px;letter-spacing:-.01em;padding:0 20px}
+.cta:active{transform:scale(.98)}
+.cta.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.cta.wide{margin-top:18px}
+.iconbtn{width:48px;height:48px;display:grid;place-items:center;border-radius:24px;color:var(--mut)}
+.iconbtn svg{width:22px;height:22px;stroke:currentColor}
+
+/* place picker */
+.places{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.place{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:190px;padding:20px 12px;border-radius:26px;border:2px solid var(--line);background:var(--s1);text-align:center}
+.place:active{transform:scale(.98)}
+.place.on{border-color:var(--neon)}
+.place svg{width:64px;height:64px;stroke:var(--neon-txt);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.place b{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.place small{font-size:14px;color:var(--mut);line-height:1.35}
+
+/* focus mode */
+.focus{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.ftop{display:flex;align-items:center;gap:12px;padding:12px 16px 0 10px}
+.segs{flex:1;display:flex;gap:4px}
+.sg{flex:1;height:30px;position:relative}
+.sg::after{content:"";position:absolute;left:0;right:0;top:13px;height:4px;border-radius:2px;background:var(--s2)}
+.sg.d::after{background:var(--neon)}
+.sg.c::after{background:var(--ink)}
+.cnt{font-size:14px;color:var(--mut);font-variant-numeric:tabular-nums;min-width:34px;text-align:right}
+.fmain{flex:1;display:flex;flex-direction:column}
+.fpic{margin:14px 24px 0;border-radius:28px;background:var(--pic);border:1px solid var(--line);overflow:hidden}
+.fpic img{display:block;width:100%;aspect-ratio:4/3;max-height:36vh;max-height:36dvh;object-fit:contain}
+.fside{flex:1;display:flex;flex-direction:column}
+.fbody{flex:1;padding:18px 24px 0}
+.grp{font-size:14px;color:var(--mut)}
+.fname{display:flex;align-items:center;gap:10px;text-align:left;font-size:31px;line-height:1.12;font-weight:700;letter-spacing:-.03em;margin:4px 0 0;min-height:48px}
+.fname svg{flex:none;width:24px;height:24px;stroke:var(--mut);fill:none;stroke-width:2;stroke-linecap:round}
+.fname[aria-expanded="true"] svg{stroke:var(--neon-txt)}
+.how{margin:10px 0 0;font-size:17px;line-height:1.5;color:var(--ink);background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.hint{font-size:13.5px;color:var(--mut);margin-top:2px}
+.num{margin:22px 0 0;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.num .val{flex:1;min-width:140px}
+.big{width:100%;border:0;background:transparent;padding:0;font-size:84px;font-weight:200;letter-spacing:-.06em;line-height:1;font-variant-numeric:tabular-nums;caret-color:var(--neon)}
+.big::placeholder{color:var(--dim)}
+.u{font-size:15px;color:var(--mut);margin-top:2px}
+.step{display:flex;gap:12px}
+.step button{min-width:68px;height:68px;padding:0 14px;border-radius:34px;border:1.5px solid var(--line);font-size:22px;font-weight:500;display:grid;place-items:center}
+.step button:active{background:var(--s2)}
+.sets{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0 0}
+.sw{position:relative}
+.set{width:58px;height:58px;border-radius:29px;border:2px solid var(--neon-txt);color:var(--neon-txt);font-size:17px;font-weight:700;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.set svg{width:26px;height:26px;stroke:currentColor}
+.set.done{background:var(--neon);border-color:var(--neon);color:var(--neon-ink)}
+.set.cur{outline:2.5px solid var(--ink);outline-offset:3px}
+.set.add{border:2px dashed var(--dim);color:var(--mut);font-size:24px;font-weight:300}
+.setx{position:absolute;top:-9px;right:-9px;width:28px;height:28px;border-radius:14px;background:var(--bg);border:1.5px solid var(--red);color:var(--red);display:grid;place-items:center}
+.setx svg{width:14px;height:14px;stroke:currentColor}
+.last{margin-top:20px;font-size:14.5px;color:var(--mut);line-height:1.5}
+.last b{color:var(--ink);font-weight:500}
+.last .up{color:var(--neon-txt);font-weight:600}
+.tools{display:flex;gap:4px 24px;margin:14px 0 0;flex-wrap:wrap}
+.fdock{position:sticky;bottom:0;padding:16px 24px calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to bottom,transparent,var(--bg) 30%)}
+.rest{border:1px solid var(--line);background:var(--s1);border-radius:26px;padding:14px 20px 8px}
+.rest-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.rest-l{font-size:15px;color:var(--mut);font-weight:600}
+.rest-t{font-size:46px;font-weight:200;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.rest-line{height:4px;border-radius:2px;background:var(--s2);margin:12px 0 4px;overflow:hidden}
+.rest-line i{display:block;height:100%;background:var(--neon);transform-origin:left;filter:var(--glow)}
+.rest-b{display:flex;align-items:center;gap:22px}
+.rest-b .sp{flex:1}
+.rest-b .mute{display:flex;align-items:center;gap:6px}
+.rest-b .mute svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cta.go{animation:go 1.2s ease-in-out infinite}
+@keyframes go{50%{box-shadow:0 0 38px rgba(61,255,143,.65);transform:scale(1.015)}}
+@media (prefers-reduced-motion:reduce){.cta.go{animation:none}}
+.next{display:flex;justify-content:space-between;gap:16px;font-size:14px;color:var(--mut);margin-bottom:12px}
+.next b{color:var(--ink);font-weight:500;text-align:right}
+
+/* exercises */
+.search{width:100%;height:52px;border-radius:26px;border:1px solid var(--line);background:var(--s1);padding:0 20px}
+.search::placeholder{color:var(--mut)}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:12px -24px 0;padding:0 24px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips.wrap{flex-wrap:wrap;margin:12px 0 0;padding:0}
+.chip{white-space:nowrap;height:42px;padding:0 16px;border-radius:21px;border:1px solid var(--line);font-size:14.5px;font-weight:500;color:var(--mut)}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.flabel{font-size:14px;color:var(--mut);margin:18px 0 0}
+
+/* history */
+.stats{display:flex;gap:30px;margin:28px 24px 0;flex-wrap:wrap}
+.stats div{display:flex;flex-direction:column}
+.stats b{font-size:54px;font-weight:200;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.stats span{font-size:14px;color:var(--mut);margin-top:6px}
+.stats .n b{color:var(--neon-txt)}
+.stats.sm{margin:20px 0 0;gap:26px}
+.stats.sm b{font-size:40px}
+.weeks{display:flex;gap:6px;margin:28px 24px 0;height:48px;align-items:flex-end}
+.wk{flex:1;display:flex;flex-direction:column-reverse;gap:3px}
+.wk i{height:12px;border-radius:3px;background:var(--s2)}
+.wk i.on{background:var(--neon)}
+.wl{display:flex;justify-content:space-between;margin:8px 24px 0;font-size:12px;color:var(--mut)}
+.sess{border-bottom:1px solid var(--line)}
+.sess summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:64px;padding:12px 0;cursor:pointer}
+.sess summary::-webkit-details-marker{display:none}
+.sess summary b{display:block;font-size:17px;font-weight:600}
+.sess summary small{display:block;font-size:14px;color:var(--mut);margin-top:2px}
+.sess .m{font-size:14px;color:var(--mut)}
+.sess ul{list-style:none;margin:0;padding:0 0 8px}
+.sess li{display:flex;justify-content:space-between;gap:14px;padding:6px 0;font-size:15px}
+.sess li span:last-child{color:var(--mut);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sess .link{margin:0 0 8px}
+.settings{margin:36px 24px 0;padding-top:20px;border-top:1px solid var(--line)}
+.srow{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-top:16px;font-size:16px;flex-wrap:wrap}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:52px;height:52px;border-radius:26px;border:1px solid var(--line);font-size:22px;font-weight:300}
+.stepper output{font-size:24px;font-weight:300;min-width:24px;text-align:center;font-variant-numeric:tabular-nums}
+.fine{font-size:13.5px;color:var(--mut);margin:16px 0 0}
+
+/* nav */
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:20}
+body.focusing .nav{display:none}
+.nav>div{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+.nav button{padding:12px 0 10px;min-height:64px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12.5px;font-weight:500;color:var(--mut)}
+.nav svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+.nav i{width:5px;height:5px;border-radius:50%}
+.nav button[aria-current="page"]{color:var(--ink)}
+.nav button[aria-current="page"] i{background:var(--neon);box-shadow:0 0 8px var(--neon)}
+
+/* sheet */
+.sheet-bg{position:fixed;inset:0;background:rgb(0 0 0 / .6);z-index:30;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:600px;max-height:90vh;max-height:90dvh;border-radius:26px 26px 0 0;border-top:1px solid var(--line);display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px);animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
+.sheet-h{display:flex;align-items:center;gap:10px;padding:16px 14px 4px 24px}
+.sheet-h h2{flex:1}
+.sheet-b{overflow-y:auto;padding:0 24px 28px}
+.sheet-b .list{margin:14px 0 0}
+.sheet-b .fpic{margin:10px 0 0}
+.sheet-b .fpic img{max-height:40vh}
+.sheet-b .how{background:none;border:0;padding:0;color:var(--mut)}
+.chart{margin-top:20px}
+.chart svg{display:block;width:100%;height:auto}
+.toast{position:fixed;left:50%;bottom:calc(160px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:22px;font-weight:600;font-size:15px;z-index:40;max-width:calc(100vw - 32px);text-align:center}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .cta:not(.ghost){box-shadow:0 0 28px rgba(61,255,143,.3)}
+  :root:not([data-theme="light"]) .set.done{box-shadow:0 0 14px rgba(61,255,143,.4)}
+  :root:not([data-theme="light"]) .stats .n b{text-shadow:0 0 18px rgba(61,255,143,.45)}
+}
+:root[data-theme="dark"] .cta:not(.ghost){box-shadow:0 0 28px rgba(61,255,143,.3)}
+:root[data-theme="dark"] .set.done{box-shadow:0 0 14px rgba(61,255,143,.4)}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}.mbar i{transition:none}}
+
+/* tablets */
+@media (min-width:700px){
+  body{font-size:18px}
+  #app,.nav>div,.dock{max-width:760px}
+  .pad,.pad2{padding-left:40px;padding-right:40px}
+  .list,.lead,.safety,.month,.stats,.weeks,.wl,.settings{margin-left:40px;margin-right:40px}
+  .dock{padding-left:40px;padding-right:40px}
+  .chips{margin-left:-40px;margin-right:-40px;padding-left:40px;padding-right:40px}
+  h1{font-size:44px}
+  .hero{width:260px;height:260px}
+  .hero-n{font-size:76px}
+  .thumb{width:88px;height:66px}
+  .row .nm{font-size:18px}
+  body.focusing #app{max-width:900px}
+  .fpic{margin:18px 40px 0}
+  .fpic img{max-height:42vh;max-height:42dvh}
+  .fbody{padding:22px 40px 0}
+  .fdock{padding-left:40px;padding-right:40px}
+  .fname{font-size:42px}
+  .grp,.hint,.u{font-size:16px}
+  .last,.next{font-size:16px}
+  .link{font-size:16.5px;min-height:52px}
+  .big{font-size:112px}
+  .step button{min-width:82px;height:82px;border-radius:41px;font-size:26px}
+  .set{width:68px;height:68px;border-radius:34px;font-size:20px}
+  .cta{min-height:74px;border-radius:37px;font-size:21px}
+  .rest-t{font-size:56px}
+  .rest-l{font-size:17px}
+  .place{min-height:230px}
+}
+/* tablets and wide phones in landscape: picture left, controls right */
+@media (min-width:760px) and (orientation:landscape){
+  body.focusing #app{max-width:1280px}
+  .fmain{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:8px;align-items:start}
+  .fpic{position:sticky;top:12px;margin:14px 0 14px 32px}
+  .fpic img{max-height:calc(100vh - 110px);max-height:calc(100dvh - 110px)}
+  .fside{min-height:calc(100vh - 56px);min-height:calc(100dvh - 56px)}
+  .fbody{padding:10px 32px 0 28px}
+  .fdock{padding-left:28px;padding-right:32px}
+  .num{margin-top:14px}
+}
+@media (max-height:500px) and (orientation:landscape){
+  .fpic img{max-height:calc(100vh - 90px)}
+  .big{font-size:64px}
+  .step button{min-width:58px;height:58px}
+}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<nav class="nav" aria-label="Delovi aplikacije"><div>
+  <button data-tab="danas"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M12 7v7M12 14l-4 6M12 14l4 6M6 10h12"/></svg>Danas<i></i></button>
+  <button data-tab="vezbe"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Vežbe<i></i></button>
+  <button data-tab="istorija"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Istorija<i></i></button>
+</div></nav>
+<input type="file" id="restore" accept=".json,application/json" class="sr">
+<script>
+/* ---------- exercises ----------
+   type: "reps" (ponavljanja) or "sec" (sekundi); amount: default per set
+   place: "in" = works inside (quiet, small space next to a chair), "out" = outside only
+   jump: true for jumping or running exercises; side: amount is per leg / per side
+   fam: exercises from the same family are not picked twice in one workout */
+const EX = [
+  // unutra – noge
+  {id:"cucanj", name:"Čučanj", cat:"noge", type:"reps", amount:12, place:"in", jump:false, desc:"Stopala u širini ramena, spusti se kao da sedaš, leđa prava, pa ustani."},
+  {id:"iskorak-unazad", name:"Iskorak unazad", cat:"noge", type:"reps", amount:8, side:"po nozi", place:"in", jump:false, desc:"Korakni jednom nogom unazad i spusti koleno ka podu, pa se vrati."},
+  {id:"bocni-iskorak", name:"Bočni iskorak", cat:"noge", type:"reps", amount:8, side:"po strani", place:"in", jump:false, desc:"Široki korak u stranu, savij tu nogu, druga ostaje prava."},
+  {id:"zid-sed", name:"Zid-sed", cat:"noge", type:"sec", amount:30, place:"in", jump:false, desc:"Leđa uz zid, kolena pod pravim uglom, kao da sediš na nevidljivoj stolici."},
+  {id:"most", name:"Most", cat:"noge", type:"reps", amount:12, place:"in", jump:false, fam:"most", desc:"Lezi na leđa, kolena savijena, podigni kukove i stisni zadnjicu."},
+  {id:"most-jedna-noga", name:"Most na jednoj nozi", cat:"noge", type:"reps", amount:8, side:"po nozi", place:"in", jump:false, fam:"most", desc:"Kao most, ali je jedna noga ispružena u vazduhu."},
+  {id:"podizanje-na-prste", name:"Podizanje na prste", cat:"noge", type:"reps", amount:15, place:"in", jump:false, desc:"Stani i polako se podigni na prste, pa spusti."},
+  {id:"odbrambeni-korak", name:"Odbrambeni korak", cat:"noge", type:"sec", amount:30, place:"in", jump:false, desc:"Nisko u čučnju, mali brzi koraci u stranu, bez skakanja."},
+  // unutra – ruke i stolica
+  {id:"sklekovi", name:"Sklekovi", cat:"ruke", type:"reps", amount:8, place:"in", jump:false, fam:"sklek", desc:"Telo pravo kao daska, spusti grudi ka podu, pa se odgurni."},
+  {id:"sklekovi-kolena", name:"Sklekovi na kolenima", cat:"ruke", type:"reps", amount:10, place:"in", jump:false, fam:"sklek", desc:"Isto kao sklekovi, ali se oslanjaš na kolena."},
+  {id:"sklekovi-stolica", name:"Sklekovi na stolici", cat:"ruke", type:"reps", amount:10, place:"in", jump:false, chair:true, fam:"sklek", desc:"Ruke na sedištu stabilne stolice, telo pravo. Spusti grudi ka sedištu, pa se odgurni."},
+  {id:"propadanja-stolica", name:"Propadanja na stolici", cat:"ruke", type:"reps", amount:10, place:"in", jump:false, chair:true, desc:"Za triceps. Leđima okrenut stolici, ruke na ivici sedišta. Savij laktove unazad i spusti se, pa se podigni."},
+  {id:"sklekovi-zid", name:"Sklekovi uz zid", cat:"ruke", type:"reps", amount:12, place:"in", jump:false, fam:"sklek", desc:"Ruke na zidu, spuštaj grudi ka zidu, pa se odgurni."},
+  // unutra – stomak
+  {id:"plank", name:"Plank", cat:"stomak", type:"sec", amount:30, place:"in", jump:false, desc:"Na podlakticama i prstima, telo pravo."},
+  {id:"bocni-plank", name:"Bočni plank", cat:"stomak", type:"sec", amount:20, side:"po strani", place:"in", jump:false, desc:"Na jednoj podlaktici, telo u pravoj liniji."},
+  {id:"plank-dodir-ramena", name:"Plank sa dodirom ramena", cat:"stomak", type:"reps", amount:12, unit:"dodir", place:"in", jump:false, desc:"U položaju za sklek, naizmenično dodiruj suprotno rame."},
+  {id:"mrtva-buba", name:"Mrtva buba", cat:"stomak", type:"reps", amount:10, place:"in", jump:false, desc:"Na leđima, ruke i noge gore. Spuštaj suprotnu ruku i nogu, pa zameni."},
+  {id:"supermen", name:"Supermen", cat:"stomak", type:"sec", amount:20, place:"in", jump:false, desc:"Na stomaku, podigni ruke i noge od poda i drži."},
+  {id:"penjac-polako", name:"Penjač (polako)", cat:"stomak", type:"sec", amount:20, place:"in", jump:false, fam:"penjac", desc:"U položaju za sklek, naizmenično privlači kolena ka grudima."},
+  {id:"bicikl", name:"Bicikl", cat:"stomak", type:"reps", amount:14, place:"in", jump:false, desc:"Na leđima, lakat ka suprotnom kolenu, naizmenično."},
+  // unutra – životinjski pokreti
+  {id:"medvedje-puzanje", name:"Medveđe puzanje", cat:"zivotinje", type:"sec", amount:20, place:"in", jump:false, desc:"Na rukama i stopalima, kolena malo iznad poda, korak napred i nazad."},
+  {id:"rak-hodanje", name:"Rak hodanje", cat:"zivotinje", type:"sec", amount:20, place:"in", jump:false, desc:"Sedi, ruke iza tela, podigni kukove i hodaj."},
+  {id:"gusenica", name:"Gusenica", cat:"zivotinje", type:"reps", amount:6, place:"in", jump:false, desc:"Sagni se, rukama hodaj napred do položaja za sklek, pa nazad."},
+  // unutra – ravnoteža
+  {id:"stajanje-jedna-noga", name:"Stajanje na jednoj nozi", cat:"ravnoteza", type:"sec", amount:30, side:"po nozi", place:"in", jump:false, desc:"Drži ravnotežu, ruke na kukovima."},
+  {id:"avion", name:"Avion", cat:"ravnoteza", type:"sec", amount:20, side:"po nozi", place:"in", jump:false, desc:"Na jednoj nozi, nagni se napred, druga noga i ruke ispružene."},
+  // unutra – tihi skok (najviše jedan po treningu)
+  {id:"mekani-poskoci", name:"Mekani poskoci", cat:"skokovi", type:"sec", amount:20, place:"in", jump:true, desc:"Mali poskoci na prstima, doskok tih i mekan."},
+  {id:"tihi-cucanj-skok", name:"Tihi čučanj sa skokom", cat:"skokovi", type:"reps", amount:6, place:"in", jump:true, fam:"cucanj-skok", desc:"Mali skok iz čučnja, doskok na prste i mekano."},
+  // napolju
+  {id:"cucanj-skok", name:"Čučanj sa skokom", cat:"skokovi", type:"reps", amount:10, place:"out", jump:true, fam:"cucanj-skok", desc:"Iz čučnja skoči što više."},
+  {id:"zvezdasti-skokovi", name:"Zvezdasti skokovi", cat:"skokovi", type:"reps", amount:10, place:"out", jump:true, desc:"Skoči i raširi ruke i noge kao zvezda."},
+  {id:"pajacovi", name:"Pajacovi", cat:"skokovi", type:"sec", amount:30, place:"out", jump:true, desc:"Skakanje sa širenjem ruku i nogu."},
+  {id:"klizacki-skokovi", name:"Klizački skokovi", cat:"skokovi", type:"reps", amount:12, place:"out", jump:true, desc:"Skok u stranu sa noge na nogu, kao klizač."},
+  {id:"skok-u-dalj", name:"Skok u dalj iz mesta", cat:"skokovi", type:"reps", amount:6, place:"out", jump:true, desc:"Skoči što dalje sa obe noge."},
+  {id:"skok-sa-kolenima", name:"Skok sa kolenima", cat:"skokovi", type:"reps", amount:8, place:"out", jump:true, desc:"Skoči i privuci kolena ka grudima."},
+  {id:"zabji-skokovi", name:"Žabji skokovi", cat:"skokovi", type:"reps", amount:8, place:"out", jump:true, desc:"Iz čučnja skok napred kao žaba."},
+  {id:"sprint", name:"Sprint", cat:"skokovi", type:"reps", amount:5, unit:"put", place:"out", jump:true, desc:"Trči punom brzinom oko 20 metara."},
+  {id:"brza-stopala", name:"Brza stopala", cat:"skokovi", type:"sec", amount:20, place:"out", jump:true, desc:"Brzi mali koraci u mestu."},
+  {id:"penjac-brzo", name:"Penjač (brzo)", cat:"stomak", type:"sec", amount:30, place:"out", jump:false, fam:"penjac", desc:"Brzo privlačenje kolena u položaju za sklek."},
+];
+const EXMAP = Object.fromEntries(EX.map(e=>[e.id,e]));
+const CATS = {noge:"Noge", ruke:"Ruke i stolica", stomak:"Stomak", zivotinje:"Životinjski pokreti", ravnoteza:"Ravnoteža", skokovi:"Skokovi i trčanje"};
+const ORDER = ["noge","ruke","stomak","zivotinje","ravnoteza","skokovi"];
+const PLACES = {in:"Unutra", out:"Napolju"};
+const MAX_REPS = 15, MAX_SEC = 60, MIN_SEC = 5;
+const LS_KEY = "trening-za-decu-v1";
+const SAFETY = "Zagrej se pre treninga i koristi stabilnu stolicu koja ne klizi.";
+const LOCALE = "sr-Latn-RS";
+const $app = document.getElementById("app");
+
+let S = {sessions:[], plan:null, settings:{count:7, mute:false}, custom:[], updated:0};
+let focus = null, selSet = null, howOpen = false;
+let rest = null, hold = null, actx = null, wakeLock = null;
+let tab = "danas", filterCat = "all", filterPlace = "all", query = "", sheet = null;
+
+/* ---------- data ---------- */
+function loadLocal(){
+  try{ const raw = localStorage.getItem(LS_KEY); if(raw) S = Object.assign(S, JSON.parse(raw)); }catch(e){}
+  S.settings.count = clampCount(S.settings.count);
+}
+function saveLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+function persistPlan(){ S.updated = Date.now(); saveLocal(); }
+function persistSettings(){ saveLocal(); }
+const clampCount = n => Math.max(6, Math.min(8, +n || 7));
+function exById(id){ return EXMAP[id] || S.custom.find(x=>x.id===id) || null; }
+function allExercises(){ return EX.concat(S.custom); }
+const imgOf = e => "images/" + (e && EXMAP[e.id] ? e.id : "nova-vezba") + ".svg";
+const isTimed = e => !!e && e.type === "sec";
+const allowed = (e, place) => place === "out" || e.place === "in";
+function sortedSessions(){ return S.sessions.slice().sort((a,b)=>a.date.localeCompare(b.date)); }
+function sessionTitle(s){ return "Trening " + (sortedSessions().findIndex(x=>x.id===s.id) + 1); }
+function historyFor(exId){
+  const out = [];
+  sortedSessions().forEach((s,i)=>s.items.forEach(it=>{ if(it.ex===exId) out.push({s,i,it}); }));
+  return out;
+}
+const maxV = it => Math.max(0, ...it.sets.map(x=>+x.v||0));
+function clampV(e, v){
+  v = Math.round(+v || 0);
+  return isTimed(e) ? Math.max(MIN_SEC, Math.min(MAX_SEC, v || e.amount || 20)) : Math.max(1, Math.min(MAX_REPS, v || e.amount || 10));
+}
+
+/* ---------- Serbian words ---------- */
+function pl(n, forms){ n = Math.abs(+n||0); const a = n%10, b = n%100;
+  if(a===1 && b!==11) return forms[0]; if(a>=2 && a<=4 && (b<12 || b>14)) return forms[1]; return forms[2]; }
+const W = {
+  ponavljanje:["ponavljanje","ponavljanja","ponavljanja"], sekunda:["sekunda","sekunde","sekundi"],
+  dodir:["dodir","dodira","dodira"], put:["put","puta","puta"], vezba:["vežba","vežbe","vežbi"],
+  trening:["trening","treninga","treninga"], serija:["serija","serije","serija"], nedelja:["nedelja","nedelje","nedelja"]
+};
+function unitWord(e, v){ return pl(v, isTimed(e) ? W.sekunda : (W[e.unit] || W.ponavljanje)); }
+function amountText(e, v){ return isTimed(e) ? `${v} s` : `${v}${e.unit ? " " + pl(v, W[e.unit]) : ""}`; }
+function amountLong(e, v){ return `${v} ${unitWord(e, v)}${e.side ? " " + e.side : ""}`; }
+function setSummary(it){
+  const e = exById(it.ex) || {type:"reps"}; const vs = it.sets.map(x=>+x.v||0);
+  const same = vs.every(v=>v===vs[0]);
+  const body = same ? `${vs.length} × ${amountText(e, vs[0])}` : vs.map(v=>amountText(e, v)).join(", ");
+  return body + (e.side ? " " + e.side : "");
+}
+
+/* ---------- suggestions ---------- */
+function suggestion(exId){
+  const e = exById(exId) || {type:"reps", amount:10};
+  const h = historyFor(exId);
+  if(!h.length) return {sets:3, v:clampV(e, e.amount), last:null, up:false};
+  const last = h[h.length-1].it, prev = h.length>1 ? h[h.length-2].it : null;
+  const lv = maxV(last), pv = prev ? maxV(prev) : null;
+  let v = clampV(e, lv), up = false;
+  if(prev && pv===lv && last.sets.length>=3){
+    const nv = clampV(e, lv + (isTimed(e) ? 5 : 1));
+    if(nv > v){ v = nv; up = true; }
+  }
+  return {sets:Math.max(3, last.sets.length), v, last, up};
+}
+function buildItem(exId){
+  const sg = suggestion(exId);
+  return {ex:exId, sets:Array.from({length:sg.sets}, ()=>({v:sg.v, done:false}))};
+}
+
+/* ---------- workout generation ---------- */
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function generate(place){
+  const sessions = sortedSessions(), n = sessions.length, lastIdx = {};
+  sessions.forEach((s,i)=>s.items.forEach(it=>{ lastIdx[it.ex] = i; }));
+  const lastEx = new Set((sessions[n-1]?.items||[]).map(it=>it.ex));
+  const count = clampCount(S.settings.count);
+  const pool = allExercises().filter(e=>allowed(e, place));
+
+  // jumping or running: inside at most one quiet jump, outside 2 to 4
+  const jumps = place === "in" ? (Math.random() < 0.6 ? 1 : 0)
+    : 2 + Math.floor(Math.random() * (Math.min(4, count - 3) - 1));
+  // always legs, upper body (chair), core and balance; outside the jumps already cover the legs
+  const slots = place === "out" && jumps >= 2 ? ["ruke","stomak","ravnoteza"] : ["noge","ruke","stomak","ravnoteza"];
+  const extra = shuffle(["noge","ruke","stomak","zivotinje"]);
+  for(let k=0; slots.length + jumps < count; k++) slots.push(extra[k % extra.length]);
+
+  const chosen = [], ids = new Set(), fams = new Set();
+  function pick(test){
+    const tries = [
+      e => test(e) && !ids.has(e.id) && !(e.fam && fams.has(e.fam)) && !lastEx.has(e.id),
+      e => test(e) && !ids.has(e.id) && !(e.fam && fams.has(e.fam)),
+      e => test(e) && !ids.has(e.id),
+    ];
+    for(const t of tries){
+      const c = pool.filter(t);
+      if(!c.length) continue;
+      const best = c.map(e=>{
+        const gap = Math.min(n - (lastIdx[e.id] ?? -30), 30);
+        return {e, s: gap * (0.5 + Math.random()) * (e.chair ? 1.3 : 1)};
+      }).sort((a,b)=>b.s-a.s)[0].e;
+      ids.add(best.id); if(best.fam) fams.add(best.fam); chosen.push(best);
+      return best;
+    }
+    return null;
+  }
+  const main = [];
+  for(const cat of slots){ const e = pick(x=>x.cat===cat && !x.jump); if(e) main.push(e); }
+  const jumpList = [];
+  for(let k=0; k<jumps; k++){
+    const e = place === "out" ? (pick(x=>x.jump && x.place==="out") || pick(x=>x.jump)) : pick(x=>x.jump);
+    if(e) jumpList.push(e);
+  }
+  // top up if a category ran out of exercises
+  while(main.length + jumpList.length < count){ const e = pick(x=>!x.jump); if(!e) break; main.push(e); }
+  main.sort((a,b)=>ORDER.indexOf(a.cat)-ORDER.indexOf(b.cat));
+  // spread the jumps through the workout
+  const out = [], gap = (main.length + 1) / (jumpList.length + 1); let ji = 0;
+  main.forEach((e,i)=>{ out.push(e); while(ji < jumpList.length && Math.round((ji+1)*gap) - 1 === i) out.push(jumpList[ji++]); });
+  while(ji < jumpList.length) out.push(jumpList[ji++]);
+
+  S.plan = {created:new Date().toISOString(), place, items:out.map(e=>buildItem(e.id))};
+  persistPlan();
+}
+const planJumps = () => (S.plan?.items||[]).filter(it=>exById(it.ex)?.jump).length;
+function canAdd(e){
+  if(!S.plan) return true;
+  if(!allowed(e, S.plan.place)) return false;
+  if(S.plan.place === "in" && e.jump && planJumps() >= 1) return false;
+  return true;
+}
+function swap(i){
+  const cur = S.plan.items[i], e = exById(cur.ex); if(!e) return;
+  const inPlan = new Set(S.plan.items.map(x=>x.ex));
+  const famOthers = new Set(S.plan.items.filter((x,k)=>k!==i).map(x=>exById(x.ex)?.fam).filter(Boolean));
+  const lastEx = new Set((sortedSessions().slice(-1)[0]?.items||[]).map(x=>x.ex));
+  const base = allExercises().filter(x=>x.cat===e.cat && x.jump===e.jump && !inPlan.has(x.id) && allowed(x, S.plan.place));
+  let c = base.filter(x=>!(x.fam && famOthers.has(x.fam)) && !lastEx.has(x.id));
+  if(!c.length) c = base.filter(x=>!(x.fam && famOthers.has(x.fam)));
+  if(!c.length) c = base;
+  if(!c.length) return toast("Nema druge vežbe iz ove grupe");
+  const p = c[Math.floor(Math.random()*c.length)];
+  S.plan.items[i] = buildItem(p.id);
+  persistPlan(); render();
+}
+
+/* ---------- helpers ---------- */
+const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function fmtDate(iso){ return new Date(iso).toLocaleDateString(LOCALE, {weekday:"short", day:"numeric", month:"short"}); }
+let toastTimer;
+function toast(msg){
+  document.querySelector(".toast")?.remove();
+  const t = document.createElement("div"); t.className = "toast"; t.setAttribute("role","status"); t.textContent = msg;
+  document.body.appendChild(t); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.remove(), 2600);
+}
+const ICON = {
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  info:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/></svg>',
+  warn:'<svg viewBox="0 0 24 24"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17v.01"/></svg>',
+  home:'<svg viewBox="0 0 64 64"><path d="M8 30L32 10l24 20"/><path d="M14 26v28h36V26"/><path d="M27 54V40h10v14"/></svg>',
+  tree:'<svg viewBox="0 0 64 64"><circle cx="46" cy="14" r="6"/><path d="M24 8l-12 18h7l-9 13h28l-9-13h7z"/><path d="M24 39v15M6 54h52"/></svg>'
+};
+
+/* ---------- metrics ---------- */
+function weekStart(d){ const x=new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate()-((x.getDay()+6)%7)); return x; }
+function weekCounts(n){
+  const now = weekStart(new Date()), out = [];
+  for(let k=n-1;k>=0;k--){ const a=new Date(now); a.setDate(a.getDate()-7*k); const b=new Date(a); b.setDate(b.getDate()+7);
+    out.push(S.sessions.filter(s=>{ const d=new Date(s.date); return d>=a && d<b; }).length); }
+  return out;
+}
+function streak(){
+  const w = weekCounts(52); let i = w.length-1, n = 0;
+  if(w[i] < 3) i--;               // this week is still in progress
+  for(; i>=0 && w[i]>=3; i--) n++;
+  return n;
+}
+function progress(){
+  const now = new Date(), mo = new Date(now.getFullYear(), now.getMonth(), 1);
+  return {week:weekCounts(1)[0], month:S.sessions.filter(s=>new Date(s.date)>=mo).length, total:S.sessions.length};
+}
+function arc(cx,cy,r,a0,a1){
+  const p = a=>[cx+r*Math.cos((a-90)*Math.PI/180), cy+r*Math.sin((a-90)*Math.PI/180)];
+  const [x0,y0]=p(a0), [x1,y1]=p(a1);
+  return `M${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${a1-a0>180?1:0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+}
+function ringSVG(lit){
+  let s = ""; const g = 22;
+  for(let k=0;k<3;k++){ const a0=k*120-60+g/2, a1=(k+1)*120-60-g/2;
+    s += `<path d="${arc(130,130,112,a0,a1)}" class="${k<lit?"seg on":"seg"}"/>`; }
+  return `<svg viewBox="0 0 260 260" aria-hidden="true">${s}</svg>`;
+}
+
+/* ---------- views ---------- */
+const longDate = () => new Date().toLocaleDateString(LOCALE, {weekday:"long", day:"numeric", month:"long"});
+function heroBlock(){
+  const p = progress(), mName = new Date().toLocaleDateString(LOCALE, {month:"long"});
+  const pct = Math.min(100, Math.round(p.month/12*100));
+  return `<div class="hero" role="img" aria-label="${p.week} od 3 treninga ove nedelje">${ringSVG(Math.min(3,p.week))}
+      <div class="hero-c"><div class="hero-n">${p.week}<span>/3</span></div><div class="hero-l">${p.week>=3?"cilj ispunjen!":"ove nedelje"}</div></div></div>
+    <div class="month"><span>${esc(mName)}</span><div class="mbar" role="progressbar" aria-label="Treninzi ovog meseca" aria-valuemin="0" aria-valuemax="12" aria-valuenow="${p.month}"><i style="width:${pct}%" class="${p.month>=12?"met":""}"></i></div><b>${p.month}</b><span>od 12</span></div>`;
+}
+const safetyBlock = () => `<div class="safety" role="note">${ICON.warn}<span>${esc(SAFETY)}</span></div>`;
+function itemState(it){ const d = it.sets.filter(s=>s.done).length; return {d, n:it.sets.length, all:d===it.sets.length}; }
+function viewToday(){
+  const num = S.sessions.length + 1;
+  const head = `<header class="pad"><div class="eyebrow">${esc(longDate())}</div><h1>Trening ${num}</h1></header>`;
+  if(!S.plan || !S.plan.items.length){
+    return head + heroBlock() + safetyBlock() + `<p class="lead">${S.sessions.length ? "Svaki trening je nov: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu." : "Napravi prvi trening: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu."}</p>
+      <div class="dock"><button class="cta" data-act="gen">Napravi trening</button></div>`;
+  }
+  const items = S.plan.items;
+  const anyDone = items.some(it=>it.sets.some(s=>s.done));
+  const allDone = items.every(it=>itemState(it).all);
+  const rows = items.map((it,i)=>{ const e = exById(it.ex) || {name:"Nepoznata vežba"}; const st = itemState(it);
+    const meta = st.all ? `<span class="ok" aria-label="Gotovo">${ICON.check}</span>` : st.d ? `<span class="part">${st.d}/${st.n}</span>` : `<b>${it.sets.length} × ${esc(amountText(e, it.sets[0]?.v))}</b>`;
+    return `<button class="row${st.all?" done":""}" data-act="open" data-i="${i}"><span class="n">${i+1}</span><img class="thumb" src="${imgOf(e)}" alt=""><span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}${e.side?", "+esc(e.side):""}</small></span><span class="m">${meta}</span></button>`; }).join("");
+  const cta = allDone ? `<button class="cta" data-act="finish">Završi trening</button>` : `<button class="cta" data-act="start">${anyDone ? "Nastavi trening" : "Počni trening"}</button>`;
+  return head + heroBlock() + safetyBlock() + `<section class="list">
+      <div class="sec"><span>Danas, ${PLACES[S.plan.place].toLowerCase()}</span><span class="lnks"><button class="link" data-act="place">Promeni mesto</button><button class="link" data-act="regen">Promešaj</button></span></div>${rows}
+      <div class="list-foot"><button class="link" data-act="add">Dodaj vežbu</button>${anyDone&&!allDone?`<button class="link" data-act="finish">Završi sada</button>`:""}<button class="link danger" data-act="discard">Odbaci</button></div>
+    </section><div class="dock">${cta}</div>`;
+}
+function viewFocus(){
+  const items = S.plan.items, i = focus.i, it = items[i];
+  const e = exById(it.ex) || {name:"Nepoznata vežba", cat:"", type:"reps", amount:10};
+  if(selSet===null || selSet>=it.sets.length){ const k = it.sets.findIndex(s=>!s.done); selSet = k<0 ? it.sets.length-1 : k; }
+  const j = selSet, s = it.sets[j], timed = isTimed(e);
+  const sg = suggestion(it.ex);
+  const last = sg.last ? `Prošli put: <b>${esc(setSummary(sg.last))}</b>` : `Prvi put radiš ovu vežbu`;
+  const segs = items.map((x,k)=>`<button class="sg ${itemState(x).all?"d":""} ${k===i?"c":""}" data-act="jump" data-i="${k}" aria-label="Vežba ${k+1}"></button>`).join("");
+  const circles = it.sets.map((x,k)=>`<span class="sw"><button class="set ${x.done?"done":""} ${k===j?"cur":""}" data-act="sel" data-j="${k}" aria-label="Serija ${k+1}${x.done?", gotova":""}">${x.done?ICON.check:k+1}</button>${k>=3?`<button class="setx" data-act="delsetj" data-i="${i}" data-j="${k}" aria-label="Obriši seriju ${k+1}">${ICON.x}</button>`:""}</span>`).join("")
+    + `<button class="set add" data-act="addset" data-i="${i}" aria-label="Dodaj seriju">+</button>`;
+  const allDone = items.every(x=>itemState(x).all);
+  let nextI = items.findIndex((x,k)=>k>i && !itemState(x).all); if(nextI<0) nextI = items.findIndex((x,k)=>k!==i && !itemState(x).all);
+  const next = nextI>=0 ? exById(items[nextI].ex)?.name : null;
+  let cta;
+  if(hold) cta = holdHTML();
+  else if(rest && !allDone) cta = restHTML();
+  else if(allDone) cta = `<button class="cta" data-act="finish">Završi trening</button>`;
+  else if(s.done) cta = `<button class="cta ghost" data-act="undo">Poništi seriju ${j+1}</button>`;
+  else cta = timed ? `<button class="cta" data-act="hold">Kreni: ${esc(clampV(e, s.v))} s${e.side ? " " + esc(e.side) : ""}</button>` : `<button class="cta" data-act="complete">Serija ${j+1} gotova</button>`;
+  const step = timed ? 5 : 1;
+  return `<div class="focus" data-swipe>
+    <div class="ftop"><button class="iconbtn" data-act="back" aria-label="Nazad na današnji trening">${ICON.x}</button><div class="segs">${segs}</div><span class="cnt">${i+1}/${items.length}</span></div>
+    <div class="fmain">
+      <div class="fpic"><img src="${imgOf(e)}" alt="${esc(e.name)}"></div>
+      <div class="fside">
+        <div class="fbody">
+          <div class="grp">${esc(CATS[e.cat]||"")}${e.jump?'<span class="tag j">skok</span>':""}</div>
+          <button class="fname" data-act="howtoggle" aria-expanded="${howOpen}">${esc(e.name)}${ICON.info}</button>
+          ${howOpen ? `<p class="how">${esc(e.desc || "Nema opisa.")}</p>` : `<div class="hint">Tapni naziv za opis</div>`}
+          <div class="num"><div class="val"><input class="big" inputmode="numeric" pattern="[0-9]*" data-f="v" data-i="${i}" data-j="${j}" value="${esc(s.v)}" aria-label="${timed?"Sekundi":"Ponavljanja"}"><div class="u">${esc(unitWord(e, +s.v))}${e.side?" "+esc(e.side):""}</div></div>
+            <div class="step"><button data-act="nudge" data-d="-1" aria-label="Manje">−${step}</button><button data-act="nudge" data-d="1" aria-label="Više">+${step}</button></div></div>
+          <div class="sets">${circles}</div>
+          <div class="last">${last}${sg.up?`<br><span class="up">Probaj danas ${esc(amountLong(e, sg.v))}</span>`:""}</div>
+          <div class="tools"><button class="link" data-act="swap" data-i="${i}">Zameni vežbu</button><button class="link" data-act="detail" data-id="${esc(it.ex)}">Istorija</button><button class="link danger" data-act="removefocus" data-i="${i}">Ukloni</button></div>
+        </div>
+        <div class="fdock">${next&&!allDone?`<div class="next"><span>Sledeća</span><b>${esc(next)}</b></div>`:""}<div id="ctaBox">${cta}</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+function exStats(){
+  const st = {};
+  S.sessions.forEach(s=>s.items.forEach(it=>{
+    const o = st[it.ex] || (st[it.ex] = {count:0, best:0, last:null});
+    o.count++; o.best = Math.max(o.best, maxV(it)); o.last = it;
+  }));
+  return st;
+}
+function viewExercises(){
+  const st = exStats(), q = query.trim().toLowerCase();
+  const list = allExercises().filter(e=>(filterCat==="all"||e.cat===filterCat) && (filterPlace==="all"||e.place===filterPlace) && (!q || e.name.toLowerCase().includes(q)))
+    .sort((a,b)=>ORDER.indexOf(a.cat)-ORDER.indexOf(b.cat));
+  const n = allExercises().length;
+  return `<header class="pad"><div class="eyebrow">${n} ${pl(n, W.vezba)}</div><h1>Vežbe</h1></header>
+    <div class="pad2"><input class="search" type="search" placeholder="Pretraži" value="${esc(query)}" data-f="q" aria-label="Pretraži vežbe">
+    <div class="chips">${["all","in","out"].map(p=>`<button class="chip${filterPlace===p?" on":""}" data-act="fp" data-g="${p}">${p==="all"?"Svuda":PLACES[p]}</button>`).join("")}</div>
+    <div class="chips">${["all",...ORDER].map(g=>`<button class="chip${filterCat===g?" on":""}" data-act="fg" data-g="${g}">${g==="all"?"Sve":CATS[g]}</button>`).join("")}</div></div>
+    <section class="list">${list.map(e=>{ const s = st[e.id];
+      return `<button class="row" data-act="detail" data-id="${esc(e.id)}"><img class="thumb" src="${imgOf(e)}" alt=""><span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}, ${PLACES[e.place].toLowerCase()}${e.jump?'<span class="tag j">skok</span>':""}${s?`, ${s.count}×`:""}</small></span><span class="m"><b class="${s?"":"dim"}">${esc(amountText(e, s ? maxV(s.last) : e.amount))}</b></span></button>`; }).join("") || `<p class="lead">Nijedna vežba ne odgovara. Probaj drugu reč ili izaberi Sve.</p>`}
+    <div class="list-foot"><button class="link" data-act="newex">Dodaj novu vežbu</button></div></section>`;
+}
+function viewHistory(){
+  const p = progress(), w = weekCounts(12), stk = streak();
+  const grid = w.map(c=>`<div class="wk">${[0,1,2].map(k=>`<i class="${k<c?"on":""}"></i>`).join("")}</div>`).join("");
+  const ss = sortedSessions().reverse();
+  return `<header class="pad"><div class="eyebrow">Od početka</div><h1>Istorija</h1></header>
+    <div class="stats"><div><b>${p.total}</b><span>${pl(p.total, W.trening)}</span></div><div class="n"><b>${stk}</b><span>${pl(stk, W.nedelja)} zaredom</span></div><div><b>${p.month}</b><span>ovog meseca</span></div></div>
+    <div class="weeks" role="img" aria-label="Treninzi po nedeljama u poslednjih 12 nedelja">${grid}</div>
+    <div class="wl"><span>Pre 12 nedelja</span><span>Ove nedelje</span></div>
+    <section class="list">${ss.map(s=>`<details class="sess"><summary><span><b>${esc(sessionTitle(s))}</b><small>${esc(fmtDate(s.date))}${s.place?", "+PLACES[s.place].toLowerCase():""}</small></span><span class="m">${s.items.length} ${pl(s.items.length, W.vezba)}</span></summary>
+      <ul>${s.items.map(it=>`<li><span>${esc(exById(it.ex)?.name||"Nepoznata vežba")}</span><span>${esc(setSummary(it))}</span></li>`).join("")}</ul>
+      <button class="link danger" data-act="delsess" data-id="${esc(s.id)}">Obriši ovaj trening</button></details>`).join("") || `<p class="lead" style="margin:0">Još nema treninga. Prvi je na kartici Danas.</p>`}</section>
+    <section class="settings"><h2>Podešavanja</h2>
+      <div class="srow"><span>Vežbi po treningu</span><div class="stepper"><button data-act="cnt" data-d="-1" aria-label="Manje">−</button><output>${S.settings.count}</output><button data-act="cnt" data-d="1" aria-label="Više">+</button></div></div>
+      <div class="srow"><button class="link" data-act="export">Sačuvaj rezervnu kopiju</button><button class="link" data-act="import">Vrati iz kopije</button></div>
+      <p class="fine">Treninzi se čuvaju samo na ovom uređaju. S vremena na vreme sačuvaj rezervnu kopiju. Pomoću nje možeš da preneseš treninge na novi telefon ili tablet.</p></section>`;
+}
+function viewSheet(){
+  if(!sheet) return "";
+  const wrap = (title, body) => `<div class="sheet-bg" data-act="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}" data-stop>
+    <div class="sheet-h"><h2>${esc(title)}</h2><button class="iconbtn" data-act="close" aria-label="Zatvori">${ICON.x}</button></div><div class="sheet-b">${body}</div></div></div>`;
+  if(sheet.type==="place"){
+    const cur = S.plan?.place;
+    return wrap("Gde treniraš danas?", `<div class="places">
+      <button class="place${cur==="in"?" on":""}" data-act="pickplace" data-g="in">${ICON.home}<b>Unutra</b><small>Tiho, na malo prostora pored stolice</small></button>
+      <button class="place${cur==="out"?" on":""}" data-act="pickplace" data-g="out">${ICON.tree}<b>Napolju</b><small>Skokovi i trčanje su dozvoljeni</small></button></div>`);
+  }
+  if(sheet.type==="detail"){
+    const e = exById(sheet.id); if(!e) return "";
+    const h = historyFor(sheet.id), pts = h.map(x=>maxV(x.it)), best = Math.max(0, ...pts), unit = isTimed(e) ? "s" : "";
+    const addBtn = S.plan && !focus && !S.plan.items.some(x=>x.ex===e.id)
+      ? (canAdd(e) ? `<button class="cta ghost wide" data-act="addthis" data-id="${esc(e.id)}">Dodaj u današnji trening</button>`
+        : `<p class="fine">${S.plan.place==="in" && e.place==="out" ? "Ova vežba je samo za napolju." : "Unutra može najviše jedan skok po treningu."}</p>`) : "";
+    return wrap(e.name, `<div class="fpic"><img src="${imgOf(e)}" alt="${esc(e.name)}"></div>
+      <p class="grp" style="margin:14px 0 0">${esc(CATS[e.cat]||"")}, ${PLACES[e.place].toLowerCase()}${e.jump?'<span class="tag j">skok</span>':""}</p>
+      <p class="how">${esc(e.desc || "Nema opisa.")} Početno: 3 × ${esc(amountLong(e, e.amount))}.</p>
+      <div class="stats sm"><div><b>${h.length}</b><span>puta</span></div><div><b>${h.length?best:"–"}</b><span>najviše ${isTimed(e)?"sekundi":"u seriji"}</span></div><div><b>${h.length?maxV(h[h.length-1].it):"–"}</b><span>poslednji put</span></div></div>
+      ${pts.length>1&&best>0?`<div class="chart">${spark(pts, unit)}</div>`:""}
+      <div class="list">${h.slice().reverse().map(x=>`<div class="row static"><span class="nm">${esc(sessionTitle(x.s))}<small>${esc(fmtDate(x.s.date))}</small></span><span class="m"><b>${esc(setSummary(x.it))}</b></span></div>`).join("") || `<p class="fine">Još nije urađena.</p>`}</div>
+      ${addBtn}`);
+  }
+  if(sheet.type==="pick"){
+    const q = (sheet.q||"").toLowerCase(), inPlan = new Set((S.plan?.items||[]).map(x=>x.ex));
+    const list = allExercises().filter(e=>!inPlan.has(e.id) && canAdd(e) && (!q || e.name.toLowerCase().includes(q)));
+    const note = S.plan?.place==="in" ? `<p class="fine">Unutra: samo tihe vežbe${planJumps()?", a skok je već u treningu":", najviše jedan skok"}.</p>` : "";
+    return wrap("Dodaj vežbu", `<input class="search" type="search" placeholder="Pretraži" data-f="pq" value="${esc(sheet.q||"")}" aria-label="Pretraži vežbe">${note}
+      <div class="list">${list.map(e=>`<button class="row" data-act="addthis" data-id="${esc(e.id)}"><img class="thumb" src="${imgOf(e)}" alt=""><span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}</small></span></button>`).join("")}</div>`);
+  }
+  if(sheet.type==="newex"){
+    const ch = (act, val, label) => `<button class="chip${sheet[act]===val?" on":""}" data-act="nx" data-k="${act}" data-g="${val}">${label}</button>`;
+    return wrap("Nova vežba", `<input id="nx-name" class="search" placeholder="Naziv vežbe" aria-label="Naziv vežbe" value="${esc(sheet.name||"")}">
+      <div class="flabel">Grupa</div><div class="chips wrap">${ORDER.map(g=>ch("cat", g, CATS[g])).join("")}</div>
+      <div class="flabel">Kako se meri</div><div class="chips wrap">${ch("kind","reps","Ponavljanja")}${ch("kind","sec","Sekunde")}</div>
+      <div class="flabel">Gde</div><div class="chips wrap">${ch("place","in","Unutra (tiho)")}${ch("place","out","Samo napolju")}</div>
+      <div class="flabel">Da li je skok ili trčanje?</div><div class="chips wrap">${ch("jump","no","Ne")}${ch("jump","yes","Da")}</div>
+      <button class="cta wide" data-act="nxsave">Sačuvaj vežbu</button>`);
+  }
+  return "";
+}
+function spark(pts, unit){
+  const Wd=320, H=110, p=8, mx=Math.max(...pts), mn=Math.min(...pts.filter(x=>x>0), mx), span=(mx-mn)||1;
+  const xy = pts.map((v,i)=>[p+i*(Wd-2*p)/(pts.length-1), H-p-((v-mn)/span)*(H-2*p)]);
+  return `<svg viewBox="0 0 ${Wd} ${H}" role="img" aria-label="Najbolje po treningu, od ${mn} do ${mx} ${unit}"><polyline fill="none" stroke="var(--neon)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${xy.map(a=>a.join(",")).join(" ")}"/>${xy.map(a=>`<circle cx="${a[0]}" cy="${a[1]}" r="3" fill="var(--neon)"/>`).join("")}<text x="${Wd-p}" y="14" text-anchor="end" font-size="12" fill="var(--mut)">${mx} ${unit}</text></svg>`;
+}
+function render(keepScroll=true){
+  const y = window.scrollY;
+  if(focus && (!S.plan || !S.plan.items[focus.i])) focus = null;
+  document.body.classList.toggle("focusing", !!focus);
+  $app.innerHTML = (focus ? viewFocus() : tab==="danas" ? viewToday() : tab==="vezbe" ? viewExercises() : viewHistory()) + viewSheet();
+  document.querySelectorAll(".nav button").forEach(b=>b.setAttribute("aria-current", b.dataset.tab===tab ? "page" : "false"));
+  if(keepScroll) window.scrollTo(0, y);
+}
+
+/* ---------- events ---------- */
+function openFocus(i){ focus = {i}; selSet = null; howOpen = false; render(false); window.scrollTo(0,0); }
+function nextPending(){ const items = S.plan.items; const k = items.findIndex((x,n)=>n>focus.i && !itemState(x).all); return k>=0 ? k : items.findIndex(x=>!itemState(x).all); }
+document.querySelector(".nav").addEventListener("click", e=>{
+  const b = e.target.closest("button[data-tab]"); if(!b) return;
+  tab = b.dataset.tab; sheet = null; focus = null; render(false); window.scrollTo(0,0);
+  try{ history.replaceState(null, "", "#"+tab); }catch(_){}
+});
+$app.addEventListener("input", e=>{
+  const t = e.target, f = t.dataset.f;
+  if(f==="v" && S.plan){ const v = t.value.replace(/\D/g,""); S.plan.items[+t.dataset.i].sets[+t.dataset.j].v = v; persistPlan(); }
+  else if(f==="q"){ query = t.value; const pos = t.selectionStart; render(); const n = $app.querySelector('[data-f="q"]'); n.focus(); n.setSelectionRange(pos,pos); }
+  else if(f==="pq"){ sheet.q = t.value; const pos = t.selectionStart; render(); const n = $app.querySelector('[data-f="pq"]'); n.focus(); n.setSelectionRange(pos,pos); }
+});
+// keep typed values inside the limits (max 15 reps, max 60 seconds)
+$app.addEventListener("change", e=>{
+  const t = e.target; if(t.dataset.f!=="v" || !S.plan) return;
+  const it = S.plan.items[+t.dataset.i], ex = exById(it.ex), s = it.sets[+t.dataset.j];
+  const v = clampV(ex, s.v); if(String(v)!==String(s.v)){ s.v = v; persistPlan(); render(); toast(isTimed(ex) ? `Najviše ${MAX_SEC} sekundi` : `Najviše ${MAX_REPS} ponavljanja`); }
+});
+$app.addEventListener("focusin", e=>{ if(e.target.classList?.contains("big")) e.target.select(); });
+$app.addEventListener("click", e=>{
+  const b = e.target.closest("[data-act]"); if(!b) return;
+  if(b.dataset.act==="close" && e.target.closest("[data-stop]") && !e.target.closest("button[data-act='close']")) return;
+  const a = b.dataset.act, i = +b.dataset.i, j = +b.dataset.j;
+  switch(a){
+    case "gen": case "place": sheet = {type:"place"}; render(); break;
+    case "pickplace": {
+      if(S.plan && S.plan.items.some(it=>it.sets.some(s=>s.done)) && !confirm("Napraviti novi trening i izgubiti označene serije?")) return;
+      sheet = null; generate(b.dataset.g); render(false); break; }
+    case "regen":
+      if(S.plan.items.some(it=>it.sets.some(s=>s.done)) && !confirm("Promešati i izgubiti označene serije?")) return;
+      generate(S.plan.place); render(false); toast("Novi raspored vežbi"); break;
+    case "open": openFocus(i); break;
+    case "start": { const k = S.plan.items.findIndex(x=>!itemState(x).all); openFocus(k<0 ? 0 : k); break; }
+    case "back": focus = null; render(false); window.scrollTo(0,0); break;
+    case "jump": focus.i = i; selSet = null; howOpen = false; render(false); break;
+    case "sel": selSet = j; render(); break;
+    case "howtoggle": howOpen = !howOpen; render(); break;
+    case "nudge": {
+      const it = S.plan.items[focus.i], ex = exById(it.ex), s = it.sets[selSet], d = +b.dataset.d;
+      const before = clampV(ex, s.v); s.v = clampV(ex, before + d*(isTimed(ex) ? 5 : 1));
+      if(s.v===before && d>0) toast(isTimed(ex) ? `Najviše ${MAX_SEC} sekundi` : `Najviše ${MAX_REPS} ponavljanja`);
+      persistPlan(); render(); break; }
+    case "complete": { const it = S.plan.items[focus.i]; it.sets[selSet].v = clampV(exById(it.ex), it.sets[selSet].v); completeAt(focus.i, selSet); render(false); window.scrollTo(0,0); break; }
+    case "hold": {
+      unlockAudio(); const it = S.plan.items[focus.i], ex = exById(it.ex), s = it.sets[selSet];
+      s.v = clampV(ex, s.v); const sides = ex.side ? 2 : 1, ms = s.v*1000;
+      rest = null; hold = {start:Date.now(), side:ms, total:ms*sides, sides, switched:false, i:focus.i, j:selSet, label:ex.side==="po strani" ? "strana" : "noga"};
+      holdWake(); persistPlan(); render(); break; }
+    case "holdstop": if(hold){ const h = hold; hold = null; completeAt(h.i, h.j, false); render(false); } break;
+    case "holdcancel": hold = null; releaseWake(); render(); break;
+    case "restskip": if(rest){ rest.over = true; releaseWake(); render(); } break;
+    case "rest30": if(rest && !rest.over){ rest.end += 30000; rest.total += 30000; tickRest(); } break;
+    case "restgo": rest = null; render(); break;
+    case "mute": S.settings.mute = !S.settings.mute; persistSettings(); if(document.getElementById("ctaBox")) document.getElementById("ctaBox").innerHTML = restHTML(); break;
+    case "undo": S.plan.items[focus.i].sets[selSet].done = false; persistPlan(); render(); break;
+    case "addset": { const it = S.plan.items[i], l = it.sets[it.sets.length-1]; it.sets.push({v:l.v, done:false}); persistPlan(); render(); break; }
+    case "delsetj": if(S.plan.items[i].sets.length>3 && j>=3){ S.plan.items[i].sets.splice(j,1); if(selSet>=S.plan.items[i].sets.length) selSet = null; persistPlan(); render(); } break;
+    case "swap": swap(i); selSet = null; howOpen = false; break;
+    case "removefocus": if(confirm("Ukloniti ovu vežbu iz današnjeg treninga?")){ S.plan.items.splice(i,1); persistPlan(); if(!S.plan.items.length){ focus = null; } else { focus.i = Math.min(i, S.plan.items.length-1); selSet = null; } render(false); } break;
+    case "add": sheet = {type:"pick", q:""}; render(); break;
+    case "addthis": {
+      const ex = exById(b.dataset.id); if(!ex) return;
+      if(!S.plan) return toast("Prvo napravi trening");
+      if(!canAdd(ex)) return toast("Unutra može najviše jedan skok po treningu");
+      S.plan.items.push(buildItem(ex.id)); persistPlan(); sheet = null; focus = null; tab = "danas"; render(false); toast("Dodato u današnji trening"); break; }
+    case "detail": sheet = {type:"detail", id:b.dataset.id}; render(); break;
+    case "close": sheet = null; render(); break;
+    case "discard": if(confirm("Odbaciti današnji trening?")){ S.plan = null; rest = null; hold = null; releaseWake(); persistPlan(); render(false); } break;
+    case "finish": finish(); break;
+    case "fg": filterCat = b.dataset.g; render(); break;
+    case "fp": filterPlace = b.dataset.g; render(); break;
+    case "cnt": S.settings.count = clampCount(S.settings.count + +b.dataset.d); persistSettings(); render(); break;
+    case "delsess": if(confirm("Obrisati ovaj trening iz istorije?")){ const id = b.dataset.id; S.sessions = S.sessions.filter(s=>s.id!==id); saveLocal(); render(); } break;
+    case "newex": sheet = {type:"newex", name:"", cat:"noge", kind:"reps", place:"in", jump:"no"}; render(); setTimeout(()=>document.getElementById("nx-name")?.focus(), 50); break;
+    case "nx": {
+      sheet.name = document.getElementById("nx-name").value;
+      const k = b.dataset.k; sheet[k] = b.dataset.g;
+      if(k==="cat" && b.dataset.g==="skokovi") sheet.jump = "yes";
+      render(); break; }
+    case "nxsave": {
+      const nm = document.getElementById("nx-name").value.trim(); if(!nm) return toast("Prvo upiši naziv");
+      const kind = sheet.kind, jump = sheet.jump==="yes" || sheet.cat==="skokovi";
+      S.custom.push({id:"c"+Date.now(), name:nm, cat:sheet.cat, type:kind, amount:kind==="sec" ? 20 : 10, place:sheet.place, jump, desc:""});
+      persistSettings(); sheet = null; render(); toast("Vežba je sačuvana"); break; }
+    case "export": exportBackup(); break;
+    case "import": document.getElementById("restore").click(); break;
+  }
+});
+// swipe between exercises in focus mode
+let tx = null, ty = null;
+$app.addEventListener("touchstart", e=>{ if(!focus || e.target.closest("input,button")){ tx = null; return; } tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
+$app.addEventListener("touchend", e=>{
+  if(tx===null || !focus) return;
+  const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null;
+  if(Math.abs(dx)>70 && Math.abs(dx)>Math.abs(dy)*1.5){
+    const n = S.plan.items.length, k = focus.i + (dx<0 ? 1 : -1);
+    if(k>=0 && k<n){ focus.i = k; selSet = null; howOpen = false; render(false); }
+  }
+});
+
+function finish(){
+  const items = S.plan.items.map(it=>({ex:it.ex, sets:it.sets.filter(s=>s.done).map(s=>({v:+s.v||0}))})).filter(it=>it.sets.length);
+  if(!items.length) return toast("Prvo završi bar jednu seriju");
+  const s = {id:Date.now().toString(36), date:new Date().toISOString(), place:S.plan.place, items};
+  S.sessions.push(s); S.plan = null; focus = null; rest = null; hold = null; releaseWake(); tab = "danas"; persistPlan();
+  render(false); window.scrollTo(0,0); toast(`Bravo! Trening ${S.sessions.length} je sačuvan`);
+}
+async function exportBackup(){
+  const data = JSON.stringify({app:"trening-za-decu", version:1, sessions:S.sessions, custom:S.custom, settings:S.settings}, null, 1);
+  const name = "trening-kopija-" + new Date().toISOString().slice(0,10) + ".json";
+  try{
+    const file = new File([data], name, {type:"application/json"});
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:"Rezervna kopija treninga"}); return; }
+  }catch(err){ if(err && err.name==="AbortError") return; }
+  const url = URL.createObjectURL(new Blob([data], {type:"application/json"}));
+  const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000); toast("Rezervna kopija je sačuvana");
+}
+document.getElementById("restore").addEventListener("change", async e=>{
+  const f = e.target.files[0]; if(!f) return;
+  try{
+    const v = JSON.parse(await f.text());
+    if(v.app!=="trening-za-decu") throw 0;
+    const have = new Set(S.sessions.map(s=>s.id)); let added = 0;
+    for(const s of v.sessions||[]) if(!have.has(s.id)){ S.sessions.push(s); added++; }
+    (v.custom||[]).forEach(c=>{ if(!S.custom.find(x=>x.id===c.id)) S.custom.push(c); });
+    if(v.settings) S.settings = Object.assign(S.settings, v.settings, {count:clampCount(v.settings.count)});
+    saveLocal(); render(); toast(added ? `Vraćeno treninga: ${added}` : "U toj kopiji nema ničeg novog");
+  }catch(_){ toast("Taj fajl nije rezervna kopija treninga"); }
+  e.target.value = "";
+});
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && sheet){ sheet = null; render(); } });
+
+/* ---------- rest timer and countdown ---------- */
+const REST_MS = 60000;
+const fmtT = ms => { const s = Math.max(0, Math.ceil(ms/1000)); return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0"); };
+function restHTML(){
+  if(!rest) return "";
+  const nextSet = (selSet ?? 0) + 1;
+  if(rest.over) return `<button class="cta go" data-act="restgo">Kreni sa serijom ${nextSet}</button>`;
+  const left = rest.end - Date.now(), m = !!S.settings.mute;
+  const icon = m ? '<svg viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg>';
+  return `<div class="rest" role="timer" aria-label="Odmor pre serije ${nextSet}">
+    <div class="rest-top"><span class="rest-l">Odmor pre serije ${nextSet}</span><span class="rest-t" id="restT">${fmtT(left)}</span></div>
+    <div class="rest-line"><i id="restL" style="transform:scaleX(${Math.max(0,left/rest.total).toFixed(3)})"></i></div>
+    <div class="rest-b"><button class="link mute" data-act="mute" aria-pressed="${!m}">${icon}${m?"Zvuk isključen":"Zvuk uključen"}</button><span class="sp"></span><button class="link" data-act="rest30">+30 s</button><button class="link" data-act="restskip">Preskoči</button></div></div>`;
+}
+function unlockAudio(){
+  try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==="suspended") actx.resume(); }catch(_){}
+}
+// one low, soft ding
+function ding(){
+  if(S.settings.mute || !actx) return;
+  try{
+    const t = actx.currentTime, out = actx.createGain(); out.gain.value = .55; out.connect(actx.destination);
+    [[392,1,2.2],[784,.28,1.2],[1082,.12,.7]].forEach(([f,v,dur])=>{
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+.008); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t+dur+.05);
+    });
+  }catch(_){}
+}
+const buzz = () => { try{ navigator.vibrate && navigator.vibrate([250,120,250]); }catch(_){} };
+async function holdWake(){ try{ if("wakeLock" in navigator && !wakeLock){ wakeLock = await navigator.wakeLock.request("screen"); wakeLock.addEventListener?.("release", ()=>{ wakeLock = null; }); } }catch(_){ wakeLock = null; } }
+function releaseWake(){ try{ wakeLock?.release(); }catch(_){} wakeLock = null; }
+function startRest(){ unlockAudio(); rest = {end:Date.now()+REST_MS, total:REST_MS, over:false}; holdWake(); }
+function restOver(){
+  rest.over = true; releaseWake(); ding(); buzz();
+  const box = document.getElementById("ctaBox");
+  if(focus && box) box.innerHTML = restHTML();
+  else toast("Odmor je gotov. Vreme je za sledeću seriju");
+}
+function completeAt(i, j, carry=true){
+  const it = S.plan.items[i]; if(!it || !it.sets[j]) return;
+  const cs = it.sets[j]; cs.done = true;
+  if(carry) it.sets.forEach((x,k)=>{ if(k>j && !x.done) x.v = cs.v; });
+  if(focus && focus.i===i){
+    const nx = it.sets.findIndex(s=>!s.done);
+    if(nx>=0) selSet = nx;
+    else { const k = nextPending(); if(k>=0 && k!==focus.i){ focus.i = k; selSet = null; howOpen = false; toast("Sledeća vežba"); } }
+  }
+  persistPlan();
+  if(!S.plan.items.every(x=>itemState(x).all)) startRest();
+}
+function holdState(){
+  const el = Date.now() - hold.start, sideIdx = Math.min(hold.sides-1, Math.floor(el / hold.side));
+  const left = hold.sides>1 ? (sideIdx+1)*hold.side - el : hold.total - el;
+  const label = hold.sides>1 ? (sideIdx===0 ? `Prva ${hold.label}` : `Druga ${hold.label}`) : `Drži, serija ${hold.j+1}`;
+  return {el, sideIdx, left, label};
+}
+function holdHTML(){
+  const h = holdState();
+  return `<div class="rest hold" role="timer" aria-label="${esc(h.label)}">
+    <div class="rest-top"><span class="rest-l" id="holdN">${esc(h.label)}</span><span class="rest-t" id="holdT">${fmtT(h.left)}</span></div>
+    <div class="rest-line"><i id="holdL" style="transform:scaleX(${Math.max(0,h.left/hold.side).toFixed(3)})"></i></div>
+    <div class="rest-b"><button class="link danger" data-act="holdcancel">Otkaži</button><span class="sp"></span><button class="link" data-act="holdstop">Gotovo ranije</button></div></div>`;
+}
+function tickHold(){
+  if(!hold) return;
+  const h = holdState();
+  if(h.el >= hold.total){
+    const x = hold; hold = null; ding(); buzz();
+    completeAt(x.i, x.j);
+    if(focus) render(false); else toast("Serija je gotova");
+    return;
+  }
+  if(hold.sides>1 && h.sideIdx>0 && !hold.switched){ hold.switched = true; ding(); buzz(); toast(hold.label==="strana" ? "Promeni stranu!" : "Promeni nogu!"); }
+  const t = document.getElementById("holdT"), l = document.getElementById("holdL"), nm = document.getElementById("holdN");
+  if(t) t.textContent = fmtT(h.left);
+  if(nm) nm.textContent = h.label;
+  if(l) l.style.transform = `scaleX(${(h.left/hold.side).toFixed(3)})`;
+}
+function tickRest(){
+  tickHold();
+  if(!rest || rest.over) return;
+  const left = rest.end - Date.now();
+  if(left<=0) return restOver();
+  const t = document.getElementById("restT"), l = document.getElementById("restL");
+  if(t) t.textContent = fmtT(left);
+  if(l) l.style.transform = `scaleX(${(left/rest.total).toFixed(3)})`;
+}
+setInterval(tickRest, 250);
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ tickRest(); if((rest && !rest.over) || hold) holdWake(); } });
+
+/* ---------- start ---------- */
+loadLocal();
+const h0 = location.hash.slice(1); if(["danas","vezbe","istorija"].includes(h0)) tab = h0;
+render();
+if("serviceWorker" in navigator){ window.addEventListener("load", ()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
+</script>
+</body>
+</html>
