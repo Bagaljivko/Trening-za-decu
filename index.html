@@ -13,10 +13,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Trening">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* Inter (variable, all weights in one file), self-hosted. Licence: fonts/OFL.txt */
+@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:100 900;src:url(fonts/inter-latin-ext-wght-normal.woff2) format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:100 900;src:url(fonts/inter-latin-wght-normal.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   --bg:#F5F5F7; --s1:#FFFFFF; --s2:#E8E8ED; --line:#DCDCE1; --ink:#0B0B0D; --mut:#6E6E73; --dim:#B4B4BA;
   --neon:#1FD873; --neon-ink:#00140A; --neon-txt:#0E9F50; --neon-d:#CFEFDC; --red:#E5372B; --warn:#FFF4D6; --warn-ink:#6B4E00; --glow:none;
@@ -155,7 +158,7 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0}
 .last b{color:var(--ink);font-weight:500}
 .last .up{color:var(--neon-txt);font-weight:600}
 .tools{display:flex;gap:4px 24px;margin:14px 0 0;flex-wrap:wrap}
-.fdock{position:sticky;bottom:0;padding:16px 24px calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to bottom,transparent,var(--bg) 30%)}
+.fdock{position:sticky;bottom:0;padding:18px 24px calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(to bottom,transparent,var(--bg) 14px)}
 .rest{border:1px solid var(--line);background:var(--s1);border-radius:26px;padding:14px 20px 8px}
 .rest-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
 .rest-l{font-size:15px;color:var(--mut);font-weight:600}
@@ -164,8 +167,8 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0}
 .rest-line i{display:block;height:100%;background:var(--neon);transform-origin:left;filter:var(--glow)}
 .rest-b{display:flex;align-items:center;gap:22px}
 .rest-b .sp{flex:1}
-.rest-b .mute{display:flex;align-items:center;gap:6px}
-.rest-b .mute svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mute{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.mute svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cta.go{animation:go 1.2s ease-in-out infinite}
 @keyframes go{50%{box-shadow:0 0 38px rgba(61,255,143,.65);transform:scale(1.015)}}
 @media (prefers-reduced-motion:reduce){.cta.go{animation:none}}
@@ -246,12 +249,67 @@ body.focusing .nav{display:none}
 :root[data-theme="dark"] .set.done{box-shadow:0 0 14px rgba(61,255,143,.4)}
 @media (prefers-reduced-motion:reduce){.sheet{animation:none}.mbar i{transition:none}}
 
+/* banner (backup reminder) */
+.banner{display:flex;align-items:center;gap:14px;margin:16px 24px 0;padding:12px 12px 12px 16px;border-radius:18px;border:1px solid var(--line);background:var(--s1);font-size:15px;color:var(--mut)}
+.banner span{flex:1}
+.banner button{flex:none;height:44px;padding:0 16px;border-radius:22px;background:var(--ink);color:var(--bg);font-weight:600;font-size:15px}
+.est{color:var(--mut)}
+/* harder version */
+.harder{display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px 12px 12px 16px;border-radius:18px;background:var(--neon-d);color:var(--ink);font-size:15px;line-height:1.35}
+.harder span{flex:1}
+.harder b{color:var(--neon-txt)}
+.harder button{flex:none;height:46px;padding:0 18px;border-radius:23px;background:var(--neon);color:var(--neon-ink);font-weight:700}
+/* get-ready countdown */
+.prep{border:1px solid var(--line);background:var(--s1);border-radius:26px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.prep b{font-size:20px}
+.prep .pn{font-size:64px;font-weight:200;line-height:1;color:var(--neon-txt);font-variant-numeric:tabular-nums}
+/* warm-up */
+.wu-name{font-size:31px;line-height:1.12;font-weight:700;letter-spacing:-.03em;margin:6px 0 0}
+.wu-desc{margin:10px 0 0;font-size:17px;color:var(--mut);line-height:1.45}
+.wu-t{font-size:96px;font-weight:200;letter-spacing:-.05em;line-height:1;margin-top:18px;font-variant-numeric:tabular-nums}
+.wu-list{list-style:none;margin:20px 0 0;padding:0;font-size:15px;color:var(--mut)}
+.wu-list li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.wu-list li.on{color:var(--ink);font-weight:600}
+.wu-list li.d{color:var(--dim);text-decoration:line-through}
+/* celebration */
+.party{position:fixed;inset:0;z-index:35;background:var(--bg);overflow-y:auto;padding:calc(36px + env(safe-area-inset-top,0px)) 24px calc(30px + env(safe-area-inset-bottom,0px));text-align:center}
+.party-in{max-width:520px;margin:0 auto;position:relative;z-index:1}
+.party h1{font-size:54px;margin:10px 0 0}
+.party .sub{color:var(--mut);margin-top:6px;font-size:17px}
+.party .stats{justify-content:center;margin:26px 0 0}
+.party .sec2{margin:30px 0 10px;font-size:14px;color:var(--mut);text-align:left}
+.rec{display:flex;align-items:center;gap:12px;text-align:left;padding:10px 0;border-bottom:1px solid var(--line)}
+.rec span{flex:1;font-weight:600}
+.rec b{color:var(--neon-txt);font-variant-numeric:tabular-nums}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:2px;opacity:.9;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+@media (prefers-reduced-motion:reduce){.confetti{display:none}}
+/* badges */
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:16px 10px;margin-top:12px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:12.5px;line-height:1.25;color:var(--mut)}
+.medal{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-size:20px;font-weight:800;letter-spacing:-.02em;border:2px dashed var(--dim);color:var(--dim)}
+.badge.on{color:var(--ink)}
+.badge.on .medal{border:0;background:var(--neon);color:var(--neon-ink);box-shadow:0 0 18px rgba(61,255,143,.35)}
+.party .badges{margin-top:8px}
+/* parents */
+.bars{margin-top:12px}
+.bar{display:flex;align-items:center;gap:12px;font-size:14.5px;margin:8px 0}
+.bar span{width:150px;color:var(--mut)}
+.bar div{flex:1;height:10px;border-radius:5px;background:var(--s2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--neon);border-radius:5px}
+.bar b{width:34px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
+.sub-h{font-size:15px;font-weight:600;margin:24px 0 0}
+
 /* tablets */
 @media (min-width:700px){
   body{font-size:18px}
   #app,.nav>div,.dock{max-width:760px}
   .pad,.pad2{padding-left:40px;padding-right:40px}
-  .list,.lead,.safety,.month,.stats,.weeks,.wl,.settings{margin-left:40px;margin-right:40px}
+  .list,.lead,.safety,.banner,.month,.stats,.weeks,.wl,.settings{margin-left:40px;margin-right:40px}
+  .party .stats{margin-left:0;margin-right:0}
+  .wu-name{font-size:42px}
+  .wu-t{font-size:120px}
   .dock{padding-left:40px;padding-right:40px}
   .chips{margin-left:-40px;margin-right:-40px;padding-left:40px;padding-right:40px}
   h1{font-size:44px}
@@ -307,30 +365,31 @@ body.focusing .nav{display:none}
    type: "reps" (ponavljanja) or "sec" (sekundi); amount: default per set
    place: "in" = works inside (quiet, small space next to a chair), "out" = outside only
    jump: true for jumping or running exercises; side: amount is per leg / per side
-   fam: exercises from the same family are not picked twice in one workout */
+   fam: exercises from the same family are not picked twice in one workout
+   next: the harder version to move on to once this one is easy */
 const EX = [
   // unutra – noge
   {id:"cucanj", name:"Čučanj", cat:"noge", type:"reps", amount:12, place:"in", jump:false, desc:"Stopala u širini ramena, spusti se kao da sedaš, leđa prava, pa ustani."},
   {id:"iskorak-unazad", name:"Iskorak unazad", cat:"noge", type:"reps", amount:8, side:"po nozi", place:"in", jump:false, desc:"Korakni jednom nogom unazad i spusti koleno ka podu, pa se vrati."},
   {id:"bocni-iskorak", name:"Bočni iskorak", cat:"noge", type:"reps", amount:8, side:"po strani", place:"in", jump:false, desc:"Široki korak u stranu, savij tu nogu, druga ostaje prava."},
   {id:"zid-sed", name:"Zid-sed", cat:"noge", type:"sec", amount:30, place:"in", jump:false, desc:"Leđa uz zid, kolena pod pravim uglom, kao da sediš na nevidljivoj stolici."},
-  {id:"most", name:"Most", cat:"noge", type:"reps", amount:12, place:"in", jump:false, fam:"most", desc:"Lezi na leđa, kolena savijena, podigni kukove i stisni zadnjicu."},
+  {id:"most", next:"most-jedna-noga", name:"Most", cat:"noge", type:"reps", amount:12, place:"in", jump:false, fam:"most", desc:"Lezi na leđa, kolena savijena, podigni kukove i stisni zadnjicu."},
   {id:"most-jedna-noga", name:"Most na jednoj nozi", cat:"noge", type:"reps", amount:8, side:"po nozi", place:"in", jump:false, fam:"most", desc:"Kao most, ali je jedna noga ispružena u vazduhu."},
   {id:"podizanje-na-prste", name:"Podizanje na prste", cat:"noge", type:"reps", amount:15, place:"in", jump:false, desc:"Stani i polako se podigni na prste, pa spusti."},
   {id:"odbrambeni-korak", name:"Odbrambeni korak", cat:"noge", type:"sec", amount:30, place:"in", jump:false, desc:"Nisko u čučnju, mali brzi koraci u stranu, bez skakanja."},
   // unutra – ruke i stolica
   {id:"sklekovi", name:"Sklekovi", cat:"ruke", type:"reps", amount:8, place:"in", jump:false, fam:"sklek", desc:"Telo pravo kao daska, spusti grudi ka podu, pa se odgurni."},
-  {id:"sklekovi-kolena", name:"Sklekovi na kolenima", cat:"ruke", type:"reps", amount:10, place:"in", jump:false, fam:"sklek", desc:"Isto kao sklekovi, ali se oslanjaš na kolena."},
-  {id:"sklekovi-stolica", name:"Sklekovi na stolici", cat:"ruke", type:"reps", amount:10, place:"in", jump:false, chair:true, fam:"sklek", desc:"Ruke na sedištu stabilne stolice, telo pravo. Spusti grudi ka sedištu, pa se odgurni."},
+  {id:"sklekovi-kolena", next:"sklekovi", name:"Sklekovi na kolenima", cat:"ruke", type:"reps", amount:10, place:"in", jump:false, fam:"sklek", desc:"Isto kao sklekovi, ali se oslanjaš na kolena."},
+  {id:"sklekovi-stolica", next:"sklekovi-kolena", name:"Sklekovi na stolici", cat:"ruke", type:"reps", amount:10, place:"in", jump:false, chair:true, fam:"sklek", desc:"Ruke na sedištu stabilne stolice, telo pravo. Spusti grudi ka sedištu, pa se odgurni."},
   {id:"propadanja-stolica", name:"Propadanja na stolici", cat:"ruke", type:"reps", amount:10, place:"in", jump:false, chair:true, desc:"Za triceps. Leđima okrenut stolici, ruke na ivici sedišta. Savij laktove unazad i spusti se, pa se podigni."},
-  {id:"sklekovi-zid", name:"Sklekovi uz zid", cat:"ruke", type:"reps", amount:12, place:"in", jump:false, fam:"sklek", desc:"Ruke na zidu, spuštaj grudi ka zidu, pa se odgurni."},
+  {id:"sklekovi-zid", next:"sklekovi-stolica", name:"Sklekovi uz zid", cat:"ruke", type:"reps", amount:12, place:"in", jump:false, fam:"sklek", desc:"Ruke na zidu, spuštaj grudi ka zidu, pa se odgurni."},
   // unutra – stomak
-  {id:"plank", name:"Plank", cat:"stomak", type:"sec", amount:30, place:"in", jump:false, desc:"Na podlakticama i prstima, telo pravo."},
+  {id:"plank", next:"plank-dodir-ramena", name:"Plank", cat:"stomak", type:"sec", amount:30, place:"in", jump:false, desc:"Na podlakticama i prstima, telo pravo."},
   {id:"bocni-plank", name:"Bočni plank", cat:"stomak", type:"sec", amount:20, side:"po strani", place:"in", jump:false, desc:"Na jednoj podlaktici, telo u pravoj liniji."},
   {id:"plank-dodir-ramena", name:"Plank sa dodirom ramena", cat:"stomak", type:"reps", amount:12, unit:"dodir", place:"in", jump:false, desc:"U položaju za sklek, naizmenično dodiruj suprotno rame."},
   {id:"mrtva-buba", name:"Mrtva buba", cat:"stomak", type:"reps", amount:10, place:"in", jump:false, desc:"Na leđima, ruke i noge gore. Spuštaj suprotnu ruku i nogu, pa zameni."},
   {id:"supermen", name:"Supermen", cat:"stomak", type:"sec", amount:20, place:"in", jump:false, desc:"Na stomaku, podigni ruke i noge od poda i drži."},
-  {id:"penjac-polako", name:"Penjač (polako)", cat:"stomak", type:"sec", amount:20, place:"in", jump:false, fam:"penjac", desc:"U položaju za sklek, naizmenično privlači kolena ka grudima."},
+  {id:"penjac-polako", next:"penjac-brzo", name:"Penjač (polako)", cat:"stomak", type:"sec", amount:20, place:"in", jump:false, fam:"penjac", desc:"U položaju za sklek, naizmenično privlači kolena ka grudima."},
   {id:"bicikl", name:"Bicikl", cat:"stomak", type:"reps", amount:14, place:"in", jump:false, desc:"Na leđima, lakat ka suprotnom kolenu, naizmenično."},
   // unutra – životinjski pokreti
   {id:"medvedje-puzanje", name:"Medveđe puzanje", cat:"zivotinje", type:"sec", amount:20, place:"in", jump:false, desc:"Na rukama i stopalima, kolena malo iznad poda, korak napred i nazad."},
@@ -341,7 +400,7 @@ const EX = [
   {id:"avion", name:"Avion", cat:"ravnoteza", type:"sec", amount:20, side:"po nozi", place:"in", jump:false, desc:"Na jednoj nozi, nagni se napred, druga noga i ruke ispružene."},
   // unutra – tihi skok (najviše jedan po treningu)
   {id:"mekani-poskoci", name:"Mekani poskoci", cat:"skokovi", type:"sec", amount:20, place:"in", jump:true, desc:"Mali poskoci na prstima, doskok tih i mekan."},
-  {id:"tihi-cucanj-skok", name:"Tihi čučanj sa skokom", cat:"skokovi", type:"reps", amount:6, place:"in", jump:true, fam:"cucanj-skok", desc:"Mali skok iz čučnja, doskok na prste i mekano."},
+  {id:"tihi-cucanj-skok", next:"cucanj-skok", name:"Tihi čučanj sa skokom", cat:"skokovi", type:"reps", amount:6, place:"in", jump:true, fam:"cucanj-skok", desc:"Mali skok iz čučnja, doskok na prste i mekano."},
   // napolju
   {id:"cucanj-skok", name:"Čučanj sa skokom", cat:"skokovi", type:"reps", amount:10, place:"out", jump:true, fam:"cucanj-skok", desc:"Iz čučnja skoči što više."},
   {id:"zvezdasti-skokovi", name:"Zvezdasti skokovi", cat:"skokovi", type:"reps", amount:10, place:"out", jump:true, desc:"Skoči i raširi ruke i noge kao zvezda."},
@@ -355,6 +414,24 @@ const EX = [
   {id:"penjac-brzo", name:"Penjač (brzo)", cat:"stomak", type:"sec", amount:30, place:"out", jump:false, fam:"penjac", desc:"Brzo privlačenje kolena u položaju za sklek."},
 ];
 const EXMAP = Object.fromEntries(EX.map(e=>[e.id,e]));
+// short guided warm-up before the first exercise (about 2.5 minutes)
+const WARMUP = {
+  in: [
+    {name:"Marširanje u mestu", sec:40, img:"marsiranje", desc:"Podiži kolena visoko i maši rukama. Tiho, bez skakanja."},
+    {name:"Kruženje rukama", sec:30, img:"kruzenje-rukama", desc:"Ruke u stranu. Mali krugovi napred, pa veliki, pa nazad."},
+    {name:"Kruženje kukovima", sec:20, img:"kruzenje-kukovima", desc:"Ruke na kukovima, crtaj kukovima velike krugove."},
+    {name:"Zamasi nogama", sec:30, img:"zamasi-nogama", desc:"Drži se za zid ili stolicu i zamahuj nogom napred i nazad. Pola vremena svakom nogom."},
+    {name:"Laki čučnjevi", sec:30, img:"cucanj", desc:"Polako, do pola puta dole. Leđa prava."},
+  ],
+  out: [
+    {name:"Lagano trčanje", sec:45, img:"brza-stopala", desc:"Trči polako u mestu ili u krug. Treba da možeš da pričaš dok trčiš."},
+    {name:"Kruženje rukama", sec:30, img:"kruzenje-rukama", desc:"Ruke u stranu. Mali krugovi napred, pa veliki, pa nazad."},
+    {name:"Zamasi nogama", sec:30, img:"zamasi-nogama", desc:"Drži se za nešto i zamahuj nogom napred i nazad. Pola vremena svakom nogom."},
+    {name:"Laki čučnjevi", sec:30, img:"cucanj", desc:"Polako, do pola puta dole. Leđa prava."},
+    {name:"Mali poskoci", sec:20, img:"mekani-poskoci", desc:"Lagani poskoci na prstima."},
+  ],
+};
+const REST_CHOICES = [30, 45, 60, 90];
 const CATS = {noge:"Noge", ruke:"Ruke i stolica", stomak:"Stomak", zivotinje:"Životinjski pokreti", ravnoteza:"Ravnoteža", skokovi:"Skokovi i trčanje"};
 const ORDER = ["noge","ruke","stomak","zivotinje","ravnoteza","skokovi"];
 const PLACES = {in:"Unutra", out:"Napolju"};
@@ -364,14 +441,17 @@ const SAFETY = "Zagrej se pre treninga i koristi stabilnu stolicu koja ne klizi.
 const LOCALE = "sr-Latn-RS";
 const $app = document.getElementById("app");
 
-let S = {sessions:[], plan:null, settings:{count:7, mute:false}, custom:[], updated:0};
+let S = {sessions:[], plan:null, settings:{count:7, mute:false, restSet:60, restEx:45, backupAt:0, backupN:0}, custom:[], updated:0};
 let focus = null, selSet = null, howOpen = false;
 let rest = null, hold = null, actx = null, wakeLock = null;
 let tab = "danas", filterCat = "all", filterPlace = "all", query = "", sheet = null;
+let warm = null, party = null;   // warm-up in progress, end-of-workout celebration
 
 /* ---------- data ---------- */
 function loadLocal(){
+  const defaults = S.settings;
   try{ const raw = localStorage.getItem(LS_KEY); if(raw) S = Object.assign(S, JSON.parse(raw)); }catch(e){}
+  S.settings = Object.assign({}, defaults, S.settings);
   S.settings.count = clampCount(S.settings.count);
 }
 function saveLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
@@ -379,8 +459,13 @@ function persistPlan(){ S.updated = Date.now(); saveLocal(); }
 function persistSettings(){ saveLocal(); }
 const clampCount = n => Math.max(6, Math.min(8, +n || 7));
 function exById(id){ return EXMAP[id] || S.custom.find(x=>x.id===id) || null; }
-function allExercises(){ return EX.concat(S.custom); }
+function allExercises(){ return EX.concat(S.custom.filter(c=>!c.deleted)); }
 const imgOf = e => "images/" + (e && EXMAP[e.id] ? e.id : "nova-vezba") + ".svg";
+// large picture: moving version, unless the device asks for reduced motion
+function picHTML(slug, alt){
+  return `<picture><source media="(prefers-reduced-motion: no-preference)" srcset="images/anim/${slug}.svg"><img src="images/${slug}.svg" alt="${esc(alt)}"></picture>`;
+}
+const picOf = e => picHTML(e && EXMAP[e.id] ? e.id : "nova-vezba", e ? e.name : "");
 const isTimed = e => !!e && e.type === "sec";
 const allowed = (e, place) => place === "out" || e.place === "in";
 function sortedSessions(){ return S.sessions.slice().sort((a,b)=>a.date.localeCompare(b.date)); }
@@ -428,6 +513,22 @@ function suggestion(exId){
   }
   return {sets:Math.max(3, last.sets.length), v, last, up};
 }
+const capOf = e => isTimed(e) ? MAX_SEC : MAX_REPS;
+// at the top limit in the last two workouts: time for the harder version
+function mastered(exId){
+  const e = exById(exId), h = historyFor(exId);
+  return !!e && h.length >= 2 && h.slice(-2).every(x=>maxV(x.it) >= capOf(e));
+}
+function harderFor(exId, place){
+  let e = exById(exId), seen = 0;
+  while(e && e.next && seen++ < 5){
+    const n = exById(e.next);
+    if(n && (!place || allowed(n, place))) return n;
+    e = n;
+  }
+  return null;
+}
+function bestBefore(exId){ const h = historyFor(exId); return h.length ? Math.max(...h.map(x=>maxV(x.it))) : null; }
 function buildItem(exId){
   const sg = suggestion(exId);
   return {ex:exId, sets:Array.from({length:sg.sets}, ()=>({v:sg.v, done:false}))};
@@ -464,8 +565,10 @@ function generate(place){
         const gap = Math.min(n - (lastIdx[e.id] ?? -30), 30);
         return {e, s: gap * (0.5 + Math.random()) * (e.chair ? 1.3 : 1)};
       }).sort((a,b)=>b.s-a.s)[0].e;
-      ids.add(best.id); if(best.fam) fams.add(best.fam); chosen.push(best);
-      return best;
+      let use = best;
+      if(mastered(best.id)){ const n = harderFor(best.id, place); if(n && !ids.has(n.id) && test(n)) use = n; }
+      ids.add(use.id); if(use.fam) fams.add(use.fam); chosen.push(use);
+      return use;
     }
     return null;
   }
@@ -486,6 +589,18 @@ function generate(place){
 
   S.plan = {created:new Date().toISOString(), place, items:out.map(e=>buildItem(e.id))};
   persistPlan();
+}
+// rough length of a workout in minutes
+function estMin(plan){
+  let sec = plan.warmed ? 0 : 150, sets = 0;
+  plan.items.forEach(it=>{
+    const e = exById(it.ex) || {type:"reps"}, sides = e.side ? 2 : 1;
+    it.sets.forEach(st=>{ const v = +st.v || e.amount || 10;
+      sec += isTimed(e) ? v*sides + 4 : (e.unit==="put" ? v*12 : v*3.5*sides); sets++; });
+    sec += (it.sets.length-1) * S.settings.restSet;
+  });
+  sec += Math.max(0, plan.items.length-1) * S.settings.restEx;
+  return Math.max(5, Math.round(sec/60/5)*5);
 }
 const planJumps = () => (S.plan?.items||[]).filter(it=>exById(it.ex)?.jump).length;
 function canAdd(e){
@@ -572,7 +687,9 @@ function viewToday(){
   const num = S.sessions.length + 1;
   const head = `<header class="pad"><div class="eyebrow">${esc(longDate())}</div><h1>Trening ${num}</h1></header>`;
   if(!S.plan || !S.plan.items.length){
-    return head + heroBlock() + safetyBlock() + `<p class="lead">${S.sessions.length ? "Svaki trening je nov: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu." : "Napravi prvi trening: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu."}</p>
+    const n = S.sessions.length, needBackup = n >= 3 && (n - (S.settings.backupN||0) >= 8 || !S.settings.backupAt);
+    const banner = needBackup ? `<div class="banner"><span>Sačuvaj rezervnu kopiju treninga, da se ništa ne izgubi.</span><button data-act="backup">Sačuvaj</button></div>` : "";
+    return head + heroBlock() + safetyBlock() + banner + `<p class="lead">${S.sessions.length ? "Svaki trening je nov: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu." : "Napravi prvi trening: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu."}</p>
       <div class="dock"><button class="cta" data-act="gen">Napravi trening</button></div>`;
   }
   const items = S.plan.items;
@@ -583,7 +700,7 @@ function viewToday(){
     return `<button class="row${st.all?" done":""}" data-act="open" data-i="${i}"><span class="n">${i+1}</span><img class="thumb" src="${imgOf(e)}" alt=""><span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}${e.side?", "+esc(e.side):""}</small></span><span class="m">${meta}</span></button>`; }).join("");
   const cta = allDone ? `<button class="cta" data-act="finish">Završi trening</button>` : `<button class="cta" data-act="start">${anyDone ? "Nastavi trening" : "Počni trening"}</button>`;
   return head + heroBlock() + safetyBlock() + `<section class="list">
-      <div class="sec"><span>Danas, ${PLACES[S.plan.place].toLowerCase()}</span><span class="lnks"><button class="link" data-act="place">Promeni mesto</button><button class="link" data-act="regen">Promešaj</button></span></div>${rows}
+      <div class="sec"><span>Danas, ${PLACES[S.plan.place].toLowerCase()} <span class="est">· ≈ ${estMin(S.plan)} min</span></span><span class="lnks"><button class="link" data-act="place">Promeni mesto</button><button class="link" data-act="regen">Promešaj</button></span></div>${rows}
       <div class="list-foot"><button class="link" data-act="add">Dodaj vežbu</button>${anyDone&&!allDone?`<button class="link" data-act="finish">Završi sada</button>`:""}<button class="link danger" data-act="discard">Odbaci</button></div>
     </section><div class="dock">${cta}</div>`;
 }
@@ -610,7 +727,7 @@ function viewFocus(){
   return `<div class="focus" data-swipe>
     <div class="ftop"><button class="iconbtn" data-act="back" aria-label="Nazad na današnji trening">${ICON.x}</button><div class="segs">${segs}</div><span class="cnt">${i+1}/${items.length}</span></div>
     <div class="fmain">
-      <div class="fpic"><img src="${imgOf(e)}" alt="${esc(e.name)}"></div>
+      <div class="fpic">${picOf(e)}</div>
       <div class="fside">
         <div class="fbody">
           <div class="grp">${esc(CATS[e.cat]||"")}${e.jump?'<span class="tag j">skok</span>':""}</div>
@@ -619,10 +736,38 @@ function viewFocus(){
           <div class="num"><div class="val"><input class="big" inputmode="numeric" pattern="[0-9]*" data-f="v" data-i="${i}" data-j="${j}" value="${esc(s.v)}" aria-label="${timed?"Sekundi":"Ponavljanja"}"><div class="u">${esc(unitWord(e, +s.v))}${e.side?" "+esc(e.side):""}</div></div>
             <div class="step"><button data-act="nudge" data-d="-1" aria-label="Manje">−${step}</button><button data-act="nudge" data-d="1" aria-label="Više">+${step}</button></div></div>
           <div class="sets">${circles}</div>
+          ${harderBox(it)}
           <div class="last">${last}${sg.up?`<br><span class="up">Probaj danas ${esc(amountLong(e, sg.v))}</span>`:""}</div>
           <div class="tools"><button class="link" data-act="swap" data-i="${i}">Zameni vežbu</button><button class="link" data-act="detail" data-id="${esc(it.ex)}">Istorija</button><button class="link danger" data-act="removefocus" data-i="${i}">Ukloni</button></div>
         </div>
         <div class="fdock">${next&&!allDone?`<div class="next"><span>Sledeća</span><b>${esc(next)}</b></div>`:""}<div id="ctaBox">${cta}</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+function harderBox(it){
+  if(it.sets.some(x=>x.done) || !mastered(it.ex)) return "";
+  const n = harderFor(it.ex, S.plan.place); if(!n || S.plan.items.some(x=>x.ex===n.id)) return "";
+  return `<div class="harder"><span>Ovo ti je sad lako! Probaj težu verziju: <b>${esc(n.name)}</b></span><button data-act="harder">Probaj</button></div>`;
+}
+function viewWarm(){
+  const w = warm, m = w.list[w.i], left = w.end - Date.now();
+  const segs = w.list.map((x,k)=>`<span class="sg ${k<w.i?"d":""} ${k===w.i?"c":""}"></span>`).join("");
+  return `<div class="focus">
+    <div class="ftop"><button class="iconbtn" data-act="warmback" aria-label="Nazad">${ICON.x}</button><div class="segs">${segs}</div><span class="cnt">${w.i+1}/${w.list.length}</span></div>
+    <div class="fmain">
+      <div class="fpic">${picHTML(m.img, m.name)}</div>
+      <div class="fside">
+        <div class="fbody">
+          <div class="grp">Zagrevanje</div>
+          <div class="wu-name">${esc(m.name)}</div>
+          <p class="wu-desc">${esc(m.desc)}</p>
+          <div class="wu-t" id="warmT" role="timer">${fmtT(left)}</div>
+          <div class="rest-line"><i id="warmL" style="transform:scaleX(${Math.max(0,left/(m.sec*1000)).toFixed(3)})"></i></div>
+          <div class="tools">${muteBtn()}</div>
+        </div>
+        <div class="fdock"><button class="cta ghost" data-act="warmnext">${w.i+1<w.list.length ? "Sledeće: " + esc(w.list[w.i+1].name) : "Gotovo, na trening"}</button>
+          <div style="text-align:center"><button class="link" data-act="warmskip">Preskoči zagrevanje</button></div></div>
       </div>
     </div>
   </div>`;
@@ -659,10 +804,36 @@ function viewHistory(){
     <section class="list">${ss.map(s=>`<details class="sess"><summary><span><b>${esc(sessionTitle(s))}</b><small>${esc(fmtDate(s.date))}${s.place?", "+PLACES[s.place].toLowerCase():""}</small></span><span class="m">${s.items.length} ${pl(s.items.length, W.vezba)}</span></summary>
       <ul>${s.items.map(it=>`<li><span>${esc(exById(it.ex)?.name||"Nepoznata vežba")}</span><span>${esc(setSummary(it))}</span></li>`).join("")}</ul>
       <button class="link danger" data-act="delsess" data-id="${esc(s.id)}">Obriši ovaj trening</button></details>`).join("") || `<p class="lead" style="margin:0">Još nema treninga. Prvi je na kartici Danas.</p>`}</section>
+    ${badgesSection()}
+    ${parentsSection()}
     <section class="settings"><h2>Podešavanja</h2>
       <div class="srow"><span>Vežbi po treningu</span><div class="stepper"><button data-act="cnt" data-d="-1" aria-label="Manje">−</button><output>${S.settings.count}</output><button data-act="cnt" data-d="1" aria-label="Više">+</button></div></div>
+      <div class="srow"><span>Odmor između serija</span><div class="chips wrap" style="margin:0">${REST_CHOICES.map(v=>`<button class="chip${S.settings.restSet===v?" on":""}" data-act="rs" data-k="restSet" data-g="${v}">${v} s</button>`).join("")}</div></div>
+      <div class="srow"><span>Odmor pre sledeće vežbe</span><div class="chips wrap" style="margin:0">${REST_CHOICES.map(v=>`<button class="chip${S.settings.restEx===v?" on":""}" data-act="rs" data-k="restEx" data-g="${v}">${v} s</button>`).join("")}</div></div>
+      <div class="srow"><span>Zvuk</span>${muteBtn()}</div>
+      <p class="fine">Na iPhone-u i iPad-u zvuk se ne čuje kada je uključen nečujni režim (prekidač sa strane ili zvono u kontrolnom centru). Vibracija radi samo na Android telefonima.</p>
       <div class="srow"><button class="link" data-act="export">Sačuvaj rezervnu kopiju</button><button class="link" data-act="import">Vrati iz kopije</button></div>
       <p class="fine">Treninzi se čuvaju samo na ovom uređaju. S vremena na vreme sačuvaj rezervnu kopiju. Pomoću nje možeš da preneseš treninge na novi telefon ili tablet.</p></section>`;
+}
+function badgesSection(){
+  const got = earnedBadges();
+  return `<section class="settings"><h2>Medalje</h2><p class="fine" style="margin-top:6px">Osvojeno: ${got.size} od ${BADGES.length}</p>
+    <div class="badges">${BADGES.map(b=>badgeHTML(b, got.has(b.id))).join("")}</div></section>`;
+}
+function parentsSection(){
+  if(!S.sessions.length) return "";
+  const since = Date.now() - 30*864e5, recent = S.sessions.filter(s=>new Date(s.date) >= since);
+  const sets = {}; ORDER.forEach(c=>sets[c]=0);
+  recent.forEach(s=>s.items.forEach(it=>{ const e = exById(it.ex); if(e && sets[e.cat]!==undefined) sets[e.cat] += it.sets.length; }));
+  const mx = Math.max(1, ...Object.values(sets));
+  const main = ["noge","ruke","stomak","ravnoteza"], least = main.slice().sort((a,b)=>sets[a]-sets[b])[0];
+  const timed = S.sessions.filter(s=>s.min), avg = timed.length ? Math.round(timed.reduce((a,s)=>a+s.min,0)/timed.length) : null;
+  const inside = S.sessions.filter(s=>s.place==="in").length, outside = S.sessions.filter(s=>s.place==="out").length;
+  return `<section class="settings"><h2>Za roditelje</h2>
+    <div class="stats sm" style="margin-left:0"><div><b>${recent.length}</b><span>u 30 dana</span></div>${avg?`<div><b>${avg}</b><span>min u proseku</span></div>`:""}<div><b>${inside}/${outside}</b><span>unutra/napolju</span></div></div>
+    <div class="sub-h">Serije po grupama, poslednjih 30 dana</div>
+    <div class="bars">${ORDER.map(c=>`<div class="bar"><span>${CATS[c]}</span><div><i style="width:${Math.round(sets[c]/mx*100)}%"></i></div><b>${sets[c]}</b></div>`).join("")}</div>
+    ${recent.length ? `<p class="fine">Najmanje vežbano: <b>${CATS[least].toLowerCase()}</b>.</p>` : ""}</section>`;
 }
 function viewSheet(){
   if(!sheet) return "";
@@ -680,13 +851,16 @@ function viewSheet(){
     const addBtn = S.plan && !focus && !S.plan.items.some(x=>x.ex===e.id)
       ? (canAdd(e) ? `<button class="cta ghost wide" data-act="addthis" data-id="${esc(e.id)}">Dodaj u današnji trening</button>`
         : `<p class="fine">${S.plan.place==="in" && e.place==="out" ? "Ova vežba je samo za napolju." : "Unutra može najviše jedan skok po treningu."}</p>`) : "";
-    return wrap(e.name, `<div class="fpic"><img src="${imgOf(e)}" alt="${esc(e.name)}"></div>
+    const own = !EXMAP[e.id] ? `<div class="list-foot"><button class="link" data-act="editex" data-id="${esc(e.id)}">Izmeni vežbu</button><button class="link danger" data-act="delex" data-id="${esc(e.id)}">Obriši vežbu</button></div>` : "";
+    const nx = harderFor(e.id); 
+    return wrap(e.name, `<div class="fpic">${picOf(e)}</div>
       <p class="grp" style="margin:14px 0 0">${esc(CATS[e.cat]||"")}, ${PLACES[e.place].toLowerCase()}${e.jump?'<span class="tag j">skok</span>':""}</p>
       <p class="how">${esc(e.desc || "Nema opisa.")} Početno: 3 × ${esc(amountLong(e, e.amount))}.</p>
       <div class="stats sm"><div><b>${h.length}</b><span>puta</span></div><div><b>${h.length?best:"–"}</b><span>najviše ${isTimed(e)?"sekundi":"u seriji"}</span></div><div><b>${h.length?maxV(h[h.length-1].it):"–"}</b><span>poslednji put</span></div></div>
       ${pts.length>1&&best>0?`<div class="chart">${spark(pts, unit)}</div>`:""}
       <div class="list">${h.slice().reverse().map(x=>`<div class="row static"><span class="nm">${esc(sessionTitle(x.s))}<small>${esc(fmtDate(x.s.date))}</small></span><span class="m"><b>${esc(setSummary(x.it))}</b></span></div>`).join("") || `<p class="fine">Još nije urađena.</p>`}</div>
-      ${addBtn}`);
+      ${nx ? `<p class="fine">Teža verzija: <b>${esc(nx.name)}</b>. Predložiće se sama kada ova postane laka (${capOf(e)} ${isTimed(e)?"s":"ponavljanja"} dva treninga zaredom).</p>` : ""}
+      ${addBtn}${own}`);
   }
   if(sheet.type==="pick"){
     const q = (sheet.q||"").toLowerCase(), inPlan = new Set((S.plan?.items||[]).map(x=>x.ex));
@@ -697,7 +871,7 @@ function viewSheet(){
   }
   if(sheet.type==="newex"){
     const ch = (act, val, label) => `<button class="chip${sheet[act]===val?" on":""}" data-act="nx" data-k="${act}" data-g="${val}">${label}</button>`;
-    return wrap("Nova vežba", `<input id="nx-name" class="search" placeholder="Naziv vežbe" aria-label="Naziv vežbe" value="${esc(sheet.name||"")}">
+    return wrap(sheet.edit ? "Izmeni vežbu" : "Nova vežba", `<input id="nx-name" class="search" placeholder="Naziv vežbe" aria-label="Naziv vežbe" value="${esc(sheet.name||"")}">
       <div class="flabel">Grupa</div><div class="chips wrap">${ORDER.map(g=>ch("cat", g, CATS[g])).join("")}</div>
       <div class="flabel">Kako se meri</div><div class="chips wrap">${ch("kind","reps","Ponavljanja")}${ch("kind","sec","Sekunde")}</div>
       <div class="flabel">Gde</div><div class="chips wrap">${ch("place","in","Unutra (tiho)")}${ch("place","out","Samo napolju")}</div>
@@ -714,8 +888,9 @@ function spark(pts, unit){
 function render(keepScroll=true){
   const y = window.scrollY;
   if(focus && (!S.plan || !S.plan.items[focus.i])) focus = null;
-  document.body.classList.toggle("focusing", !!focus);
-  $app.innerHTML = (focus ? viewFocus() : tab==="danas" ? viewToday() : tab==="vezbe" ? viewExercises() : viewHistory()) + viewSheet();
+  if(warm && !S.plan) warm = null;
+  document.body.classList.toggle("focusing", !!(focus || warm || party));
+  $app.innerHTML = party ? viewParty() : (warm ? viewWarm() : focus ? viewFocus() : tab==="danas" ? viewToday() : tab==="vezbe" ? viewExercises() : viewHistory()) + viewSheet();
   document.querySelectorAll(".nav button").forEach(b=>b.setAttribute("aria-current", b.dataset.tab===tab ? "page" : "false"));
   if(keepScroll) window.scrollTo(0, y);
 }
@@ -754,7 +929,26 @@ $app.addEventListener("click", e=>{
       if(S.plan.items.some(it=>it.sets.some(s=>s.done)) && !confirm("Promešati i izgubiti označene serije?")) return;
       generate(S.plan.place); render(false); toast("Novi raspored vežbi"); break;
     case "open": openFocus(i); break;
-    case "start": { const k = S.plan.items.findIndex(x=>!itemState(x).all); openFocus(k<0 ? 0 : k); break; }
+    case "start": {
+      if(!S.plan.warmed && !S.plan.items.some(it=>it.sets.some(x=>x.done))){ startWarm(); break; }
+      const k = S.plan.items.findIndex(x=>!itemState(x).all); openFocus(k<0 ? 0 : k); break; }
+    case "warmnext": warmNext(); break;
+    case "warmskip": warmDone(true); break;
+    case "warmback": warm = null; releaseWake(); render(false); window.scrollTo(0,0); break;
+    case "harder": {
+      const n = harderFor(S.plan.items[focus.i].ex, S.plan.place); if(!n) break;
+      if(S.plan.items.some(x=>x.ex===n.id)) return toast("Ta vežba je već u treningu");
+      S.plan.items[focus.i] = buildItem(n.id); selSet = null; howOpen = false; persistPlan(); render(); toast(`Bravo! Sad: ${n.name}`); break; }
+    case "rs": S.settings[b.dataset.k] = +b.dataset.g; persistSettings(); render(); break;
+    case "backup": exportBackup(); break;
+    case "partyclose": party = null; render(false); window.scrollTo(0,0); break;
+    case "editex": { const c = S.custom.find(x=>x.id===b.dataset.id); if(!c) break;
+      sheet = {type:"newex", edit:c.id, name:c.name, cat:c.cat, kind:c.type, place:c.place, jump:c.jump?"yes":"no"}; render(); break; }
+    case "delex": {
+      const c = S.custom.find(x=>x.id===b.dataset.id); if(!c || !confirm(`Obrisati vežbu „${c.name}“?`)) break;
+      const used = S.sessions.some(x=>x.items.some(it=>it.ex===c.id)) || (S.plan?.items||[]).some(it=>it.ex===c.id);
+      if(used) c.deleted = true; else S.custom = S.custom.filter(x=>x.id!==c.id);
+      persistSettings(); sheet = null; render(); toast("Vežba je obrisana"); break; }
     case "back": focus = null; render(false); window.scrollTo(0,0); break;
     case "jump": focus.i = i; selSet = null; howOpen = false; render(false); break;
     case "sel": selSet = j; render(); break;
@@ -768,14 +962,21 @@ $app.addEventListener("click", e=>{
     case "hold": {
       unlockAudio(); const it = S.plan.items[focus.i], ex = exById(it.ex), s = it.sets[selSet];
       s.v = clampV(ex, s.v); const sides = ex.side ? 2 : 1, ms = s.v*1000;
-      rest = null; hold = {start:Date.now(), side:ms, total:ms*sides, sides, switched:false, i:focus.i, j:selSet, label:ex.side==="po strani" ? "strana" : "noga"};
+      // 3-second "get ready" before the clock starts
+      rest = null; hold = {start:Date.now()+PREP_MS, side:ms, total:ms*sides, sides, switched:false, i:focus.i, j:selSet, label:ex.side==="po strani" ? "strana" : "noga"};
       holdWake(); persistPlan(); render(); break; }
-    case "holdstop": if(hold){ const h = hold; hold = null; completeAt(h.i, h.j, false); render(false); } break;
+    case "holdstop": if(hold){
+      const h = hold, el = Date.now() - h.start; hold = null;
+      if(el <= 0){ releaseWake(); render(); break; }
+      // save the time actually done (per leg/side when there are two)
+      S.plan.items[h.i].sets[h.j].v = Math.max(1, Math.round(el/1000/h.sides));
+      completeAt(h.i, h.j, false); render(false); } break;
     case "holdcancel": hold = null; releaseWake(); render(); break;
     case "restskip": if(rest){ rest.over = true; releaseWake(); render(); } break;
     case "rest30": if(rest && !rest.over){ rest.end += 30000; rest.total += 30000; tickRest(); } break;
     case "restgo": rest = null; render(); break;
-    case "mute": S.settings.mute = !S.settings.mute; persistSettings(); if(document.getElementById("ctaBox")) document.getElementById("ctaBox").innerHTML = restHTML(); break;
+    case "mute": { S.settings.mute = !S.settings.mute; persistSettings(); const box = document.getElementById("ctaBox");
+      if(rest && box) box.innerHTML = restHTML(); else render(); break; }
     case "undo": S.plan.items[focus.i].sets[selSet].done = false; persistPlan(); render(); break;
     case "addset": { const it = S.plan.items[i], l = it.sets[it.sets.length-1]; it.sets.push({v:l.v, done:false}); persistPlan(); render(); break; }
     case "delsetj": if(S.plan.items[i].sets.length>3 && j>=3){ S.plan.items[i].sets.splice(j,1); if(selSet>=S.plan.items[i].sets.length) selSet = null; persistPlan(); render(); } break;
@@ -795,7 +996,7 @@ $app.addEventListener("click", e=>{
     case "fp": filterPlace = b.dataset.g; render(); break;
     case "cnt": S.settings.count = clampCount(S.settings.count + +b.dataset.d); persistSettings(); render(); break;
     case "delsess": if(confirm("Obrisati ovaj trening iz istorije?")){ const id = b.dataset.id; S.sessions = S.sessions.filter(s=>s.id!==id); saveLocal(); render(); } break;
-    case "newex": sheet = {type:"newex", name:"", cat:"noge", kind:"reps", place:"in", jump:"no"}; render(); setTimeout(()=>document.getElementById("nx-name")?.focus(), 50); break;
+    case "newex": sheet = {type:"newex", edit:null, name:"", cat:"noge", kind:"reps", place:"in", jump:"no"}; render(); setTimeout(()=>document.getElementById("nx-name")?.focus(), 50); break;
     case "nx": {
       sheet.name = document.getElementById("nx-name").value;
       const k = b.dataset.k; sheet[k] = b.dataset.g;
@@ -804,8 +1005,10 @@ $app.addEventListener("click", e=>{
     case "nxsave": {
       const nm = document.getElementById("nx-name").value.trim(); if(!nm) return toast("Prvo upiši naziv");
       const kind = sheet.kind, jump = sheet.jump==="yes" || sheet.cat==="skokovi";
-      S.custom.push({id:"c"+Date.now(), name:nm, cat:sheet.cat, type:kind, amount:kind==="sec" ? 20 : 10, place:sheet.place, jump, desc:""});
-      persistSettings(); sheet = null; render(); toast("Vežba je sačuvana"); break; }
+      const old = sheet.edit && S.custom.find(x=>x.id===sheet.edit);
+      if(old) Object.assign(old, {name:nm, cat:sheet.cat, type:kind, amount:old.type===kind ? old.amount : (kind==="sec" ? 20 : 10), place:sheet.place, jump});
+      else S.custom.push({id:"c"+Date.now(), name:nm, cat:sheet.cat, type:kind, amount:kind==="sec" ? 20 : 10, place:sheet.place, jump, desc:""});
+      persistSettings(); sheet = null; render(); toast(old ? "Izmene su sačuvane" : "Vežba je sačuvana"); break; }
     case "export": exportBackup(); break;
     case "import": document.getElementById("restore").click(); break;
   }
@@ -825,20 +1028,87 @@ $app.addEventListener("touchend", e=>{
 function finish(){
   const items = S.plan.items.map(it=>({ex:it.ex, sets:it.sets.filter(s=>s.done).map(s=>({v:+s.v||0}))})).filter(it=>it.sets.length);
   if(!items.length) return toast("Prvo završi bar jednu seriju");
+  const records = items.map(it=>{ const e = exById(it.ex), prev = bestBefore(it.ex), now = maxV(it);
+    return prev!==null && now>prev ? {name:e?.name||"", text:amountLong(e, now)} : null; }).filter(Boolean);
+  const before = earnedBadges();
+  const start = S.plan.started ? new Date(S.plan.started) : null;
+  const min = start ? Math.max(1, Math.round((Date.now()-start)/60000)) : null;
   const s = {id:Date.now().toString(36), date:new Date().toISOString(), place:S.plan.place, items};
-  S.sessions.push(s); S.plan = null; focus = null; rest = null; hold = null; releaseWake(); tab = "danas"; persistPlan();
-  render(false); window.scrollTo(0,0); toast(`Bravo! Trening ${S.sessions.length} je sačuvan`);
+  if(min && min < 240) s.min = min;
+  S.sessions.push(s); S.plan = null; focus = null; rest = null; hold = null; warm = null; releaseWake(); tab = "danas"; persistPlan();
+  const after = earnedBadges();
+  party = {n:S.sessions.length, ex:items.length, sets:items.reduce((a,it)=>a+it.sets.length,0), min:s.min, records,
+           badges:BADGES.filter(b=>after.has(b.id) && !before.has(b.id))};
+  askPersist();
+  render(false); window.scrollTo(0,0); ding(); buzz([120,80,120,80,300]);
 }
+function viewParty(){
+  const p = party, colors = ["#3DFF8F","#FFD66B","#6BC6FF","#FF8AD8","#FFFFFF"];
+  const conf = Array.from({length:60},(_,k)=>`<i style="left:${(Math.random()*100).toFixed(1)}%;background:${colors[k%colors.length]};animation-duration:${(2.2+Math.random()*2.2).toFixed(2)}s;animation-delay:${(Math.random()*1.2).toFixed(2)}s;transform:rotate(${Math.round(Math.random()*90)}deg)"></i>`).join("");
+  return `<div class="party" role="dialog" aria-modal="true" aria-label="Trening je gotov"><div class="confetti" aria-hidden="true">${conf}</div><div class="party-in">
+    <div class="eyebrow">Trening ${p.n} je gotov</div><h1>Bravo!</h1>
+    <div class="sub">${p.records.length ? "I to sa novim rekordom!" : "Još jedan trening u džepu."}</div>
+    <div class="stats"><div><b>${p.ex}</b><span>${pl(p.ex, W.vezba)}</span></div><div class="n"><b>${p.sets}</b><span>${pl(p.sets, W.serija)}</span></div>${p.min?`<div><b>${p.min}</b><span>min</span></div>`:""}</div>
+    ${p.records.length ? `<div class="sec2">Novi rekordi</div>${p.records.map(r=>`<div class="rec">${STAR}<span>${esc(r.name)}</span><b>${esc(r.text)}</b></div>`).join("")}` : ""}
+    ${p.badges.length ? `<div class="sec2">${p.badges.length===1?"Nova medalja":"Nove medalje"}</div><div class="badges">${p.badges.map(b=>badgeHTML(b,true)).join("")}</div>` : ""}
+    <button class="cta wide" data-act="partyclose" style="margin-top:34px">Super!</button></div></div>`;
+}
+
+/* ---------- badges ---------- */
+const STAR = '<svg viewBox="0 0 24 24" width="22" height="22" fill="var(--neon-txt)" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>';
+const MINI = {
+  star:'<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>',
+  home:'<svg viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30L32 10l24 20"/><path d="M14 26v28h36V26"/></svg>',
+  tree:'<svg viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6l-14 20h8l-11 16h34l-11-16h8z"/><path d="M32 42v14"/></svg>'
+};
+const BADGES = [
+  {id:"t1", g:"1", name:"Prvi trening", t:x=>x.total>=1},
+  {id:"w3", g:"3", name:"Cilj nedelje", t:x=>x.bestWeek>=3},
+  {id:"t10", g:"10", name:"10 treninga", t:x=>x.total>=10},
+  {id:"m12", g:"12", name:"Cilj meseca", t:x=>x.bestMonth>=12},
+  {id:"s4", g:"4×", name:"4 nedelje zaredom", t:x=>x.longest>=4},
+  {id:"t25", g:"25", name:"25 treninga", t:x=>x.total>=25},
+  {id:"r1", g:MINI.star, name:"Prvi rekord", t:x=>x.records>=1},
+  {id:"r10", g:"10", name:"10 rekorda", t:x=>x.records>=10},
+  {id:"in5", g:MINI.home, name:"5 puta unutra", t:x=>x.inside>=5},
+  {id:"out5", g:MINI.tree, name:"5 puta napolju", t:x=>x.outside>=5},
+  {id:"all", g:String(EX.length), name:"Probao sve vežbe", t:x=>x.tried>=EX.length},
+  {id:"s8", g:"8×", name:"8 nedelja zaredom", t:x=>x.longest>=8},
+  {id:"t50", g:"50", name:"50 treninga", t:x=>x.total>=50},
+  {id:"t100", g:"100", name:"100 treninga", t:x=>x.total>=100},
+];
+function trainingStats(){
+  const ss = sortedSessions(), weeks = {}, months = {}, best = {}, tried = new Set();
+  let records = 0;
+  ss.forEach(s=>{
+    const d = new Date(s.date), wk = weekStart(d).getTime(), mo = d.getFullYear()*12 + d.getMonth();
+    weeks[wk] = (weeks[wk]||0) + 1; months[mo] = (months[mo]||0) + 1;
+    s.items.forEach(it=>{ const v = maxV(it); if(best[it.ex]!==undefined && v>best[it.ex]) records++; best[it.ex] = Math.max(best[it.ex]??0, v); if(EXMAP[it.ex]) tried.add(it.ex); });
+  });
+  // longest run of weeks with 3+ workouts
+  let longest = 0, run = 0, prev = null;
+  Object.keys(weeks).map(Number).sort((a,b)=>a-b).forEach(w=>{
+    if(weeks[w] < 3){ run = 0; prev = w; return; }
+    const gap = prev===null ? 1 : Math.round((w-prev)/(7*864e5));
+    run = (gap===1 && run>0) ? run+1 : 1; prev = w; longest = Math.max(longest, run);
+  });
+  return {total:ss.length, bestWeek:Math.max(0,...Object.values(weeks)), bestMonth:Math.max(0,...Object.values(months)), longest, records,
+          inside:ss.filter(s=>s.place==="in").length, outside:ss.filter(s=>s.place==="out").length, tried:tried.size};
+}
+function earnedBadges(){ const x = trainingStats(); return new Set(BADGES.filter(b=>b.t(x)).map(b=>b.id)); }
+const badgeHTML = (b, on) => `<div class="badge${on?" on":""}"><div class="medal">${b.g}</div>${esc(b.name)}</div>`;
+function askPersist(){ try{ navigator.storage?.persist?.(); }catch(_){} }
 async function exportBackup(){
+  const mark = () => { S.settings.backupAt = Date.now(); S.settings.backupN = S.sessions.length; saveLocal(); if(!focus) render(); };
   const data = JSON.stringify({app:"trening-za-decu", version:1, sessions:S.sessions, custom:S.custom, settings:S.settings}, null, 1);
   const name = "trening-kopija-" + new Date().toISOString().slice(0,10) + ".json";
   try{
     const file = new File([data], name, {type:"application/json"});
-    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:"Rezervna kopija treninga"}); return; }
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:"Rezervna kopija treninga"}); mark(); return; }
   }catch(err){ if(err && err.name==="AbortError") return; }
   const url = URL.createObjectURL(new Blob([data], {type:"application/json"}));
   const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url), 2000); toast("Rezervna kopija je sačuvana");
+  setTimeout(()=>URL.revokeObjectURL(url), 2000); mark(); toast("Rezervna kopija je sačuvana");
 }
 document.getElementById("restore").addEventListener("change", async e=>{
   const f = e.target.files[0]; if(!f) return;
@@ -855,19 +1125,21 @@ document.getElementById("restore").addEventListener("change", async e=>{
 });
 document.addEventListener("keydown", e=>{ if(e.key==="Escape" && sheet){ sheet = null; render(); } });
 
-/* ---------- rest timer and countdown ---------- */
-const REST_MS = 60000;
+/* ---------- rest timer, countdown and warm-up ---------- */
+const PREP_MS = 3000;
 const fmtT = ms => { const s = Math.max(0, Math.ceil(ms/1000)); return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0"); };
+const SPEAKER_ON = '<svg viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg>';
+const SPEAKER_OFF = '<svg viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>';
+const muteBtn = () => { const m = !!S.settings.mute; return `<button class="link mute" data-act="mute" aria-pressed="${!m}">${m?SPEAKER_OFF:SPEAKER_ON}${m?"Zvuk isključen":"Zvuk uključen"}</button>`; };
 function restHTML(){
   if(!rest) return "";
-  const nextSet = (selSet ?? 0) + 1;
-  if(rest.over) return `<button class="cta go" data-act="restgo">Kreni sa serijom ${nextSet}</button>`;
-  const left = rest.end - Date.now(), m = !!S.settings.mute;
-  const icon = m ? '<svg viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg>';
-  return `<div class="rest" role="timer" aria-label="Odmor pre serije ${nextSet}">
-    <div class="rest-top"><span class="rest-l">Odmor pre serije ${nextSet}</span><span class="rest-t" id="restT">${fmtT(left)}</span></div>
+  const nextSet = (selSet ?? 0) + 1, ex = rest.kind === "ex";
+  if(rest.over) return `<button class="cta go" data-act="restgo">${ex ? "Kreni sa sledećom vežbom" : `Kreni sa serijom ${nextSet}`}</button>`;
+  const left = rest.end - Date.now(), label = ex ? "Odmor, pa sledeća vežba" : `Odmor pre serije ${nextSet}`;
+  return `<div class="rest" role="timer" aria-label="${label}">
+    <div class="rest-top"><span class="rest-l">${label}</span><span class="rest-t" id="restT">${fmtT(left)}</span></div>
     <div class="rest-line"><i id="restL" style="transform:scaleX(${Math.max(0,left/rest.total).toFixed(3)})"></i></div>
-    <div class="rest-b"><button class="link mute" data-act="mute" aria-pressed="${!m}">${icon}${m?"Zvuk isključen":"Zvuk uključen"}</button><span class="sp"></span><button class="link" data-act="rest30">+30 s</button><button class="link" data-act="restskip">Preskoči</button></div></div>`;
+    <div class="rest-b">${muteBtn()}<span class="sp"></span><button class="link" data-act="rest30">+30 s</button><button class="link" data-act="restskip">Preskoči</button></div></div>`;
 }
 function unlockAudio(){
   try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==="suspended") actx.resume(); }catch(_){}
@@ -884,10 +1156,29 @@ function ding(){
     });
   }catch(_){}
 }
-const buzz = () => { try{ navigator.vibrate && navigator.vibrate([250,120,250]); }catch(_){} };
+// short tick for "3, 2, 1"
+function beep(freq=660, dur=.13, vol=.35){
+  if(S.settings.mute || !actx) return;
+  try{
+    const t = actx.currentTime, o = actx.createOscillator(), g = actx.createGain();
+    o.type = "sine"; o.frequency.value = freq; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+.005); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+dur+.03);
+  }catch(_){}
+}
+// beep once for each of the last three seconds of a countdown
+function countdownBeeps(obj, key, leftMs, freq=660){
+  const sec = Math.ceil(leftMs/1000);
+  if(sec>=1 && sec<=3){ obj.beeps = obj.beeps || {}; const k = key+":"+sec; if(!obj.beeps[k]){ obj.beeps[k] = 1; beep(freq); } }
+}
+const buzz = (p=[250,120,250]) => { try{ navigator.vibrate && navigator.vibrate(p); }catch(_){} };
 async function holdWake(){ try{ if("wakeLock" in navigator && !wakeLock){ wakeLock = await navigator.wakeLock.request("screen"); wakeLock.addEventListener?.("release", ()=>{ wakeLock = null; }); } }catch(_){ wakeLock = null; } }
 function releaseWake(){ try{ wakeLock?.release(); }catch(_){} wakeLock = null; }
-function startRest(){ unlockAudio(); rest = {end:Date.now()+REST_MS, total:REST_MS, over:false}; holdWake(); }
+function startRest(kind){
+  unlockAudio();
+  const ms = (kind==="ex" ? S.settings.restEx : S.settings.restSet) * 1000;
+  rest = {end:Date.now()+ms, total:ms, over:false, kind};
+  holdWake();
+}
 function restOver(){
   rest.over = true; releaseWake(); ding(); buzz();
   const box = document.getElementById("ctaBox");
@@ -897,23 +1188,30 @@ function restOver(){
 function completeAt(i, j, carry=true){
   const it = S.plan.items[i]; if(!it || !it.sets[j]) return;
   const cs = it.sets[j]; cs.done = true;
+  if(!S.plan.started) S.plan.started = new Date().toISOString();
   if(carry) it.sets.forEach((x,k)=>{ if(k>j && !x.done) x.v = cs.v; });
+  const ex = exById(it.ex), prev = bestBefore(it.ex);
+  if(!it.rec && prev!==null && +cs.v > prev){ it.rec = true; ding(); toast(`Novi rekord! ${amountLong(ex, cs.v)}`); }
+  const exDone = it.sets.every(s=>s.done);
   if(focus && focus.i===i){
     const nx = it.sets.findIndex(s=>!s.done);
     if(nx>=0) selSet = nx;
-    else { const k = nextPending(); if(k>=0 && k!==focus.i){ focus.i = k; selSet = null; howOpen = false; toast("Sledeća vežba"); } }
+    else { const k = nextPending(); if(k>=0 && k!==focus.i){ focus.i = k; selSet = null; howOpen = false; if(!it.rec) toast("Sledeća vežba"); } }
   }
   persistPlan();
-  if(!S.plan.items.every(x=>itemState(x).all)) startRest();
+  if(!S.plan.items.every(x=>itemState(x).all)) startRest(exDone ? "ex" : "set");
 }
 function holdState(){
-  const el = Date.now() - hold.start, sideIdx = Math.min(hold.sides-1, Math.floor(el / hold.side));
+  const now = Date.now();
+  if(now < hold.start) return {prep:true, n:Math.ceil((hold.start-now)/1000)};
+  const el = now - hold.start, sideIdx = Math.min(hold.sides-1, Math.floor(el / hold.side));
   const left = hold.sides>1 ? (sideIdx+1)*hold.side - el : hold.total - el;
   const label = hold.sides>1 ? (sideIdx===0 ? `Prva ${hold.label}` : `Druga ${hold.label}`) : `Drži, serija ${hold.j+1}`;
-  return {el, sideIdx, left, label};
+  return {prep:false, el, sideIdx, left, label};
 }
 function holdHTML(){
   const h = holdState();
+  if(h.prep) return `<div class="prep" role="timer" aria-label="Spremi se"><div><b>Spremi se!</b><br><button class="link danger" data-act="holdcancel">Otkaži</button></div><span class="pn" id="prepN">${h.n}</span></div>`;
   return `<div class="rest hold" role="timer" aria-label="${esc(h.label)}">
     <div class="rest-top"><span class="rest-l" id="holdN">${esc(h.label)}</span><span class="rest-t" id="holdT">${fmtT(h.left)}</span></div>
     <div class="rest-line"><i id="holdL" style="transform:scaleX(${Math.max(0,h.left/hold.side).toFixed(3)})"></i></div>
@@ -921,30 +1219,67 @@ function holdHTML(){
 }
 function tickHold(){
   if(!hold) return;
-  const h = holdState();
+  const h = holdState(), box = document.getElementById("ctaBox");
+  if(h.prep){
+    countdownBeeps(hold, "prep", hold.start - Date.now(), 520);
+    const n = document.getElementById("prepN"); if(n) n.textContent = h.n;
+    return;
+  }
+  if(!hold.started){ hold.started = true; beep(880, .25, .45); buzz(120); if(box) box.innerHTML = holdHTML(); }
   if(h.el >= hold.total){
     const x = hold; hold = null; ding(); buzz();
     completeAt(x.i, x.j);
     if(focus) render(false); else toast("Serija je gotova");
     return;
   }
+  countdownBeeps(hold, "s"+h.sideIdx, h.left);
   if(hold.sides>1 && h.sideIdx>0 && !hold.switched){ hold.switched = true; ding(); buzz(); toast(hold.label==="strana" ? "Promeni stranu!" : "Promeni nogu!"); }
   const t = document.getElementById("holdT"), l = document.getElementById("holdL"), nm = document.getElementById("holdN");
   if(t) t.textContent = fmtT(h.left);
   if(nm) nm.textContent = h.label;
   if(l) l.style.transform = `scaleX(${(h.left/hold.side).toFixed(3)})`;
 }
+// ---- warm-up ----
+function startWarm(){
+  unlockAudio();
+  const list = WARMUP[S.plan.place] || WARMUP.in;
+  warm = {list, i:0, end:Date.now()+list[0].sec*1000};
+  if(!S.plan.started) S.plan.started = new Date().toISOString();
+  focus = null; holdWake(); render(false); window.scrollTo(0,0);
+}
+function warmNext(){
+  if(!warm) return;
+  warm.i++; warm.beeps = null;
+  if(warm.i >= warm.list.length) return warmDone();
+  ding(); buzz(150);
+  warm.end = Date.now() + warm.list[warm.i].sec*1000;
+  render(false);
+}
+function warmDone(skip){
+  warm = null; S.plan.warmed = true; persistPlan(); releaseWake();
+  if(!skip){ ding(); buzz(); toast("Zagrejan si! Kreće trening"); }
+  const k = S.plan.items.findIndex(x=>!itemState(x).all); openFocus(k<0 ? 0 : k);
+}
+function tickWarm(){
+  if(!warm || document.hidden) return;
+  const left = warm.end - Date.now();
+  if(left <= 0) return warmNext();
+  countdownBeeps(warm, "w"+warm.i, left);
+  const t = document.getElementById("warmT"); if(t) t.textContent = fmtT(left);
+  const l = document.getElementById("warmL"); if(l) l.style.transform = `scaleX(${Math.max(0,left/(warm.list[warm.i].sec*1000)).toFixed(3)})`;
+}
 function tickRest(){
-  tickHold();
+  tickHold(); tickWarm();
   if(!rest || rest.over) return;
   const left = rest.end - Date.now();
   if(left<=0) return restOver();
+  countdownBeeps(rest, "r", left);
   const t = document.getElementById("restT"), l = document.getElementById("restL");
   if(t) t.textContent = fmtT(left);
   if(l) l.style.transform = `scaleX(${(left/rest.total).toFixed(3)})`;
 }
-setInterval(tickRest, 250);
-document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ tickRest(); if((rest && !rest.over) || hold) holdWake(); } });
+setInterval(tickRest, 200);
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ tickRest(); if((rest && !rest.over) || hold || warm) holdWake(); } });
 
 /* ---------- start ---------- */
 // iOS Safari ignores user-scalable=no, so block its pinch-zoom gestures directly
@@ -952,7 +1287,19 @@ document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ tickRe
 loadLocal();
 const h0 = location.hash.slice(1); if(["danas","vezbe","istorija"].includes(h0)) tab = h0;
 render();
-if("serviceWorker" in navigator){ window.addEventListener("load", ()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
+// ask the browser to keep saved workouts permanently (Safari can clear site data that isn't used for a while)
+if(S.sessions.length) askPersist();
+if("serviceWorker" in navigator){
+  const hadSW = !!navigator.serviceWorker.controller;
+  // a new version was installed: reload once, but never in the middle of a workout screen
+  navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+    if(!hadSW) return;
+    const reload = () => location.reload();
+    if(!focus && !warm && !hold && !party && !sheet) reload();
+    else window.addEventListener("pagehide", reload, {once:true});
+  });
+  window.addEventListener("load", ()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
 </script>
 </body>
 </html>

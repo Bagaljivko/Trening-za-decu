@@ -1,5 +1,7 @@
-// Offline support: keep the app shell and all exercise pictures cached, refresh them in the background.
-const CACHE = "trening-za-decu-v1";
+// Offline support.
+// The page itself is fetched from the network first, so a new version shows up on the first open;
+// everything else comes from the cache and is refreshed in the background. Bump CACHE when files change.
+const CACHE = "trening-za-decu-v2";
 const SHELL = [
   "./",
   "index.html",
@@ -7,6 +9,8 @@ const SHELL = [
   "icons/icon-192.png",
   "icons/icon-512.png",
   "icons/apple-touch-icon.png",
+  "fonts/inter-latin-wght-normal.woff2",
+  "fonts/inter-latin-ext-wght-normal.woff2",
   "images/avion.svg",
   "images/bicikl.svg",
   "images/bocni-iskorak.svg",
@@ -17,6 +21,9 @@ const SHELL = [
   "images/gusenica.svg",
   "images/iskorak-unazad.svg",
   "images/klizacki-skokovi.svg",
+  "images/kruzenje-kukovima.svg",
+  "images/kruzenje-rukama.svg",
+  "images/marsiranje.svg",
   "images/medvedje-puzanje.svg",
   "images/mekani-poskoci.svg",
   "images/most-jedna-noga.svg",
@@ -43,18 +50,74 @@ const SHELL = [
   "images/supermen.svg",
   "images/tihi-cucanj-skok.svg",
   "images/zabji-skokovi.svg",
+  "images/zamasi-nogama.svg",
   "images/zid-sed.svg",
-  "images/zvezdasti-skokovi.svg"
+  "images/zvezdasti-skokovi.svg",
+  "images/anim/avion.svg",
+  "images/anim/bicikl.svg",
+  "images/anim/bocni-iskorak.svg",
+  "images/anim/bocni-plank.svg",
+  "images/anim/brza-stopala.svg",
+  "images/anim/cucanj-skok.svg",
+  "images/anim/cucanj.svg",
+  "images/anim/gusenica.svg",
+  "images/anim/iskorak-unazad.svg",
+  "images/anim/klizacki-skokovi.svg",
+  "images/anim/kruzenje-kukovima.svg",
+  "images/anim/kruzenje-rukama.svg",
+  "images/anim/marsiranje.svg",
+  "images/anim/medvedje-puzanje.svg",
+  "images/anim/mekani-poskoci.svg",
+  "images/anim/most-jedna-noga.svg",
+  "images/anim/most.svg",
+  "images/anim/mrtva-buba.svg",
+  "images/anim/nova-vezba.svg",
+  "images/anim/odbrambeni-korak.svg",
+  "images/anim/pajacovi.svg",
+  "images/anim/penjac-brzo.svg",
+  "images/anim/penjac-polako.svg",
+  "images/anim/plank-dodir-ramena.svg",
+  "images/anim/plank.svg",
+  "images/anim/podizanje-na-prste.svg",
+  "images/anim/propadanja-stolica.svg",
+  "images/anim/rak-hodanje.svg",
+  "images/anim/sklekovi-kolena.svg",
+  "images/anim/sklekovi-stolica.svg",
+  "images/anim/sklekovi-zid.svg",
+  "images/anim/sklekovi.svg",
+  "images/anim/skok-sa-kolenima.svg",
+  "images/anim/skok-u-dalj.svg",
+  "images/anim/sprint.svg",
+  "images/anim/stajanje-jedna-noga.svg",
+  "images/anim/supermen.svg",
+  "images/anim/tihi-cucanj-skok.svg",
+  "images/anim/zabji-skokovi.svg",
+  "images/anim/zamasi-nogama.svg",
+  "images/anim/zid-sed.svg",
+  "images/anim/zvezdasti-skokovi.svg"
 ];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 self.addEventListener("fetch", e => {
-  if (e.request.method !== "GET") return;
+  const req = e.request;
+  if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
+  if (req.mode === "navigate") {
+    e.respondWith(caches.open(CACHE).then(async cache => {
+      try {
+        const res = await fetch(req, {cache: "no-cache"});
+        if (res && res.ok) cache.put("index.html", res.clone());
+        return res;
+      } catch (_) {
+        return (await cache.match("index.html")) || (await cache.match("./")) || Response.error();
+      }
+    }));
+    return;
+  }
   e.respondWith(caches.open(CACHE).then(async cache => {
-    const cached = await cache.match(e.request);
-    const network = fetch(e.request).then(res => { if (res && (res.ok || res.type === "opaque")) cache.put(e.request, res.clone()); return res; }).catch(() => cached);
+    const cached = await cache.match(req);
+    const network = fetch(req).then(res => { if (res && res.ok) cache.put(req, res.clone()); return res; }).catch(() => cached);
     return cached || network;
   }));
 });

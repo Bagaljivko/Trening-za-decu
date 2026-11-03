@@ -100,34 +100,90 @@ def wall(x):
             "".join(seg((x, y), (x + (12 if x > 200 else -12), y - 12), PROP, 3) for y in range(50, GROUND, 26)))
 
 
-def figure(p):
+def shapes(p):
+    """The figure as a list of shapes, always in the same order, so two poses can be animated."""
     N, P = p["N"], p["P"]
     H = p.get("H") or head_of(N, P)
     (k1, f1), (k2, f2) = p["legs"]
     (e1, w1), (e2, w2) = p["arms"]
+    out = [("poly", [P, k1, f1], FAR, 10), ("poly", [N, e1, w1], FAR, 10)]   # far side first
+    out += [("poly", [a, b], FAR, 8) for a, b in p.get("far_extra", [])]
+    out += [("poly", [N, P], NEAR, 13), ("poly", [N, H], NEAR, 8),
+            ("poly", [P, k2, f2], NEAR, 10), ("poly", [N, e2, w2], NEAR, 10)]
+    out += [("poly", [a, b], NEAR, 8) for a, b in p.get("near_extra", [])]
+    out.append(("head", H))
+    return out
+
+
+def pts(points):
+    return " ".join(f"{x:g},{y:g}" for x, y in points)
+
+
+def figure(p, q=None, dur=2.4):
+    """Static figure, or (with q) a figure that moves from pose p to pose q and back."""
+    a_list, b_list = shapes(p), (shapes(q) if q else None)
+    spline = f'dur="{dur}s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"'
     out = []
-    # far side first
-    out.append(poly([P, k1, f1], FAR))
-    out.append(poly([N, e1, w1], FAR))
-    for a, b in p.get("far_extra", []):
-        out.append(seg(a, b, FAR, 8))
-    out.append(seg(N, P, NEAR, 13))
-    out.append(seg(N, H, NEAR, 8))
-    out.append(poly([P, k2, f2], NEAR))
-    out.append(poly([N, e2, w2], NEAR))
-    for a, b in p.get("near_extra", []):
-        out.append(seg(a, b, NEAR, 8))
-    out.append(f'<circle cx="{H[0]}" cy="{H[1]}" r="18" fill="{NEAR}"/>')
+    for k, sh in enumerate(a_list):
+        if sh[0] == "poly":
+            _, ps, color, w = sh
+            anim = ""
+            if b_list:
+                pb = b_list[k][1]
+                anim = f'<animate attributeName="points" values="{pts(ps)};{pts(pb)};{pts(ps)}" {spline}/>'
+            out.append(f'<polyline points="{pts(ps)}" fill="none" stroke="{color}" stroke-width="{w}">{anim}</polyline>')
+        else:
+            H = sh[1]
+            anim = ""
+            if b_list:
+                Hb = b_list[k][1]
+                anim = (f'<animate attributeName="cx" values="{H[0]};{Hb[0]};{H[0]}" {spline}/>'
+                        f'<animate attributeName="cy" values="{H[1]};{Hb[1]};{H[1]}" {spline}/>')
+            out.append(f'<circle cx="{H[0]}" cy="{H[1]}" r="18" fill="{NEAR}">{anim}</circle>')
     return "".join(out)
 
 
-def svg(title, p):
+def derive(p, change):
+    """Second pose: a dict of joints to replace, or a function of the first pose."""
+    q = {k: v for k, v in p.items()}
+    if callable(change):
+        return change(q)
+    q.update(change)
+    if "H" not in change and "N" in change and "H" in p:
+        q.pop("H")
+    if q.get("H") is None:
+        q.pop("H", None)
+    return q
+
+
+def _map_pose(p, fn):
+    q = dict(p)
+    for k in ("N", "P", "H"):
+        if q.get(k):
+            q[k] = fn(q[k])
+    q["legs"] = [(fn(k), fn(f)) for k, f in p["legs"]]
+    q["arms"] = [(fn(e), fn(w)) for e, w in p["arms"]]
+    for k in ("far_extra", "near_extra"):
+        if k in p:
+            q[k] = [(fn(a), fn(b)) for a, b in p[k]]
+    return q
+
+
+def shift(dx, dy=0):
+    return lambda p: _map_pose(p, lambda a: (a[0] + dx, a[1] + dy))
+
+
+def mirror(cx=200):
+    return lambda p: _map_pose(p, lambda a: (2 * cx - a[0], a[1]))
+
+
+def svg(title, p, q=None, dur=2.4):
     body = []
     if p.get("ground", True):
         body.append(seg((24, GROUND + 8), (376, GROUND + 8), FLOOR, 4))
     for prop in p.get("props", []):
         body.append(prop)
-    body.append(figure(p))
+    body.append(figure(p, q, dur))
     for extra in p.get("lines", []):     # e.g. speed lines
         body.append(extra)
     for a in p.get("arrows", []):
@@ -388,12 +444,113 @@ POSES = {
 }
 
 
+
+# warm-up moves (shown on the warm-up screen)
+POSES.update({
+    "marsiranje": ("Marširanje u mestu", dict(
+        N=(200, 84), P=(200, 160),
+        legs=[((198, 210), (198, G)), ((246, 166), (240, 216))],
+        arms=[((222, 112), (242, 128)), ((186, 114), (172, 142))],
+        arrows=[("L", 300, 150, 300, 222, True)])),
+    "kruzenje-rukama": ("Kruženje rukama", dict(
+        N=(200, 90), P=(200, 166),
+        legs=[((192, 214), (186, G)), ((208, 214), (214, G))],
+        arms=[((164, 92), (128, 94)), ((236, 92), (272, 94))],
+        arrows=[("Q", 104, 128, 76, 74, 122, 46), ("Q", 296, 128, 324, 74, 278, 46)])),
+    "kruzenje-kukovima": ("Kruženje kukovima", dict(
+        N=(200, 86), P=(186, 162),
+        legs=[((180, 212), (176, G)), ((208, 212), (222, G))],
+        arms=[((168, 118), (178, 156)), ((230, 118), (198, 158))],
+        arrows=[("Q", 140, 286, 200, 304, 260, 286, True)])),
+    "zamasi-nogama": ("Zamasi nogama", dict(
+        N=(200, 84), P=(200, 160),
+        legs=[((200, 210), (200, G)), ((244, 192), (282, 220))],
+        arms=[((160, 108), (124, 112)), ((214, 118), (206, 150))],
+        props=[wall(112)],
+        arrows=[("Q", 300, 196, 226, 300, 140, 226, True)])),
+})
+
+# second pose for the moving pictures: (change, seconds per back-and-forth)
+ANIM = {
+    "cucanj": (dict(N=(200, 84), P=(200, 160), legs=[((204, 210), (200, G)), ((208, 210), (206, G))],
+                    arms=[((230, 96), (264, 96)), ((234, 100), (268, 100))]), 2.4),
+    "iskorak-unazad": (dict(N=(205, 84), P=(205, 160), legs=[((203, 210), (200, G)), ((210, 210), (212, G))],
+                            arms=[((206, 118), (204, 150)), ((214, 118), (216, 150))]), 2.6),
+    "bocni-iskorak": (dict(N=(200, 98), P=(200, 172), legs=[((186, 216), (176, G)), ((214, 216), (224, G))],
+                           arms=[((176, 124), (190, 158)), ((224, 124), (210, 158))]), 2.6),
+    "zid-sed": (None, 0),
+    "most": (dict(P=(200, 252), legs=[((238, 212), (250, G)), ((244, 214), (258, G))]), 2.4),
+    "most-jedna-noga": (dict(P=(200, 252), legs=[((238, 212), (250, G)), ((244, 236), (290, 222))]), 2.4),
+    "podizanje-na-prste": (dict(N=(200, 84), P=(200, 160), legs=[((198, 210), (196, 258)), ((204, 210), (206, 258))],
+                                arms=[((196, 118), (194, 150)), ((206, 118), (208, 150))],
+                                far_extra=[((196, 258), (214, G))], near_extra=[((206, 258), (224, G))]), 2.0),
+    "odbrambeni-korak": (shift(-44), 1.6),
+    "sklekovi": (dict(N=(252, 238), P=(170, 246), legs=[((128, 251), (86, 256)), ((130, 253), (90, 258))],
+                      arms=[((230, 226), (250, G)), ((236, 228), (258, G))]), 2.4),
+    "sklekovi-kolena": (dict(N=(256, 242), P=(185, 250), arms=[((234, 230), (254, G)), ((240, 232), (262, G))]), 2.4),
+    "sklekovi-stolica": (dict(N=(246, 192), P=(172, 226), legs=[((130, 243), (88, 258)), ((134, 245), (92, G))],
+                              arms=[((250, 214), (266, 194)), ((254, 216), (272, 194))]), 2.4),
+    "propadanja-stolica": (dict(N=(172, 182), P=(176, 252), legs=[((222, 234), (226, G)), ((228, 236), (234, G))],
+                                arms=[((146, 176), (156, 194)), ((150, 178), (162, 194))]), 2.4),
+    "sklekovi-zid": (dict(N=(290, 112), P=(238, 176), arms=[((300, 136), (318, 112)), ((302, 140), (320, 120))]), 2.4),
+    "plank": (None, 0),
+    "bocni-plank": (dict(P=(172, 240), legs=[((128, 248), (86, 254)), ((132, 246), (90, 250))]), 3.0),
+    "plank-dodir-ramena": (dict(arms=[((250, 230), (250, G)), ((256, 230), (258, G))]), 1.6),
+    "mrtva-buba": (dict(legs=[((268, 230), (314, 234)), ((222, 196), (266, 196))],
+                        arms=[((120, 222), (88, 210)), ((150, 206), (150, 168))]), 3.0),
+    "supermen": (dict(H=(292, 238), arms=[((306, 242), (342, 246)), ((308, 244), (344, 248))],
+                      legs=[((150, 246), (106, 250)), ((152, 248), (108, 252))]), 3.0),
+    "penjac-polako": (dict(legs=[((214, 222), (184, 252)), ((130, 242), (90, 258))]), 2.0),
+    "bicikl": (dict(legs=[((226, 200), (266, 196)), ((276, 240), (320, 228))],
+                    arms=[((206, 202), (162, 200)), ((178, 194), (156, 188))]), 2.0),
+    "medvedje-puzanje": (shift(34), 2.0),
+    "rak-hodanje": (shift(34), 2.0),
+    "gusenica": (dict(N=(250, 206), P=(170, 228), H=None, legs=[((140, 244), (110, G)), ((144, 246), (116, G))],
+                      arms=[((252, 232), (254, G)), ((258, 234), (262, G))]), 3.2),
+    "stajanje-jedna-noga": (None, 0),
+    "avion": (dict(N=(206, 90), P=(200, 166), legs=[((188, 212), (178, 250)), ((202, 216), (202, G))],
+                   arms=[((236, 112), (262, 124)), ((240, 116), (266, 128))]), 3.2),
+    "mekani-poskoci": (shift(0, 14), 0.9),
+    "tihi-cucanj-skok": (dict(N=(204, 136), P=(168, 204), legs=[((218, 206), (202, G)), ((224, 208), (208, G))],
+                              arms=[((238, 142), (270, 140)), ((242, 146), (274, 144))]), 1.6),
+    "cucanj-skok": (dict(N=(204, 140), P=(168, 206), legs=[((218, 206), (202, G)), ((224, 208), (208, G))],
+                         arms=[((180, 168), (160, 190)), ((184, 172), (164, 194))]), 1.4),
+    "zvezdasti-skokovi": (dict(legs=[((196, 198), (194, 236)), ((204, 198), (206, 236))],
+                               arms=[((194, 118), (190, 150)), ((206, 118), (210, 150))]), 1.2),
+    "pajacovi": (dict(legs=[((196, 214), (194, G)), ((204, 214), (206, G))],
+                      arms=[((192, 126), (188, 158)), ((208, 126), (212, 158))]), 1.0),
+    "klizacki-skokovi": (mirror(200), 1.6),
+    "skok-u-dalj": (dict(N=(132, 150), P=(100, 208), legs=[((150, 208), (134, G)), ((156, 210), (140, G))],
+                         arms=[((106, 180), (84, 196)), ((110, 184), (88, 200))]), 1.8),
+    "skok-sa-kolenima": (dict(N=(200, 92), P=(200, 166), legs=[((198, 214), (196, G)), ((204, 214), (206, G))],
+                              arms=[((186, 124), (176, 154)), ((214, 124), (224, 154))]), 1.2),
+    "zabji-skokovi": (dict(N=(300, 110), P=(250, 142), legs=[((215, 160), (180, 176)), ((218, 166), (184, 182))],
+                           arms=[((330, 96), (360, 84)), ((334, 102), (364, 90))]), 1.6),
+    "sprint": (dict(legs=[((236, 172), (222, 218)), ((172, 200), (136, 228))],
+                    arms=[((190, 114), (172, 142)), ((236, 112), (258, 96))]), 0.7),
+    "brza-stopala": (dict(legs=[((182, 206), (186, 244)), ((214, 214), (214, G))]), 0.5),
+    "penjac-brzo": (dict(legs=[((214, 222), (184, 252)), ((130, 242), (90, 258))]), 0.8),
+    "nova-vezba": (None, 0),
+    "marsiranje": (dict(legs=[((246, 166), (240, 216)), ((202, 210), (202, G))],
+                        arms=[((186, 114), (172, 142)), ((222, 112), (242, 128))]), 1.4),
+    "kruzenje-rukama": (dict(arms=[((170, 64), (146, 40)), ((230, 64), (254, 40))]), 1.2),
+    "kruzenje-kukovima": (mirror(200), 2.0),
+    "zamasi-nogama": (dict(legs=[((200, 210), (200, G)), ((170, 204), (146, 244))]), 1.8),
+}
+
+
 def main():
-    os.makedirs(OUT, exist_ok=True)
+    os.makedirs(os.path.join(OUT, "anim"), exist_ok=True)
     for slug, (title, pose) in POSES.items():
         with open(os.path.join(OUT, slug + ".svg"), "w", encoding="utf-8") as f:
             f.write(svg(title, pose))
-    print(f"wrote {len(POSES)} images to {os.path.normpath(OUT)}")
+        change, dur = ANIM.get(slug, (None, 0))
+        q = derive(pose, change) if change else None
+        if q is not None and q.get("H") is None:
+            q.pop("H", None)
+        with open(os.path.join(OUT, "anim", slug + ".svg"), "w", encoding="utf-8") as f:
+            f.write(svg(title, pose, q, dur) if q else svg(title, pose))
+    print(f"wrote {len(POSES)} images (+ moving versions in images/anim)")
 
 
 if __name__ == "__main__":
