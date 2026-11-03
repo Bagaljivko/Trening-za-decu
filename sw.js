@@ -2,7 +2,7 @@
 // The page itself is fetched from the network first, so a new version shows up on the first open;
 // everything else comes from the cache and is refreshed in the background.
 // Every release: python3 tools/release.py (bumps CACHE here and APP_VERSION in index.html).
-const CACHE = "trening-za-decu-v3";
+const CACHE = "trening-za-decu-v4";
 const SHELL = [
   "./",
   "index.html",
