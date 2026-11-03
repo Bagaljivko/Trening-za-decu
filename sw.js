@@ -1,10 +1,12 @@
 // Offline support.
 // The page itself is fetched from the network first, so a new version shows up on the first open;
-// everything else comes from the cache and is refreshed in the background. Bump CACHE when files change.
-const CACHE = "trening-za-decu-v2";
+// everything else comes from the cache and is refreshed in the background.
+// Every release: python3 tools/release.py (bumps CACHE here and APP_VERSION in index.html).
+const CACHE = "trening-za-decu-v3";
 const SHELL = [
   "./",
   "index.html",
+  "qr.js",
   "manifest.webmanifest",
   "icons/icon-192.png",
   "icons/icon-512.png",
@@ -96,7 +98,11 @@ const SHELL = [
   "images/anim/zid-sed.svg",
   "images/anim/zvezdasti-skokovi.svg"
 ];
-self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
+// cache: "reload" skips the browser's own HTTP cache, so a new version really gets the new files
+self.addEventListener("install", e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL.map(u => new Request(u, {cache: "reload"})))).then(() => self.skipWaiting()));
+});
+self.addEventListener("message", e => { if (e.data === "SKIP_WAITING") self.skipWaiting(); });
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });

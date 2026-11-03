@@ -301,6 +301,19 @@ body.focusing .nav{display:none}
 .bar b{width:34px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
 .sub-h{font-size:15px;font-weight:600;margin:24px 0 0}
 
+/* app: version, update, share */
+.pill{flex:none;display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 18px;border-radius:24px;border:1.5px solid var(--line);font-size:15.5px;font-weight:600;color:var(--ink);white-space:nowrap}
+.pill:active{background:var(--s2)}
+.pill:disabled{opacity:.6}
+.pill svg{width:20px;height:20px;fill:currentColor}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid var(--dim);border-top-color:var(--neon-txt);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.qr-box{background:#fff;border-radius:18px;padding:10px;width:min(280px,72vw);margin:8px auto 14px}
+.qr-svg{display:block;width:100%;height:auto}
+.qr-hint{text-align:center;margin:0 0 8px;font-size:16px}
+.qr-url{text-align:center;font-size:13.5px;color:var(--mut);word-break:break-all;margin:0}
+.qr-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:18px}
+
 /* tablets */
 @media (min-width:700px){
   body{font-size:18px}
@@ -360,6 +373,7 @@ body.focusing .nav{display:none}
   <button data-tab="istorija"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Istorija<i></i></button>
 </div></nav>
 <input type="file" id="restore" accept=".json,application/json" class="sr">
+<script src="qr.js" defer></script>
 <script>
 /* ---------- exercises ----------
    type: "reps" (ponavljanja) or "sec" (sekundi); amount: default per set
@@ -437,6 +451,7 @@ const ORDER = ["noge","ruke","stomak","zivotinje","ravnoteza","skokovi"];
 const PLACES = {in:"Unutra", out:"Napolju"};
 const MAX_REPS = 15, MAX_SEC = 60, MIN_SEC = 5;
 const LS_KEY = "trening-za-decu-v1";
+const APP_VERSION = "1.3";   // keep in step with CACHE in sw.js (tools/release.py does both)
 const SAFETY = "Zagrej se pre treninga i koristi stabilnu stolicu koja ne klizi.";
 const LOCALE = "sr-Latn-RS";
 const $app = document.getElementById("app");
@@ -445,7 +460,7 @@ let S = {sessions:[], plan:null, settings:{count:7, mute:false, restSet:60, rest
 let focus = null, selSet = null, howOpen = false;
 let rest = null, hold = null, actx = null, wakeLock = null;
 let tab = "danas", filterCat = "all", filterPlace = "all", query = "", sheet = null;
-let warm = null, party = null;   // warm-up in progress, end-of-workout celebration
+let warm = null, party = null, updating = false;   // warm-up in progress, end-of-workout celebration
 
 /* ---------- data ---------- */
 function loadLocal(){
@@ -812,6 +827,8 @@ function viewHistory(){
       <div class="srow"><span>Odmor pre sledeće vežbe</span><div class="chips wrap" style="margin:0">${REST_CHOICES.map(v=>`<button class="chip${S.settings.restEx===v?" on":""}" data-act="rs" data-k="restEx" data-g="${v}">${v} s</button>`).join("")}</div></div>
       <div class="srow"><span>Zvuk</span>${muteBtn()}</div>
       <p class="fine">Na iPhone-u i iPad-u zvuk se ne čuje kada je uključen nečujni režim (prekidač sa strane ili zvono u kontrolnom centru). Vibracija radi samo na Android telefonima.</p>
+      <div class="srow"><span>Aplikacija, verzija ${APP_VERSION}</span><button class="pill" data-act="update" id="bUpdate">Proveri ažuriranja</button></div>
+      <div class="srow"><span>Podeli sa drugim telefonom ili tabletom</span><button class="pill" data-act="shareapp" aria-label="Podeli aplikaciju (QR kod)">${QR_ICON}Podeli</button></div>
       <div class="srow"><button class="link" data-act="export">Sačuvaj rezervnu kopiju</button><button class="link" data-act="import">Vrati iz kopije</button></div>
       <p class="fine">Treninzi se čuvaju samo na ovom uređaju. S vremena na vreme sačuvaj rezervnu kopiju. Pomoću nje možeš da preneseš treninge na novi telefon ili tablet.</p></section>`;
 }
@@ -835,10 +852,21 @@ function parentsSection(){
     <div class="bars">${ORDER.map(c=>`<div class="bar"><span>${CATS[c]}</span><div><i style="width:${Math.round(sets[c]/mx*100)}%"></i></div><b>${sets[c]}</b></div>`).join("")}</div>
     ${recent.length ? `<p class="fine">Najmanje vežbano: <b>${CATS[least].toLowerCase()}</b>.</p>` : ""}</section>`;
 }
+const QR_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h8v8H3zm2 2v4h4V5zm8-2h8v8h-8zm2 2v4h4V5zM3 13h8v8H3zm2 2v4h4v-4zm8-2h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2zm4 0h2v4h-4v-2h2zm0-4h2v2h-2zm2 2h2v2h-2zM6 6h2v2H6zm10 0h2v2h-2zM6 16h2v2H6z"/></svg>';
+// address to share, without #tab, e.g. https://bagaljivko.github.io/Trening-za-decu/
+const appUrl = () => location.origin + location.pathname.replace(/index\.html$/, "");
 function viewSheet(){
   if(!sheet) return "";
   const wrap = (title, body) => `<div class="sheet-bg" data-act="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}" data-stop>
     <div class="sheet-h"><h2>${esc(title)}</h2><button class="iconbtn" data-act="close" aria-label="Zatvori">${ICON.x}</button></div><div class="sheet-b">${body}</div></div></div>`;
+  if(sheet.type==="share"){
+    const url = appUrl();
+    const qr = window.qrSVG ? qrSVG(url, {label:"QR kod sa linkom ka aplikaciji Trening za decu"}) : "";
+    return wrap("Podeli aplikaciju", `<div class="qr-box">${qr}</div>
+      <p class="qr-hint">Skeniraj kamerom drugog telefona ili tableta. Otvoriće se Trening za decu, pa ga dodaj na početni ekran.</p>
+      <p class="qr-url">${esc(url)}</p>
+      <div class="qr-btns">${navigator.share ? `<button class="pill" data-act="sharesend">Pošalji link</button>` : ""}<button class="pill" data-act="sharecopy">Kopiraj link</button></div>`);
+  }
   if(sheet.type==="place"){
     const cur = S.plan?.place;
     return wrap("Gde treniraš danas?", `<div class="places">
@@ -941,6 +969,10 @@ $app.addEventListener("click", e=>{
       S.plan.items[focus.i] = buildItem(n.id); selSet = null; howOpen = false; persistPlan(); render(); toast(`Bravo! Sad: ${n.name}`); break; }
     case "rs": S.settings[b.dataset.k] = +b.dataset.g; persistSettings(); render(); break;
     case "backup": exportBackup(); break;
+    case "shareapp": sheet = {type:"share"}; render(); break;
+    case "sharesend": navigator.share?.({title:"Trening za decu", text:"Trening za decu: vežbe za decu, unutra i napolju", url:appUrl()}).catch(()=>{}); break;
+    case "sharecopy": navigator.clipboard?.writeText(appUrl()).then(()=>toast("Link je kopiran"), ()=>toast(appUrl())) ?? toast(appUrl()); break;
+    case "update": checkUpdateClick(b); break;
     case "partyclose": party = null; render(false); window.scrollTo(0,0); break;
     case "editex": { const c = S.custom.find(x=>x.id===b.dataset.id); if(!c) break;
       sheet = {type:"newex", edit:c.id, name:c.name, cat:c.cat, kind:c.type, place:c.place, jump:c.jump?"yes":"no"}; render(); break; }
@@ -1097,6 +1129,30 @@ function trainingStats(){
 }
 function earnedBadges(){ const x = trainingStats(); return new Set(BADGES.filter(b=>b.t(x)).map(b=>b.id)); }
 const badgeHTML = (b, on) => `<div class="badge${on?" on":""}"><div class="medal">${b.g}</div>${esc(b.name)}</div>`;
+// "Proveri ažuriranja": ask the server for a newer service worker; if there is one, it installs and the page reloads.
+// Returns 'updating', 'latest', 'offline' or 'unsupported'.
+async function checkForUpdate(){
+  if(!("serviceWorker" in navigator)) return "unsupported";
+  if(navigator.onLine === false) return "offline";
+  const reg = await navigator.serviceWorker.getRegistration();
+  if(!reg) return "unsupported";
+  try{ await reg.update(); }catch(_){ return "offline"; }
+  const w = reg.installing || reg.waiting;
+  if(!w) return navigator.serviceWorker.controller ? "latest" : "unsupported";
+  updating = true;
+  setTimeout(()=>{ if(updating) location.reload(); }, 60000);   // fallback if the switch is slow
+  if(w.state === "installed") w.postMessage("SKIP_WAITING");
+  w.addEventListener("statechange", ()=>{ if(w.state === "installed") w.postMessage("SKIP_WAITING"); });
+  return "updating";
+}
+async function checkUpdateClick(btn){
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Proveravam…';
+  let r = "unsupported";
+  try{ r = await checkForUpdate(); }catch(_){}
+  if(r === "updating"){ btn.innerHTML = '<span class="spin"></span>Učitavam novu verziju…'; return; }
+  btn.disabled = false; btn.textContent = "Proveri ažuriranja";
+  toast(r === "latest" ? `Imaš najnoviju verziju (${APP_VERSION}).` : r === "offline" ? "Nema interneta. Pokušaj ponovo kad budeš na mreži." : "Provera nije moguća u ovom pregledaču. Zatvori i ponovo otvori aplikaciju.");
+}
 function askPersist(){ try{ navigator.storage?.persist?.(); }catch(_){} }
 async function exportBackup(){
   const mark = () => { S.settings.backupAt = Date.now(); S.settings.backupN = S.sessions.length; saveLocal(); if(!focus) render(); };
@@ -1293,6 +1349,7 @@ if("serviceWorker" in navigator){
   const hadSW = !!navigator.serviceWorker.controller;
   // a new version was installed: reload once, but never in the middle of a workout screen
   navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+    if(updating){ location.reload(); return; }
     if(!hadSW) return;
     const reload = () => location.reload();
     if(!focus && !warm && !hold && !party && !sheet) reload();
