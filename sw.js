@@ -2,11 +2,12 @@
 // The page itself is fetched from the network first, so a new version shows up on the first open;
 // everything else comes from the cache and is refreshed in the background.
 // Every release: python3 tools/release.py (bumps CACHE here and APP_VERSION in index.html).
-const CACHE = "trening-za-decu-v4";
+const CACHE = "trening-za-decu-v5";
 const SHELL = [
   "./",
   "index.html",
   "qr.js",
+  "drive.js",
   "manifest.webmanifest",
   "icons/icon-192.png",
   "icons/icon-512.png",
@@ -110,14 +111,19 @@ self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
   if (req.mode === "navigate") {
+    // newest page from the network, but never wait more than 3 s (weak signal outside): then the saved copy opens
+    // and the download finishes in the background for next time
     e.respondWith(caches.open(CACHE).then(async cache => {
-      try {
-        const res = await fetch(req, {cache: "no-cache"});
-        if (res && res.ok) cache.put("index.html", res.clone());
+      const saved = (await cache.match("index.html")) || (await cache.match("./"));
+      const net = fetch(req, {cache: "no-cache"}).then(res => {
+        if (res && res.ok) return cache.put("index.html", res.clone()).then(() => res);
         return res;
-      } catch (_) {
-        return (await cache.match("index.html")) || (await cache.match("./")) || Response.error();
-      }
+      });
+      e.waitUntil(net.catch(() => {}));
+      if (!saved) return net.catch(() => Response.error());
+      const timeout = new Promise(r => setTimeout(() => r(null), 3000));
+      const res = await Promise.race([net.catch(() => null), timeout]);
+      return res || saved;
     }));
     return;
   }

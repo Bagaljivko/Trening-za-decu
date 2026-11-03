@@ -16,7 +16,7 @@ major, minor = int(m.group(1)), int(m.group(2)) + 1
 html = html.replace(m.group(0), f'const APP_VERSION = "{major}.{minor}";')
 open("index.html", "w", encoding="utf-8").write(html)
 
-files = ["./", "index.html", "qr.js", "manifest.webmanifest",
+files = ["./", "index.html", "qr.js", "drive.js", "manifest.webmanifest",
          "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png",
          "fonts/inter-latin-wght-normal.woff2", "fonts/inter-latin-ext-wght-normal.woff2"]
 files += ["images/" + f for f in sorted(os.listdir("images")) if f.endswith(".svg")]

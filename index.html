@@ -6,6 +6,7 @@
 <title>Trening za decu</title>
 <meta name="description" content="Trening sa sopstvenom težinom za decu: vežbe unutra ili napolju, tajmer za odmor i nedeljni ciljevi.">
 <meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="light dark">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -22,6 +23,13 @@
     document.addEventListener('touchmove', function (ev) {
       if (ev.touches.length > 1 || (ev.scale !== undefined && ev.scale !== 1)) ev.preventDefault();
     }, { passive: false });
+    // no long-press / right-click menus, except in fields where you type
+    document.addEventListener('contextmenu', function (ev) {
+      if (!(ev.target.closest && ev.target.closest('input, textarea'))) ev.preventDefault();
+    });
+    // Android/Chrome "install" offer, kept for the Instaliraj button in Podešavanja
+    window.addEventListener('beforeinstallprompt', function (ev) { ev.preventDefault(); window.__installPrompt = ev; });
+    window.addEventListener('appinstalled', function () { window.__installPrompt = null; });
   })();
 </script>
 <link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -95,7 +103,8 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0}
 /* lists */
 .list{margin:24px 24px 0}
 .sec{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:14px;color:var(--mut);margin-bottom:2px}
-.sec .lnks{display:flex;gap:18px}
+.sec{flex-wrap:wrap;row-gap:0}
+.sec .lnks{display:flex;gap:18px;white-space:nowrap}
 .row{display:flex;align-items:center;gap:14px;width:100%;min-height:72px;text-align:left;padding:10px 0;border-bottom:1px solid var(--line)}
 .row .n{width:18px;font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums}
 .thumb{flex:none;width:68px;height:51px;border-radius:12px;background:var(--pic);display:block;object-fit:contain}
@@ -314,13 +323,12 @@ body.focusing .nav{display:none}
 .bar b{width:34px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
 .sub-h{font-size:15px;font-weight:600;margin:24px 0 0}
 
-/* Native feel: a long press on buttons, pictures and other controls doesn't select text or open the iOS "Copy / Look Up" menu.
-   Input fields, exercise descriptions and the share link stay selectable. */
-button, .nav, .chip, .row, .set, .sg, .place, .badge, .medal, .fpic, .thumb, .ftop, .rest, .prep, .hero, .month, .stats, .weeks, .wl, .wu-t, .sec, .tag, .harder, .banner, .party, .qr-box, img, svg {
-  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
-}
-img { -webkit-user-drag: none; }
-input, textarea, .how, .wu-desc, .qr-url { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+/* Native feel: nothing can be selected or long-pressed (no "Copy / Look Up" or "Save image" menus),
+   except the fields where you type. No pull-to-refresh or rubber-band bounce. */
+*{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+img{-webkit-user-drag:none}
+html,body{overscroll-behavior:none}
 
 /* app: version, update, share */
 .pill{flex:none;display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 18px;border-radius:24px;border:1.5px solid var(--line);font-size:15.5px;font-weight:600;color:var(--ink);white-space:nowrap}
@@ -395,6 +403,7 @@ input, textarea, .how, .wu-desc, .qr-url { -webkit-user-select: text; user-selec
 </div></nav>
 <input type="file" id="restore" accept=".json,application/json" class="sr">
 <script src="qr.js" defer></script>
+<script src="drive.js" defer></script>
 <script>
 /* ---------- exercises ----------
    type: "reps" (ponavljanja) or "sec" (sekundi); amount: default per set
@@ -472,12 +481,12 @@ const ORDER = ["noge","ruke","stomak","zivotinje","ravnoteza","skokovi"];
 const PLACES = {in:"Unutra", out:"Napolju"};
 const MAX_REPS = 15, MAX_SEC = 60, MIN_SEC = 5;
 const LS_KEY = "trening-za-decu-v1";
-const APP_VERSION = "1.4";   // keep in step with CACHE in sw.js (tools/release.py does both)
+const APP_VERSION = "1.5";   // keep in step with CACHE in sw.js (tools/release.py does both)
 const SAFETY = "Zagrej se pre treninga i koristi stabilnu stolicu koja ne klizi.";
 const LOCALE = "sr-Latn-RS";
 const $app = document.getElementById("app");
 
-let S = {sessions:[], plan:null, settings:{count:7, mute:false, restSet:60, restEx:45, backupAt:0, backupN:0}, custom:[], updated:0};
+let S = {sessions:[], deleted:[], plan:null, settings:{count:7, mute:false, restSet:60, restEx:45, backupAt:0, backupN:0}, custom:[], updated:0};
 let focus = null, selSet = null, howOpen = false;
 let rest = null, hold = null, actx = null, wakeLock = null;
 let tab = "danas", filterCat = "all", filterPlace = "all", query = "", sheet = null;
@@ -723,8 +732,13 @@ function viewToday(){
   const num = S.sessions.length + 1;
   const head = `<header class="pad"><div class="eyebrow">${esc(longDate())}</div><h1>Trening ${num}</h1></header>`;
   if(!S.plan || !S.plan.items.length){
-    const n = S.sessions.length, needBackup = n >= 3 && (n - (S.settings.backupN||0) >= 8 || !S.settings.backupAt);
-    const banner = needBackup ? `<div class="banner"><span>Sačuvaj rezervnu kopiju treninga, da se ništa ne izgubi.</span><button data-act="backup">Sačuvaj</button></div>` : "";
+    const dv = window.Drive && Drive.available ? Drive.state() : null;
+    const n = S.sessions.length, needBackup = !(dv && dv.connected) && n >= 3 && (n - (S.settings.backupN||0) >= 8 || !S.settings.backupAt);
+    const reconnect = dv && dv.connected && dv.needsReconnect && dv.pending
+      ? `<div class="banner"><span>Veza sa Google Drive-om je istekla, pa poslednji treninzi nisu sačuvani na Drive-u.</span><button data-act="drvreconnect">Poveži</button></div>` : "";
+    const install = !isStandalone() && !S.settings.installSeen
+      ? `<div class="banner"><span>Instaliraj aplikaciju na početni ekran, da radi kao prava aplikacija i čuva treninge.</span><button data-act="installinfo">Kako?</button><button class="link" data-act="installlater" style="background:none;color:var(--mut);padding:0 4px">Kasnije</button></div>` : "";
+    const banner = reconnect || install || (needBackup ? `<div class="banner"><span>Sačuvaj rezervnu kopiju treninga, da se ništa ne izgubi.</span><button data-act="backup">Sačuvaj</button></div>` : "");
     return head + heroBlock() + safetyBlock() + banner + `<p class="lead">${S.sessions.length ? "Svaki trening je nov: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu." : "Napravi prvi trening: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu."}</p>
       <div class="dock"><button class="cta" data-act="gen">Napravi trening</button></div>`;
   }
@@ -760,7 +774,7 @@ function viewFocus(){
   else if(s.done) cta = `<button class="cta ghost" data-act="undo">Poništi seriju ${j+1}</button>`;
   else cta = timed ? `<button class="cta" data-act="hold">Kreni: ${esc(clampV(e, s.v))} s${e.side ? " " + esc(e.side) : ""}</button>` : `<button class="cta" data-act="complete">Serija ${j+1} gotova</button>`;
   const step = timed ? 5 : 1;
-  return `<div class="focus" data-swipe>
+  return `<div class="focus" data-swipe data-key="f${i}:${esc(it.ex)}">
     <div class="ftop"><button class="iconbtn" data-act="back" aria-label="Nazad na današnji trening">${ICON.x}</button><div class="segs">${segs}</div><span class="cnt">${i+1}/${items.length}</span></div>
     <div class="fmain">
       <div class="fpic">${picOf(e)}</div>
@@ -789,7 +803,7 @@ function harderBox(it){
 function viewWarm(){
   const w = warm, m = w.list[w.i], left = w.end - Date.now();
   const segs = w.list.map((x,k)=>`<span class="sg ${k<w.i?"d":""} ${k===w.i?"c":""}"></span>`).join("");
-  return `<div class="focus">
+  return `<div class="focus" data-key="w${w.i}:${m.img}">
     <div class="ftop"><button class="iconbtn" data-act="warmback" aria-label="Nazad">${ICON.x}</button><div class="segs">${segs}</div><span class="cnt">${w.i+1}/${w.list.length}</span></div>
     <div class="fmain">
       <div class="fpic">${picHTML(m.img, m.name)}</div>
@@ -840,6 +854,8 @@ function viewHistory(){
     <section class="list">${ss.map(s=>`<details class="sess"><summary><span><b>${esc(sessionTitle(s))}</b><small>${esc(fmtDate(s.date))}${s.place?", "+PLACES[s.place].toLowerCase():""}</small></span><span class="m">${s.items.length} ${pl(s.items.length, W.vezba)}</span></summary>
       <ul>${s.items.map(it=>`<li><span>${esc(exById(it.ex)?.name||"Nepoznata vežba")}</span><span>${esc(setSummary(it))}</span></li>`).join("")}</ul>
       <button class="link danger" data-act="delsess" data-id="${esc(s.id)}">Obriši ovaj trening</button></details>`).join("") || `<p class="lead" style="margin:0">Još nema treninga. Prvi je na kartici Danas.</p>`}</section>
+    ${installSection()}
+    ${driveSection()}
     ${badgesSection()}
     ${parentsSection()}
     <section class="settings"><h2>Podešavanja</h2>
@@ -939,10 +955,45 @@ function render(keepScroll=true){
   if(focus && (!S.plan || !S.plan.items[focus.i])) focus = null;
   if(warm && !S.plan) warm = null;
   document.body.classList.toggle("focusing", !!(focus || warm || party));
-  $app.innerHTML = party ? viewParty() : (warm ? viewWarm() : focus ? viewFocus() : tab==="danas" ? viewToday() : tab==="vezbe" ? viewExercises() : viewHistory()) + viewSheet();
+  const html = party ? viewParty() : (warm ? viewWarm() : focus ? viewFocus() : tab==="danas" ? viewToday() : tab==="vezbe" ? viewExercises() : viewHistory()) + viewSheet();
+  // same exercise still on screen: redraw everything except the moving picture, so its animation doesn't restart
+  const cur = $app.firstElementChild, tpl = document.createElement("template");
+  tpl.innerHTML = html;
+  const nf = tpl.content.firstElementChild;
+  if(!party && (focus || warm) && cur && nf && cur.dataset.key && cur.dataset.key === nf.dataset.key && cur.querySelector(".fpic")){
+    cur.querySelector(".ftop").replaceWith(nf.querySelector(".ftop"));
+    cur.querySelector(".fside").replaceWith(nf.querySelector(".fside"));
+    while(cur.nextSibling) cur.nextSibling.remove();
+    nf.remove();
+    $app.append(tpl.content);
+  } else $app.replaceChildren(tpl.content);
+  ensureTicker(); keepAwake(); syncHistory();
   document.querySelectorAll(".nav button").forEach(b=>b.setAttribute("aria-current", b.dataset.tab===tab ? "page" : "false"));
   if(keepScroll) window.scrollTo(0, y);
 }
+
+/* ---------- back button (Android) ----------
+   Every open layer (exercise screen, warm-up, celebration, a sheet) gets a history entry,
+   so the phone's back button closes that layer instead of leaving the app. */
+let hDepth = 0, skipPops = 0;
+function layerDepth(){ return ((focus || warm || party) ? 1 : 0) + (sheet ? 1 : 0); }
+function syncHistory(){
+  const d = layerDepth();
+  try{
+    while(hDepth < d){ history.pushState({layer:hDepth+1}, ""); hDepth++; }
+    if(hDepth > d){ skipPops += hDepth - d; const n = hDepth - d; hDepth = d; history.go(-n); }
+  }catch(_){}
+}
+window.addEventListener("popstate", ()=>{
+  if(skipPops > 0){ skipPops--; return; }
+  if(hDepth === 0) return;
+  hDepth--;
+  if(sheet) sheet = null;
+  else if(party) party = null;
+  else if(warm){ warm = null; }
+  else if(focus){ focus = null; }
+  render(false); window.scrollTo(0,0);
+});
 
 /* ---------- events ---------- */
 function openFocus(i){ focus = {i}; selSet = null; howOpen = false; render(false); window.scrollTo(0,0); }
@@ -990,6 +1041,13 @@ $app.addEventListener("click", e=>{
       S.plan.items[focus.i] = buildItem(n.id); selSet = null; howOpen = false; persistPlan(); render(); toast(`Bravo! Sad: ${n.name}`); break; }
     case "rs": S.settings[b.dataset.k] = +b.dataset.g; persistSettings(); render(); break;
     case "backup": exportBackup(); break;
+    case "install": promptInstall(); break;
+    case "drvconnect": driveAction(()=>Drive.connect(), "Google Drive je povezan"); break;
+    case "drvreconnect": driveAction(()=>Drive.reconnect(), "Google Drive je ponovo povezan"); break;
+    case "drvsync": driveAction(()=>Drive.syncNow(), "Rezervna kopija je sačuvana"); break;
+    case "drvoff": if(confirm("Prekinuti vezu sa Google Drive-om? Automatska kopija se gasi. Fajl koji je već na Drive-u ostaje tamo.")){ Drive.disconnect(); toast("Veza sa Google Drive-om je prekinuta"); render(); } break;
+    case "installinfo": tab = "istorija"; S.settings.installSeen = true; saveLocal(); render(false); setTimeout(()=>document.getElementById("install")?.scrollIntoView({block:"start"}), 50); break;
+    case "installlater": S.settings.installSeen = true; saveLocal(); render(); break;
     case "shareapp": sheet = {type:"share"}; render(); break;
     case "sharesend": navigator.share?.({title:"Trening za decu", text:"Trening za decu: vežbe za decu, unutra i napolju", url:appUrl()}).catch(()=>{}); break;
     case "sharecopy": navigator.clipboard?.writeText(appUrl()).then(()=>toast("Link je kopiran"), ()=>toast(appUrl())) ?? toast(appUrl()); break;
@@ -1000,7 +1058,8 @@ $app.addEventListener("click", e=>{
     case "delex": {
       const c = S.custom.find(x=>x.id===b.dataset.id); if(!c || !confirm(`Obrisati vežbu „${c.name}“?`)) break;
       const used = S.sessions.some(x=>x.items.some(it=>it.ex===c.id)) || (S.plan?.items||[]).some(it=>it.ex===c.id);
-      if(used) c.deleted = true; else S.custom = S.custom.filter(x=>x.id!==c.id);
+      if(used){ c.deleted = true; c.updated = Date.now(); } else { S.custom = S.custom.filter(x=>x.id!==c.id); forget(c.id); }
+      driveChanged();
       persistSettings(); sheet = null; render(); toast("Vežba je obrisana"); break; }
     case "back": focus = null; render(false); window.scrollTo(0,0); break;
     case "jump": focus.i = i; selSet = null; howOpen = false; render(false); break;
@@ -1048,7 +1107,7 @@ $app.addEventListener("click", e=>{
     case "fg": filterCat = b.dataset.g; render(); break;
     case "fp": filterPlace = b.dataset.g; render(); break;
     case "cnt": S.settings.count = clampCount(S.settings.count + +b.dataset.d); persistSettings(); render(); break;
-    case "delsess": if(confirm("Obrisati ovaj trening iz istorije?")){ const id = b.dataset.id; S.sessions = S.sessions.filter(s=>s.id!==id); saveLocal(); render(); } break;
+    case "delsess": if(confirm("Obrisati ovaj trening iz istorije?")){ const id = b.dataset.id; S.sessions = S.sessions.filter(s=>s.id!==id); forget(id); saveLocal(); driveChanged(); render(); } break;
     case "newex": sheet = {type:"newex", edit:null, name:"", cat:"noge", kind:"reps", place:"in", jump:"no"}; render(); setTimeout(()=>document.getElementById("nx-name")?.focus(), 50); break;
     case "nx": {
       sheet.name = document.getElementById("nx-name").value;
@@ -1059,8 +1118,9 @@ $app.addEventListener("click", e=>{
       const nm = document.getElementById("nx-name").value.trim(); if(!nm) return toast("Prvo upiši naziv");
       const kind = sheet.kind, jump = sheet.jump==="yes" || sheet.cat==="skokovi";
       const old = sheet.edit && S.custom.find(x=>x.id===sheet.edit);
-      if(old) Object.assign(old, {name:nm, cat:sheet.cat, type:kind, amount:old.type===kind ? old.amount : (kind==="sec" ? 20 : 10), place:sheet.place, jump});
-      else S.custom.push({id:"c"+Date.now(), name:nm, cat:sheet.cat, type:kind, amount:kind==="sec" ? 20 : 10, place:sheet.place, jump, desc:""});
+      if(old) Object.assign(old, {name:nm, cat:sheet.cat, type:kind, amount:old.type===kind ? old.amount : (kind==="sec" ? 20 : 10), place:sheet.place, jump, updated:Date.now()});
+      else S.custom.push({id:"c"+Date.now(), name:nm, cat:sheet.cat, type:kind, amount:kind==="sec" ? 20 : 10, place:sheet.place, jump, desc:"", updated:Date.now()});
+      driveChanged();
       persistSettings(); sheet = null; render(); toast(old ? "Izmene su sačuvane" : "Vežba je sačuvana"); break; }
     case "export": exportBackup(); break;
     case "import": document.getElementById("restore").click(); break;
@@ -1088,7 +1148,7 @@ function finish(){
   const min = start ? Math.max(1, Math.round((Date.now()-start)/60000)) : null;
   const s = {id:Date.now().toString(36), date:new Date().toISOString(), place:S.plan.place, items};
   if(min && min < 240) s.min = min;
-  S.sessions.push(s); S.plan = null; focus = null; rest = null; hold = null; warm = null; releaseWake(); tab = "danas"; persistPlan();
+  S.sessions.push(s); S.plan = null; focus = null; rest = null; hold = null; warm = null; releaseWake(true); tab = "danas"; persistPlan(); driveChanged();
   const after = earnedBadges();
   party = {n:S.sessions.length, ex:items.length, sets:items.reduce((a,it)=>a+it.sets.length,0), min:s.min, records,
            badges:BADGES.filter(b=>after.has(b.id) && !before.has(b.id))};
@@ -1174,10 +1234,77 @@ async function checkUpdateClick(btn){
   btn.disabled = false; btn.textContent = "Proveri ažuriranja";
   toast(r === "latest" ? `Imaš najnoviju verziju (${APP_VERSION}).` : r === "offline" ? "Nema interneta. Pokušaj ponovo kad budeš na mreži." : "Provera nije moguća u ovom pregledaču. Zatvori i ponovo otvori aplikaciju.");
 }
+// ---- install (same approach as Gitara) ----
+const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+function installSection(){
+  if(isStandalone()) return "";
+  const how = isIOS()
+    ? `U Safariju dodirni <b>Podeli</b> (kvadrat sa strelicom), pa <b>Dodaj na početni ekran</b>.`
+    : window.__installPrompt ? `Dodirni <b>Instaliraj</b> i aplikacija dobija svoju ikonicu.` : `U Chrome-u otvori meni (⋮) i izaberi <b>Instaliraj aplikaciju</b> ili <b>Dodaj na početni ekran</b>.`;
+  return `<section class="settings" id="install"><h2>Instaliraj aplikaciju</h2>
+    <p class="fine" style="font-size:15px;color:var(--ink)">${how}</p>
+    ${!isIOS() && window.__installPrompt ? `<button class="pill" data-act="install" style="margin-top:12px">Instaliraj</button>` : ""}
+    <p class="fine">Važno: treniraj uvek iz ikonice. Na iPhone-u i iPad-u, Safari i ikonica čuvaju treninge odvojeno, pa treninzi urađeni u Safariju neće biti u instaliranoj aplikaciji.</p></section>`;
+}
+async function promptInstall(){
+  const d = window.__installPrompt; if(!d) return;
+  window.__installPrompt = null; d.prompt();
+  const r = await d.userChoice.catch(()=>null);
+  if(r && r.outcome === "accepted") toast("Aplikacija je instalirana");
+  render();
+}
+// ---- Google Drive section (logic in drive.js) ----
+function driveSection(){
+  const D = window.Drive; if(!D || !D.available) return "";
+  const d = D.state();
+  if(!d.connected) return `<section class="settings"><h2>Google Drive</h2>
+    <p class="fine" style="font-size:15px;color:var(--ink)">Automatska rezervna kopija treninga u folder „Trening za decu“ na tvom Google Drive-u. Ako povežeš isti nalog na telefonu i tabletu, treninzi sa oba uređaja se spajaju.</p>
+    <p class="fine">Aplikacija vidi samo fajlove koje sama napravi.</p>
+    <button class="pill" data-act="drvconnect" style="margin-top:12px">Poveži Google Drive</button></section>`;
+  const when = d.lastBackup ? new Date(d.lastBackup).toLocaleString(LOCALE, {day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit"}) : "još nije napravljena";
+  const status = d.busy ? "Pravim rezervnu kopiju…" : d.needsReconnect ? "Veza je istekla. Dodirni „Ponovo poveži“." : d.pending ? (d.lastError || "Izmene čekaju na rezervnu kopiju…") : "";
+  return `<section class="settings"><h2>Google Drive</h2>
+    <p class="fine" style="font-size:15px;color:var(--ink)">Povezano: <b>${esc(d.email || "Google nalog")}</b></p>
+    <p class="fine">Poslednja rezervna kopija: ${esc(when)}</p>${status ? `<p class="fine" style="color:var(--warn-ink)">${esc(status)}</p>` : ""}
+    <div class="qr-btns" style="justify-content:flex-start">${d.needsReconnect ? `<button class="pill" data-act="drvreconnect">Ponovo poveži</button>` : `<button class="pill" data-act="drvsync" ${d.busy?"disabled":""}>Sinhronizuj sad</button>`}<button class="pill" data-act="drvoff">Prekini vezu</button></div>
+    <p class="fine">Kopija se pravi sama posle svakog treninga. Treninzi sa drugog uređaja stižu kada se ovde napravi kopija ili dodirneš „Sinhronizuj sad“.</p></section>`;
+}
+window.onDriveChange = () => { if(!focus && !warm && !party && !sheet && (tab === "istorija" || tab === "danas")) render(); };
+async function driveAction(fn, ok){
+  try{ await fn(); if(ok) toast(ok); }
+  catch(e){ toast(e && e.message ? e.message : "Nije uspelo. Pokušaj ponovo."); }
+  render();
+}
 function askPersist(){ try{ navigator.storage?.persist?.(); }catch(_){} }
+// ---- backup data, shared by the file backup and Google Drive ----
+function backupData(){
+  return {app:"trening-za-decu", version:1, exportedAt:new Date().toISOString(), sessions:S.sessions, custom:S.custom, deleted:S.deleted||[], settings:S.settings};
+}
+// remember deleted workouts/exercises, so a copy from another device doesn't bring them back
+function forget(id){ S.deleted = (S.deleted||[]).concat(id).slice(-1000); }
+// add workouts and own exercises from another copy (file or Drive); returns how many workouts were added
+function mergeData(v){
+  const gone = new Set([...(S.deleted||[]), ...(Array.isArray(v.deleted) ? v.deleted : [])]);
+  S.deleted = [...gone].slice(-1000);
+  S.sessions = S.sessions.filter(x=>!gone.has(x.id));
+  S.custom = S.custom.filter(x=>!gone.has(x.id));
+  const have = new Set(S.sessions.map(x=>x.id)); let added = 0;
+  for(const x of Array.isArray(v.sessions) ? v.sessions : []){
+    if(!x || typeof x.id!=="string" || gone.has(x.id) || have.has(x.id) || !x.date || !Array.isArray(x.items)) continue;
+    S.sessions.push(x); have.add(x.id); added++;
+  }
+  for(const c of Array.isArray(v.custom) ? v.custom : []){
+    if(!c || typeof c.id!=="string" || gone.has(c.id)) continue;
+    const mine = S.custom.find(x=>x.id===c.id);
+    if(!mine) S.custom.push(c); else if((c.updated||0) > (mine.updated||0)) Object.assign(mine, c);
+  }
+  return added;
+}
+const driveChanged = () => { try{ window.Drive?.changed(); }catch(_){} };
 async function exportBackup(){
   const mark = () => { S.settings.backupAt = Date.now(); S.settings.backupN = S.sessions.length; saveLocal(); if(!focus) render(); };
-  const data = JSON.stringify({app:"trening-za-decu", version:1, sessions:S.sessions, custom:S.custom, settings:S.settings}, null, 1);
+  const data = JSON.stringify(backupData(), null, 1);
   const name = "trening-kopija-" + new Date().toISOString().slice(0,10) + ".json";
   try{
     const file = new File([data], name, {type:"application/json"});
@@ -1192,11 +1319,9 @@ document.getElementById("restore").addEventListener("change", async e=>{
   try{
     const v = JSON.parse(await f.text());
     if(v.app!=="trening-za-decu") throw 0;
-    const have = new Set(S.sessions.map(s=>s.id)); let added = 0;
-    for(const s of v.sessions||[]) if(!have.has(s.id)){ S.sessions.push(s); added++; }
-    (v.custom||[]).forEach(c=>{ if(!S.custom.find(x=>x.id===c.id)) S.custom.push(c); });
+    const added = mergeData(v);
     if(v.settings) S.settings = Object.assign(S.settings, v.settings, {count:clampCount(v.settings.count)});
-    saveLocal(); render(); toast(added ? `Vraćeno treninga: ${added}` : "U toj kopiji nema ničeg novog");
+    saveLocal(); driveChanged(); render(); toast(added ? `Vraćeno treninga: ${added}` : "U toj kopiji nema ničeg novog");
   }catch(_){ toast("Taj fajl nije rezervna kopija treninga"); }
   e.target.value = "";
 });
@@ -1248,8 +1373,22 @@ function countdownBeeps(obj, key, leftMs, freq=660){
   if(sec>=1 && sec<=3){ obj.beeps = obj.beeps || {}; const k = key+":"+sec; if(!obj.beeps[k]){ obj.beeps[k] = 1; beep(freq); } }
 }
 const buzz = (p=[250,120,250]) => { try{ navigator.vibrate && navigator.vibrate(p); }catch(_){} };
-async function holdWake(){ try{ if("wakeLock" in navigator && !wakeLock){ wakeLock = await navigator.wakeLock.request("screen"); wakeLock.addEventListener?.("release", ()=>{ wakeLock = null; }); } }catch(_){ wakeLock = null; } }
-function releaseWake(){ try{ wakeLock?.release(); }catch(_){} wakeLock = null; }
+// only one "keep the screen on" request at a time; if the workout ended while it was being granted, let go right away
+let wakePending = false;
+async function holdWake(){
+  if(!("wakeLock" in navigator) || wakeLock || wakePending) return;
+  wakePending = true;
+  try{
+    const l = await navigator.wakeLock.request("screen");
+    l.addEventListener?.("release", ()=>{ if(wakeLock === l) wakeLock = null; });
+    wakeLock = l;
+    if(!(focus || warm || hold || (rest && !rest.over))) releaseWake(true);
+  }catch(_){ wakeLock = null; }
+  finally{ wakePending = false; }
+}
+function releaseWake(force){ if(!force && (focus || warm)) return; try{ wakeLock?.release(); }catch(_){} wakeLock = null; }
+// the screen stays on for the whole workout (warm-up, exercises, rest, timers), and sleeps normally otherwise
+function keepAwake(){ if(focus || warm || hold || (rest && !rest.over)) holdWake(); else if(wakeLock) releaseWake(true); }
 function startRest(kind){
   unlockAudio();
   const ms = (kind==="ex" ? S.settings.restEx : S.settings.restSet) * 1000;
@@ -1347,7 +1486,7 @@ function tickWarm(){
 }
 function tickRest(){
   tickHold(); tickWarm();
-  if(!rest || rest.over) return;
+  if(!rest || rest.over) return ensureTicker();
   const left = rest.end - Date.now();
   if(left<=0) return restOver();
   countdownBeeps(rest, "r", left);
@@ -1355,8 +1494,14 @@ function tickRest(){
   if(t) t.textContent = fmtT(left);
   if(l) l.style.transform = `scaleX(${(left/rest.total).toFixed(3)})`;
 }
-setInterval(tickRest, 200);
-document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ tickRest(); if((rest && !rest.over) || hold || warm) holdWake(); } });
+// the 5-times-a-second tick runs only while something is counting down
+let ticker = 0;
+function ensureTicker(){
+  const need = (rest && !rest.over) || hold || warm;
+  if(need && !ticker) ticker = setInterval(tickRest, 200);
+  else if(!need && ticker){ clearInterval(ticker); ticker = 0; }
+}
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ tickRest(); keepAwake(); } });
 
 /* ---------- start ---------- */
 loadLocal();
