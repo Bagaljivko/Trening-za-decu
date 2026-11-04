@@ -481,7 +481,7 @@ const ORDER = ["noge","ruke","stomak","zivotinje","ravnoteza","skokovi"];
 const PLACES = {in:"Unutra", out:"Napolju"};
 const MAX_REPS = 15, MAX_SEC = 60, MIN_SEC = 5;
 const LS_KEY = "trening-za-decu-v1";
-const APP_VERSION = "1.5";   // keep in step with CACHE in sw.js (tools/release.py does both)
+const APP_VERSION = "1.6";   // keep in step with CACHE in sw.js (tools/release.py does both)
 const SAFETY = "Zagrej se pre treninga i koristi stabilnu stolicu koja ne klizi.";
 const LOCALE = "sr-Latn-RS";
 const $app = document.getElementById("app");
@@ -507,10 +507,14 @@ function exById(id){ return EXMAP[id] || S.custom.find(x=>x.id===id) || null; }
 function allExercises(){ return EX.concat(S.custom.filter(c=>!c.deleted)); }
 const imgOf = e => "images/" + (e && EXMAP[e.id] ? e.id : "nova-vezba") + ".svg";
 // large picture: moving version, unless the device asks for reduced motion
-function picHTML(slug, alt){
-  return `<picture><source media="(prefers-reduced-motion: no-preference)" srcset="images/anim/${slug}.svg"><img src="images/${slug}.svg" alt="${esc(alt)}"></picture>`;
+// Exercise picture. Still image everywhere; the moving version (images/anim, made by tools/make_images.py)
+// only when animate is true, i.e. while the description is open on the exercise screen,
+// and never when the device asks for reduced motion.
+function picHTML(slug, alt, animate){
+  const still = `<img src="images/${slug}.svg" alt="${esc(alt)}">`;
+  return animate ? `<picture><source media="(prefers-reduced-motion: no-preference)" srcset="images/anim/${slug}.svg">${still}</picture>` : still;
 }
-const picOf = e => picHTML(e && EXMAP[e.id] ? e.id : "nova-vezba", e ? e.name : "");
+const picOf = (e, animate) => picHTML(e && EXMAP[e.id] ? e.id : "nova-vezba", e ? e.name : "", animate);
 const isTimed = e => !!e && e.type === "sec";
 const allowed = (e, place) => place === "out" || e.place === "in";
 function sortedSessions(){ return S.sessions.slice().sort((a,b)=>a.date.localeCompare(b.date)); }
@@ -774,10 +778,10 @@ function viewFocus(){
   else if(s.done) cta = `<button class="cta ghost" data-act="undo">Poništi seriju ${j+1}</button>`;
   else cta = timed ? `<button class="cta" data-act="hold">Kreni: ${esc(clampV(e, s.v))} s${e.side ? " " + esc(e.side) : ""}</button>` : `<button class="cta" data-act="complete">Serija ${j+1} gotova</button>`;
   const step = timed ? 5 : 1;
-  return `<div class="focus" data-swipe data-key="f${i}:${esc(it.ex)}">
+  return `<div class="focus" data-swipe data-key="f${i}:${esc(it.ex)}:${howOpen?1:0}">
     <div class="ftop"><button class="iconbtn" data-act="back" aria-label="Nazad na današnji trening">${ICON.x}</button><div class="segs">${segs}</div><span class="cnt">${i+1}/${items.length}</span></div>
     <div class="fmain">
-      <div class="fpic">${picOf(e)}</div>
+      <div class="fpic">${picOf(e, howOpen)}</div>
       <div class="fside">
         <div class="fbody">
           <div class="grp">${esc(CATS[e.cat]||"")}${e.jump?'<span class="tag j">skok</span>':""}</div>
@@ -806,7 +810,7 @@ function viewWarm(){
   return `<div class="focus" data-key="w${w.i}:${m.img}">
     <div class="ftop"><button class="iconbtn" data-act="warmback" aria-label="Nazad">${ICON.x}</button><div class="segs">${segs}</div><span class="cnt">${w.i+1}/${w.list.length}</span></div>
     <div class="fmain">
-      <div class="fpic">${picHTML(m.img, m.name)}</div>
+      <div class="fpic">${picHTML(m.img, m.name, false)}</div>
       <div class="fside">
         <div class="fbody">
           <div class="grp">Zagrevanje</div>
@@ -918,7 +922,7 @@ function viewSheet(){
         : `<p class="fine">${S.plan.place==="in" && e.place==="out" ? "Ova vežba je samo za napolju." : "Unutra može najviše jedan skok po treningu."}</p>`) : "";
     const own = !EXMAP[e.id] ? `<div class="list-foot"><button class="link" data-act="editex" data-id="${esc(e.id)}">Izmeni vežbu</button><button class="link danger" data-act="delex" data-id="${esc(e.id)}">Obriši vežbu</button></div>` : "";
     const nx = harderFor(e.id); 
-    return wrap(e.name, `<div class="fpic">${picOf(e)}</div>
+    return wrap(e.name, `<div class="fpic">${picOf(e, false)}</div>
       <p class="grp" style="margin:14px 0 0">${esc(CATS[e.cat]||"")}, ${PLACES[e.place].toLowerCase()}${e.jump?'<span class="tag j">skok</span>':""}</p>
       <p class="how">${esc(e.desc || "Nema opisa.")} Početno: 3 × ${esc(amountLong(e, e.amount))}.</p>
       <div class="stats sm"><div><b>${h.length}</b><span>puta</span></div><div><b>${h.length?best:"–"}</b><span>najviše ${isTimed(e)?"sekundi":"u seriji"}</span></div><div><b>${h.length?maxV(h[h.length-1].it):"–"}</b><span>poslednji put</span></div></div>

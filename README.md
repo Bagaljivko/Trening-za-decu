@@ -10,7 +10,7 @@ A bodyweight training app for a 10-year-old, built from the same structure as `t
 - 1-minute rest timer with vibration, one low ding and a mute button.
 - Countdown timer for timed exercises. For exercises done on each leg or side, it gives a "change leg" signal halfway.
 - Goals of 3 workouts per week and 12 per month, full history, a workout counter starting at 1, and backup/restore.
-- Every exercise has its own illustration in `/images`. The large picture moves between start and end position (`/images/anim`), unless the device asks for reduced motion. Tap the exercise name to see the description.
+- Every exercise has its own illustration in `/images`. While the exercise description is open, the large picture plays a looping animation of the movement (`/images/anim`, 1.5–2.5 s per rep); everywhere else, and with reduced motion, the still picture is shown. Tap the exercise name to see the description.
 - A guided 2–3 minute warm-up before the first exercise, which can be skipped.
 - A "Spremi se 3, 2, 1" countdown before timed exercises and beeps in the last 3 seconds.
 - Records, an end-of-workout celebration and medals. When an exercise has been at the top limit two workouts in a row, the app offers the harder version.
