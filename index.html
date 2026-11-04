@@ -42,7 +42,7 @@
 :root{
   --bg:#F5F5F7; --s1:#FFFFFF; --s2:#E8E8ED; --line:#DCDCE1; --ink:#0B0B0D; --mut:#6E6E73; --dim:#B4B4BA;
   --neon:#1FD873; --neon-ink:#00140A; --neon-txt:#0E9F50; --neon-d:#CFEFDC; --red:#E5372B; --warn:#FFF4D6; --warn-ink:#6B4E00; --glow:none;
-  --pic:#121215;
+  --ill-near:#0B0B0D; --ill-far:#6E6E73; --ill-prop:#8E8E93; --ill-floor:#A1A1A6; --ill-accent:#0A8A45;
   color-scheme:light; box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
@@ -51,7 +51,7 @@
     --bg:#000000; --s1:#0C0C0E; --s2:#16161A; --line:#1E1E22; --ink:#F5F5F7; --mut:#8A8A90; --dim:#3C3C42;
     --neon:#3DFF8F; --neon-ink:#000000; --neon-txt:#3DFF8F; --neon-d:#123A24; --red:#FF5B4F; --warn:#1F1A0A; --warn-ink:#FFD66B;
     --glow:drop-shadow(0 0 10px rgba(61,255,143,.5)) drop-shadow(0 0 2px rgba(61,255,143,.9));
-    --pic:#0C0C0E;
+    --ill-near:#F5F5F7; --ill-far:#A3A3AB; --ill-prop:#8E8E96; --ill-floor:#76767E; --ill-accent:#3DFF8F;
     color-scheme:dark;
   }
 }
@@ -59,7 +59,7 @@
   --bg:#000000; --s1:#0C0C0E; --s2:#16161A; --line:#1E1E22; --ink:#F5F5F7; --mut:#8A8A90; --dim:#3C3C42;
   --neon:#3DFF8F; --neon-ink:#000000; --neon-txt:#3DFF8F; --neon-d:#123A24; --red:#FF5B4F; --warn:#1F1A0A; --warn-ink:#FFD66B;
   --glow:drop-shadow(0 0 10px rgba(61,255,143,.5)) drop-shadow(0 0 2px rgba(61,255,143,.9));
-  --pic:#0C0C0E;
+  --ill-near:#F5F5F7; --ill-far:#A3A3AB; --ill-prop:#8E8E96; --ill-floor:#76767E; --ill-accent:#3DFF8F;
   color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:inherit}
@@ -107,7 +107,8 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0}
 .sec .lnks{display:flex;gap:18px;white-space:nowrap}
 .row{display:flex;align-items:center;gap:14px;width:100%;min-height:72px;text-align:left;padding:10px 0;border-bottom:1px solid var(--line)}
 .row .n{width:18px;font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums}
-.thumb{flex:none;width:68px;height:51px;border-radius:12px;background:var(--pic);display:block;object-fit:contain}
+.thumb{flex:none;width:68px;height:51px;display:block}
+.thumb svg{display:block;width:100%;height:100%}
 .row .nm{flex:1;min-width:0;font-size:16.5px;font-weight:600;line-height:1.3}
 .row .nm small{display:block;font-size:13.5px;color:var(--mut);font-weight:400;margin-top:2px}
 .row .m{display:flex;align-items:center;gap:12px;font-size:14.5px;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -149,8 +150,10 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0}
 .sg.c::after{background:var(--ink)}
 .cnt{font-size:14px;color:var(--mut);font-variant-numeric:tabular-nums;min-width:34px;text-align:right}
 .fmain{flex:1;display:flex;flex-direction:column}
-.fpic{margin:14px 24px 0;border-radius:28px;background:var(--pic);border:1px solid var(--line);overflow:hidden}
-.fpic img{display:block;width:100%;aspect-ratio:4/3;max-height:36vh;max-height:36dvh;object-fit:contain}
+/* exercise pictures sit straight on the page background (no card); colours follow the theme */
+.fpic{margin:14px 24px 0}
+.fpic .ill{display:block}
+.fpic svg{display:block;width:100%;height:auto;aspect-ratio:4/3;max-height:36vh;max-height:36dvh}
 .fside{flex:1;display:flex;flex-direction:column}
 .fbody{flex:1;padding:18px 24px 0}
 .grp{font-size:14px;color:var(--mut)}
@@ -256,7 +259,7 @@ body.focusing .nav{display:none}
 .sheet-b{overflow-y:auto;padding:0 24px 28px}
 .sheet-b .list{margin:14px 0 0}
 .sheet-b .fpic{margin:10px 0 0}
-.sheet-b .fpic img{max-height:40vh}
+.sheet-b .fpic svg{max-height:40vh}
 .sheet-b .how{background:none;border:0;padding:0;color:var(--mut)}
 .chart{margin-top:20px}
 .chart svg{display:block;width:100%;height:auto}
@@ -361,7 +364,7 @@ html,body{overscroll-behavior:none}
   .row .nm{font-size:18px}
   body.focusing #app{max-width:900px}
   .fpic{margin:18px 40px 0}
-  .fpic img{max-height:42vh;max-height:42dvh}
+  .fpic svg{max-height:42vh;max-height:42dvh}
   .fbody{padding:22px 40px 0}
   .fdock{padding-left:40px;padding-right:40px}
   .fname{font-size:42px}
@@ -381,14 +384,14 @@ html,body{overscroll-behavior:none}
   body.focusing #app{max-width:1280px}
   .fmain{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:8px;align-items:start}
   .fpic{position:sticky;top:12px;margin:14px 0 14px 32px}
-  .fpic img{max-height:calc(100vh - 110px);max-height:calc(100dvh - 110px)}
+  .fpic svg{max-height:calc(100vh - 110px);max-height:calc(100dvh - 110px)}
   .fside{min-height:calc(100vh - 56px);min-height:calc(100dvh - 56px)}
   .fbody{padding:10px 32px 0 28px}
   .fdock{padding-left:28px;padding-right:32px}
   .num{margin-top:14px}
 }
 @media (max-height:500px) and (orientation:landscape){
-  .fpic img{max-height:calc(100vh - 90px)}
+  .fpic svg{max-height:calc(100vh - 90px)}
   .big{font-size:64px}
   .step button{min-width:58px;height:58px}
 }
@@ -481,7 +484,7 @@ const ORDER = ["noge","ruke","stomak","zivotinje","ravnoteza","skokovi"];
 const PLACES = {in:"Unutra", out:"Napolju"};
 const MAX_REPS = 15, MAX_SEC = 60, MIN_SEC = 5;
 const LS_KEY = "trening-za-decu-v1";
-const APP_VERSION = "1.6";   // keep in step with CACHE in sw.js (tools/release.py does both)
+const APP_VERSION = "1.7";   // keep in step with CACHE in sw.js (tools/release.py does both)
 const SAFETY = "Zagrej se pre treninga i koristi stabilnu stolicu koja ne klizi.";
 const LOCALE = "sr-Latn-RS";
 const $app = document.getElementById("app");
@@ -505,16 +508,40 @@ function persistSettings(){ saveLocal(); }
 const clampCount = n => Math.max(6, Math.min(8, +n || 7));
 function exById(id){ return EXMAP[id] || S.custom.find(x=>x.id===id) || null; }
 function allExercises(){ return EX.concat(S.custom.filter(c=>!c.deleted)); }
-const imgOf = e => "images/" + (e && EXMAP[e.id] ? e.id : "nova-vezba") + ".svg";
-// large picture: moving version, unless the device asks for reduced motion
-// Exercise picture. Still image everywhere; the moving version (images/anim, made by tools/make_images.py)
-// only when animate is true, i.e. while the description is open on the exercise screen,
-// and never when the device asks for reduced motion.
-function picHTML(slug, alt, animate){
-  const still = `<img src="images/${slug}.svg" alt="${esc(alt)}">`;
-  return animate ? `<picture><source media="(prefers-reduced-motion: no-preference)" srcset="images/anim/${slug}.svg">${still}</picture>` : still;
+// ---- exercise pictures ----
+// The SVG files are placed straight into the page (inline), so their colours follow the theme through the
+// --ill-* CSS variables. Still pictures everywhere; the moving version (images/anim, made by
+// tools/make_images.py) only while the description is open on the exercise screen, never with reduced motion.
+const ILL = new Map(), illLoading = new Map();
+const reduceMotion = window.matchMedia ? matchMedia("(prefers-reduced-motion: reduce)") : {matches:false};
+const slugOf = e => e && EXMAP[e.id] ? e.id : "nova-vezba";
+function loadIll(path){
+  if(ILL.has(path) || illLoading.has(path)) return illLoading.get(path);
+  const pr = fetch(path).then(r=>r.ok ? r.text() : "").then(t=>{
+    // the page gives the label; drop the file's own title/label so it isn't announced twice
+    t = t.replace(/<title>[\s\S]*?<\/title>/, "").replace(/ role="img" aria-label="[^"]*"/, ' aria-hidden="true" focusable="false"');
+    ILL.set(path, t);
+    document.querySelectorAll(`[data-ill="${path}"]`).forEach(el=>{ if(!el.firstChild) el.innerHTML = t; });
+    startMoving();
+  }).catch(()=>{}).finally(()=>illLoading.delete(path));
+  illLoading.set(path, pr); return pr;
 }
-const picOf = (e, animate) => picHTML(e && EXMAP[e.id] ? e.id : "nova-vezba", e ? e.name : "", animate);
+// Chromium only starts the animation of an SVG that is put into the page during an animation frame,
+// so each moving picture is swapped once for a fresh copy of itself on the next frame.
+function startMoving(){
+  requestAnimationFrame(()=>document.querySelectorAll('[data-ill*="/anim/"] > svg:not([data-run])').forEach(sv=>{
+    const fresh = sv.cloneNode(true); fresh.setAttribute("data-run", ""); sv.replaceWith(fresh);
+  }));
+}
+function illHTML(slug, alt, animate, cls){
+  const path = `images/${animate ? "anim/" : ""}${slug}.svg`;
+  if(!ILL.has(path)) loadIll(path);
+  const label = alt ? `role="img" aria-label="${esc(alt)}"` : `aria-hidden="true"`;
+  return `<span class="${cls}" data-ill="${path}" ${label}>${ILL.get(path) || ""}</span>`;
+}
+function picHTML(slug, alt, animate){ return illHTML(slug, alt, animate && !reduceMotion.matches, "ill"); }
+const picOf = (e, animate) => picHTML(slugOf(e), e ? e.name : "", animate);
+const thumbOf = e => illHTML(slugOf(e), "", false, "thumb");
 const isTimed = e => !!e && e.type === "sec";
 const allowed = (e, place) => place === "out" || e.place === "in";
 function sortedSessions(){ return S.sessions.slice().sort((a,b)=>a.date.localeCompare(b.date)); }
@@ -751,7 +778,7 @@ function viewToday(){
   const allDone = items.every(it=>itemState(it).all);
   const rows = items.map((it,i)=>{ const e = exById(it.ex) || {name:"Nepoznata vežba"}; const st = itemState(it);
     const meta = st.all ? `<span class="ok" aria-label="Gotovo">${ICON.check}</span>` : st.d ? `<span class="part">${st.d}/${st.n}</span>` : `<b>${it.sets.length} × ${esc(amountText(e, it.sets[0]?.v))}</b>`;
-    return `<button class="row${st.all?" done":""}" data-act="open" data-i="${i}"><span class="n">${i+1}</span><img class="thumb" src="${imgOf(e)}" alt=""><span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}${e.side?", "+esc(e.side):""}</small></span><span class="m">${meta}</span></button>`; }).join("");
+    return `<button class="row${st.all?" done":""}" data-act="open" data-i="${i}"><span class="n">${i+1}</span>${thumbOf(e)}<span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}${e.side?", "+esc(e.side):""}</small></span><span class="m">${meta}</span></button>`; }).join("");
   const cta = allDone ? `<button class="cta" data-act="finish">Završi trening</button>` : `<button class="cta" data-act="start">${anyDone ? "Nastavi trening" : "Počni trening"}</button>`;
   return head + heroBlock() + safetyBlock() + `<section class="list">
       <div class="sec"><span>Danas, ${PLACES[S.plan.place].toLowerCase()} <span class="est">· ≈ ${estMin(S.plan)} min</span></span><span class="lnks"><button class="link" data-act="place">Promeni mesto</button><button class="link" data-act="regen">Promešaj</button></span></div>${rows}
@@ -844,7 +871,7 @@ function viewExercises(){
     <div class="chips">${["all","in","out"].map(p=>`<button class="chip${filterPlace===p?" on":""}" data-act="fp" data-g="${p}">${p==="all"?"Svuda":PLACES[p]}</button>`).join("")}</div>
     <div class="chips">${["all",...ORDER].map(g=>`<button class="chip${filterCat===g?" on":""}" data-act="fg" data-g="${g}">${g==="all"?"Sve":CATS[g]}</button>`).join("")}</div></div>
     <section class="list">${list.map(e=>{ const s = st[e.id];
-      return `<button class="row" data-act="detail" data-id="${esc(e.id)}"><img class="thumb" src="${imgOf(e)}" alt=""><span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}, ${PLACES[e.place].toLowerCase()}${e.jump?'<span class="tag j">skok</span>':""}${s?`, ${s.count}×`:""}</small></span><span class="m"><b class="${s?"":"dim"}">${esc(amountText(e, s ? maxV(s.last) : e.amount))}</b></span></button>`; }).join("") || `<p class="lead">Nijedna vežba ne odgovara. Probaj drugu reč ili izaberi Sve.</p>`}
+      return `<button class="row" data-act="detail" data-id="${esc(e.id)}">${thumbOf(e)}<span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}, ${PLACES[e.place].toLowerCase()}${e.jump?'<span class="tag j">skok</span>':""}${s?`, ${s.count}×`:""}</small></span><span class="m"><b class="${s?"":"dim"}">${esc(amountText(e, s ? maxV(s.last) : e.amount))}</b></span></button>`; }).join("") || `<p class="lead">Nijedna vežba ne odgovara. Probaj drugu reč ili izaberi Sve.</p>`}
     <div class="list-foot"><button class="link" data-act="newex">Dodaj novu vežbu</button></div></section>`;
 }
 function viewHistory(){
@@ -936,7 +963,7 @@ function viewSheet(){
     const list = allExercises().filter(e=>!inPlan.has(e.id) && canAdd(e) && (!q || e.name.toLowerCase().includes(q)));
     const note = S.plan?.place==="in" ? `<p class="fine">Unutra: samo tihe vežbe${planJumps()?", a skok je već u treningu":", najviše jedan skok"}.</p>` : "";
     return wrap("Dodaj vežbu", `<input class="search" type="search" placeholder="Pretraži" data-f="pq" value="${esc(sheet.q||"")}" aria-label="Pretraži vežbe">${note}
-      <div class="list">${list.map(e=>`<button class="row" data-act="addthis" data-id="${esc(e.id)}"><img class="thumb" src="${imgOf(e)}" alt=""><span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}</small></span></button>`).join("")}</div>`);
+      <div class="list">${list.map(e=>`<button class="row" data-act="addthis" data-id="${esc(e.id)}">${thumbOf(e)}<span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}</small></span></button>`).join("")}</div>`);
   }
   if(sheet.type==="newex"){
     const ch = (act, val, label) => `<button class="chip${sheet[act]===val?" on":""}" data-act="nx" data-k="${act}" data-g="${val}">${label}</button>`;
@@ -972,6 +999,7 @@ function render(keepScroll=true){
     $app.append(tpl.content);
   } else $app.replaceChildren(tpl.content);
   ensureTicker(); keepAwake(); syncHistory();
+  if(howOpen && focus) startMoving();
   document.querySelectorAll(".nav button").forEach(b=>b.setAttribute("aria-current", b.dataset.tab===tab ? "page" : "false"));
   if(keepScroll) window.scrollTo(0, y);
 }
@@ -1511,6 +1539,9 @@ document.addEventListener("visibilitychange", ()=>{ if(!document.hidden){ tickRe
 loadLocal();
 const h0 = location.hash.slice(1); if(["danas","vezbe","istorija"].includes(h0)) tab = h0;
 render();
+reduceMotion.addEventListener?.("change", ()=>render());
+// load all still pictures in the background so lists show them right away
+setTimeout(()=>{ EX.map(e=>e.id).concat("nova-vezba", ...Object.values(WARMUP).flat().map(m=>m.img)).forEach(sl=>loadIll(`images/${sl}.svg`)); }, 300);
 // ask the browser to keep saved workouts permanently (Safari can clear site data that isn't used for a while)
 if(S.sessions.length) askPersist();
 if("serviceWorker" in navigator){

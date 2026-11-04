@@ -12,21 +12,23 @@ import os
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "images")
 
-NEAR = "#F5F5F7"   # limbs closest to the viewer
-FAR = "#A3A3AB"    # limbs on the far side
-PROP = "#6E6E76"   # chair, wall
-FLOOR = "#4A4A52"
-ARROW = "#3DFF8F"
+# Colours come from the app's theme (CSS variables set in index.html for light and dark mode),
+# so one set of files fits both themes. The fallback after the comma is used if a file is opened on its own.
+NEAR = "var(--ill-near,#F5F5F7)"     # limbs closest to the viewer, head
+FAR = "var(--ill-far,#A3A3AB)"       # limbs on the far side, speed lines
+PROP = "var(--ill-prop,#8E8E96)"     # chair, wall
+FLOOR = "var(--ill-floor,#76767E)"
+ARROW = "var(--ill-accent,#3DFF8F)"  # movement arrows
 GROUND = 262
 
 
 def seg(a, b, color, w=10):
-    return f'<line x1="{a[0]}" y1="{a[1]}" x2="{b[0]}" y2="{b[1]}" stroke="{color}" stroke-width="{w}"/>'
+    return f'<line x1="{a[0]}" y1="{a[1]}" x2="{b[0]}" y2="{b[1]}" style="stroke:{color}" stroke-width="{w}"/>'
 
 
 def poly(points, color, w=10):
     pts = " ".join(f"{x},{y}" for x, y in points)
-    return f'<polyline points="{pts}" fill="none" stroke="{color}" stroke-width="{w}"/>'
+    return f'<polyline points="{pts}" fill="none" style="stroke:{color}" stroke-width="{w}"/>'
 
 
 def head_of(n, p):
@@ -44,7 +46,7 @@ def arrow_head(tip, frm):
     p1 = (bx - uy * Wd, by + ux * Wd)
     p2 = (bx + uy * Wd, by - ux * Wd)
     return (f'<polygon points="{tip[0]:.1f},{tip[1]:.1f} {p1[0]:.1f},{p1[1]:.1f} {p2[0]:.1f},{p2[1]:.1f}" '
-            f'fill="{ARROW}" stroke="none"/>')
+            f'style="fill:{ARROW}" stroke="none"/>')
 
 
 def shorten(a, b, k=12):
@@ -64,7 +66,7 @@ def arrow(spec):
         a2 = shorten(b, a) if both else a
         b2 = shorten(a, b)
         out.append(f'<line x1="{a2[0]:.1f}" y1="{a2[1]:.1f}" x2="{b2[0]:.1f}" y2="{b2[1]:.1f}" '
-                   f'stroke="{ARROW}" stroke-width="6"/>')
+                   f'style="stroke:{ARROW}" stroke-width="6"/>')
         out.append(arrow_head(b, a))
         if both:
             out.append(arrow_head(a, b))
@@ -73,7 +75,7 @@ def arrow(spec):
         a2 = shorten(c, a) if both else a
         b2 = shorten(c, b)
         out.append(f'<path d="M{a2[0]:.1f} {a2[1]:.1f} Q{c[0]} {c[1]} {b2[0]:.1f} {b2[1]:.1f}" fill="none" '
-                   f'stroke="{ARROW}" stroke-width="6"/>')
+                   f'style="stroke:{ARROW}" stroke-width="6"/>')
         out.append(arrow_head(b, c))
         if both:
             out.append(arrow_head(a, c))
@@ -131,7 +133,7 @@ def figure(p, q=None, dur=2.4):
             if b_list:
                 pb = b_list[k][1]
                 anim = f'<animate attributeName="points" values="{pts(ps)};{pts(pb)};{pts(ps)}" {spline}/>'
-            out.append(f'<polyline points="{pts(ps)}" fill="none" stroke="{color}" stroke-width="{w}">{anim}</polyline>')
+            out.append(f'<polyline points="{pts(ps)}" fill="none" style="stroke:{color}" stroke-width="{w}">{anim}</polyline>')
         else:
             H = sh[1]
             anim = ""
@@ -139,7 +141,7 @@ def figure(p, q=None, dur=2.4):
                 Hb = b_list[k][1]
                 anim = (f'<animate attributeName="cx" values="{H[0]};{Hb[0]};{H[0]}" {spline}/>'
                         f'<animate attributeName="cy" values="{H[1]};{Hb[1]};{H[1]}" {spline}/>')
-            out.append(f'<circle cx="{H[0]}" cy="{H[1]}" r="18" fill="{NEAR}">{anim}</circle>')
+            out.append(f'<circle cx="{H[0]}" cy="{H[1]}" r="18" style="fill:{NEAR}">{anim}</circle>')
     return "".join(out)
 
 
