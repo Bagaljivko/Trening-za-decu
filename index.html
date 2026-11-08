@@ -552,7 +552,7 @@ const ORDER = ["noge","ruke","stomak","zivotinje","ravnoteza","skokovi"];
 const PLACES = {in:"Unutra", out:"Napolju"};
 const MAX_REPS = 15, MAX_SEC = 60, MIN_SEC = 5;
 const LS_KEY = "trening-za-decu-v1";
-const APP_VERSION = "1.9";   // keep in step with CACHE in sw.js (tools/release.py does both)
+const APP_VERSION = "1.10";   // keep in step with CACHE in sw.js (tools/release.py does both)
 const SAFETY = "Zagrej se pre treninga i koristi stabilnu stolicu koja ne klizi.";
 const LOCALE = "sr-Latn-RS";
 const $app = document.getElementById("app");
@@ -572,7 +572,7 @@ function loadLocal(){
 }
 function saveLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
 function persistPlan(){ S.updated = Date.now(); saveLocal(); }
-function persistSettings(){ saveLocal(); }
+function persistSettings(){ saveLocal(); driveChanged(); }
 const clampCount = n => Math.max(6, Math.min(8, +n || 7));
 function exById(id){ return EXMAP[id] || S.custom.find(x=>x.id===id) || null; }
 function allExercises(){ return EX.concat(S.custom.filter(c=>!c.deleted)); }
@@ -837,7 +837,9 @@ function viewToday(){
       ? `<div class="banner"><span>Veza sa Google Drive-om je istekla, pa poslednji treninzi nisu sačuvani na Drive-u.</span><button data-act="drvreconnect">Poveži</button></div>` : "";
     const install = canInstall() && !S.settings.installSeen
       ? `<div class="banner"><span>${isDesktop() ? "Instaliraj aplikaciju na računar, da se otvara u svom prozoru kao prava aplikacija." : "Instaliraj aplikaciju na početni ekran, da radi kao prava aplikacija i čuva treninge."}</span><button data-act="installinfo">Kako?</button><button class="link" data-act="installlater" style="background:none;color:var(--mut);padding:0 4px">Kasnije</button></div>` : "";
-    const banner = reconnect || install || (needBackup ? `<div class="banner"><span>Sačuvaj rezervnu kopiju treninga, da se ništa ne izgubi.</span><button data-act="backup">Sačuvaj</button></div>` : "");
+    const restore = dv && !dv.connected && isFreshApp() && !S.settings.restoreAsked
+      ? `<div class="banner"><span>Već si koristio aplikaciju? Vrati sve sa Google Drive-a: treninge, vežbe i podešavanja.</span><button data-act="drvrestore">Vrati</button><button class="link" data-act="drvrestoreno" style="background:none;color:var(--mut);padding:0 4px">Ne</button></div>` : "";
+    const banner = reconnect || restore || install || (needBackup ? `<div class="banner"><span>Sačuvaj rezervnu kopiju treninga, da se ništa ne izgubi.</span><button data-act="backup">Sačuvaj</button></div>` : "");
     // on a computer, the place choice is shown right away in the second column (no extra click)
     const places = `<section class="wide-only"><h2 style="margin:0 0 4px">Gde treniraš danas?</h2><div class="places">
       <button class="place" data-act="pickplace" data-g="in">${ICON.home}<b>Unutra</b><small>Tiho, na malo prostora pored stolice</small></button>
@@ -1147,6 +1149,10 @@ $app.addEventListener("click", e=>{
     case "backup": exportBackup(); break;
     case "install": promptInstall(); break;
     case "drvconnect": driveAction(()=>Drive.connect(), "Google Drive je povezan"); break;
+    case "drvrestore": S.settings.restoreAsked = true; saveLocal();
+      driveAction(async()=>{ const r = await Drive.connect(); if(r && !r.found) toast("Na Google Drive-u još nema kopije. Od sada se sve čuva automatski.");
+        else if(r && !r.added && !r.extras) toast("Google Drive je povezan. Na kopiji nema ničeg novog."); }); break;
+    case "drvrestoreno": S.settings.restoreAsked = true; saveLocal(); render(); break;
     case "drvreconnect": driveAction(()=>Drive.reconnect(), "Google Drive je ponovo povezan"); break;
     case "drvsync": driveAction(()=>Drive.syncNow(), "Rezervna kopija je sačuvana"); break;
     case "drvoff": if(confirm("Prekinuti vezu sa Google Drive-om? Automatska kopija se gasi. Fajl koji je već na Drive-u ostaje tamo.")){ Drive.disconnect(); toast("Veza sa Google Drive-om je prekinuta"); render(); } break;
@@ -1375,7 +1381,7 @@ function driveSection(){
   const D = window.Drive; if(!D || !D.available) return "";
   const d = D.state();
   if(!d.connected) return `<section class="settings"><h2>Google Drive</h2>
-    <p class="fine" style="font-size:15px;color:var(--ink)">Automatska rezervna kopija treninga u folder „Trening za decu“ na tvom Google Drive-u. Ako povežeš isti nalog na telefonu i tabletu, treninzi sa oba uređaja se spajaju.</p>
+    <p class="fine" style="font-size:15px;color:var(--ink)">Automatska rezervna kopija svega (treninzi, sopstvene vežbe, podešavanja, započet trening) u folder „Trening za decu“ na tvom Google Drive-u. Ako si aplikaciju već koristio, posle povezivanja se sve vraća samo. Isti nalog na telefonu, tabletu i računaru spaja treninge sa svih uređaja.</p>
     <p class="fine">Aplikacija vidi samo fajlove koje sama napravi.</p>
     <button class="pill" data-act="drvconnect" style="margin-top:12px">Poveži Google Drive</button></section>`;
   const when = d.lastBackup ? new Date(d.lastBackup).toLocaleString(LOCALE, {day:"numeric", month:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit"}) : "još nije napravljena";
@@ -1384,7 +1390,7 @@ function driveSection(){
     <p class="fine" style="font-size:15px;color:var(--ink)">Povezano: <b>${esc(d.email || "Google nalog")}</b></p>
     <p class="fine">Poslednja rezervna kopija: ${esc(when)}</p>${status ? `<p class="fine" style="color:var(--warn-ink)">${esc(status)}</p>` : ""}
     <div class="qr-btns" style="justify-content:flex-start">${d.needsReconnect ? `<button class="pill" data-act="drvreconnect">Ponovo poveži</button>` : `<button class="pill" data-act="drvsync" ${d.busy?"disabled":""}>Sinhronizuj sad</button>`}<button class="pill" data-act="drvoff">Prekini vezu</button></div>
-    <p class="fine">Kopija se pravi sama posle svakog treninga. Treninzi sa drugog uređaja stižu kada se ovde napravi kopija ili dodirneš „Sinhronizuj sad“.</p></section>`;
+    <p class="fine">Kopija se pravi sama posle svakog treninga, posle svake izmene i kada otvoriš aplikaciju. Ako obrišeš podatke pregledača, samo ponovo poveži Google Drive i sve se vraća.</p></section>`;
 }
 window.onDriveChange = () => { if(!focus && !warm && !party && !sheet && (tab === "istorija" || tab === "danas")) render(); };
 async function driveAction(fn, ok){
@@ -1394,8 +1400,25 @@ async function driveAction(fn, ok){
 }
 function askPersist(){ try{ navigator.storage?.persist?.(); }catch(_){} }
 // ---- backup data, shared by the file backup and Google Drive ----
+// everything that belongs to the user: workouts, own exercises, deletions, settings and an unfinished workout
 function backupData(){
-  return {app:"trening-za-decu", version:1, exportedAt:new Date().toISOString(), sessions:S.sessions, custom:S.custom, deleted:S.deleted||[], settings:S.settings};
+  return {app:"trening-za-decu", version:1, exportedAt:new Date().toISOString(), sessions:S.sessions, custom:S.custom, deleted:S.deleted||[], settings:S.settings, plan:S.plan||null};
+}
+// an app with nothing in it yet (new device, or after clearing the browser's data)
+const isFreshApp = () => !S.sessions.length && !S.custom.length;
+// on an empty app, bring back settings and the unfinished workout as well (on a used app, its own settings stay)
+function restoreExtras(v){
+  let n = 0;
+  if(v.settings && typeof v.settings === "object"){
+    const keep = {installSeen:S.settings.installSeen, restoreAsked:S.settings.restoreAsked};
+    S.settings = Object.assign({}, S.settings, v.settings, keep);
+    S.settings.count = clampCount(S.settings.count);
+    if(!REST_CHOICES.includes(+S.settings.restSet)) S.settings.restSet = 60;
+    if(!REST_CHOICES.includes(+S.settings.restEx)) S.settings.restEx = 45;
+    n++;
+  }
+  if(!S.plan && v.plan && Array.isArray(v.plan.items) && v.plan.items.length && v.plan.items.every(it=>exById(it.ex))){ S.plan = v.plan; n++; }
+  return n;
 }
 // remember deleted workouts/exercises, so a copy from another device doesn't bring them back
 function forget(id){ S.deleted = (S.deleted||[]).concat(id).slice(-1000); }

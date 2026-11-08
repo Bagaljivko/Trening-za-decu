@@ -159,11 +159,16 @@
     try {
       const folder = await ensureFolder();
       const f = await findBackup();
-      let added = 0;
+      let added = 0, extras = 0;
+      const fresh = isFreshApp();            // empty app: restore settings and an unfinished workout too
       if (f) {
         let data = null;
         try { data = await (await api(`${API}/files/${f.id}?alt=media`)).json(); } catch (e) { if (e instanceof DriveError) throw e; }
-        if (data && data.app === 'trening-za-decu') { added = mergeData(data); if (added) saveLocal(); }
+        if (data && data.app === 'trening-za-decu') {
+          added = mergeData(data);
+          if (fresh) extras = restoreExtras(data);
+          if (added || extras) saveLocal();
+        }
       }
       const blob = new Blob([JSON.stringify(backupData())], { type: 'application/json' });
       let r;
@@ -173,8 +178,11 @@
       st.lastBackup = Date.parse(r.modifiedTime) || Date.now();
       st.pending = false; st.lastError = '';
       persist();
-      if (added) { try { render(); } catch (_) {} toast(`Sa Google Drive-a dodato treninga: ${added}`); }
-      return added;
+      if (added || extras) {
+        try { render(); } catch (_) {}
+        toast(fresh ? `Vraćeno sa Google Drive-a: ${added} ${added % 10 === 1 && added % 100 !== 11 ? 'trening' : 'treninga'}${extras ? ' i podešavanja' : ''}` : `Sa Google Drive-a dodato treninga: ${added}`);
+      }
+      return { found: !!f, added, extras };
     } finally { st.busy = false; emit(); }
   }
 
@@ -186,7 +194,7 @@
     st.email = (about.user && about.user.emailAddress) || '';
     st.connected = true; st.needsReconnect = false;
     persist(); emit();
-    await syncNow();
+    return syncNow();
   }
   async function reconnect() { await requestToken({ interactive: true }); await syncNow(); }
   function disconnect() {
@@ -223,14 +231,25 @@
   // ---------------- start ----------------
   load();
   window.addEventListener('online', () => { if (st.pending) schedule(1500); });
+  // coming back into the app: back up again if the last copy is more than 10 minutes old (only with a valid sign-in)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || !CLIENT_ID || !st.connected || st.busy) return;
+    if (st.pending) { schedule(1500); return; }
+    if (st.token && Date.now() < st.tokenExp && Date.now() - (st.lastBackup || 0) > 10 * 60000) syncNow().catch(() => {});
+  });
   window.Drive = {
     available: !!CLIENT_ID,
     state: () => ({ ...st }),
     changed: () => schedule(),
     connect, reconnect, disconnect, syncNow, DriveError,
   };
+  // empty app (new device, or data cleared) with Drive not connected: open on Danas, where restoring is offered
+  if (CLIENT_ID && !st.connected && isFreshApp() && !S.settings.restoreAsked && tab !== 'danas' && !focus && !warm) {
+    tab = 'danas'; try { history.replaceState(null, '', '#danas'); } catch (_) {} render(false);
+  }
   if (CLIENT_ID && st.connected) {
     // on opening: bring in workouts from the other device, but only with a still-valid sign-in (no pop-up)
+    // on opening: back up and bring in workouts from other devices (needs a still-valid sign-in, no pop-up)
     if (st.pending) schedule(3000);
     else if (st.token && Date.now() < st.tokenExp && navigator.onLine !== false) setTimeout(() => { syncNow().catch(() => {}); }, 2500);
   }
