@@ -23,6 +23,8 @@
     document.addEventListener('touchmove', function (ev) {
       if (ev.touches.length > 1 || (ev.scale !== undefined && ev.scale !== 1)) ev.preventDefault();
     }, { passive: false });
+    // trackpad pinch on a computer arrives as Ctrl + mouse wheel: no zooming (Ctrl + / - on the keyboard still works)
+    document.addEventListener('wheel', function (ev) { if (ev.ctrlKey) ev.preventDefault(); }, { passive: false });
     // no long-press / right-click menus, except in fields where you type
     document.addEventListener('contextmenu', function (ev) {
       if (!(ev.target.closest && ev.target.closest('input, textarea'))) ev.preventDefault();
@@ -333,6 +335,18 @@ input,textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:d
 img{-webkit-user-drag:none}
 html,body{overscroll-behavior:none}
 
+/* mouse: show what can be clicked */
+@media (hover: hover) and (pointer: fine){
+  .row:not(.static):hover{background:var(--s1)}
+  .link:hover,.iconbtn:hover{color:var(--ink)}
+  .chip:hover,.pill:hover,.step button:hover,.stepper button:hover{background:var(--s2)}
+  .cta:hover{filter:brightness(1.06)}
+  .place:hover{border-color:var(--dim)}
+  .set:not(.done):hover{background:var(--neon-d)}
+  .fname:hover{color:var(--neon-txt)}
+  .nav button:hover{color:var(--ink)}
+}
+
 /* app: version, update, share */
 .pill{flex:none;display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 18px;border-radius:24px;border:1.5px solid var(--line);font-size:15.5px;font-weight:600;color:var(--ink);white-space:nowrap}
 .pill:active{background:var(--s2)}
@@ -389,6 +403,21 @@ html,body{overscroll-behavior:none}
   .fbody{padding:10px 32px 0 28px}
   .fdock{padding-left:28px;padding-right:32px}
   .num{margin-top:14px}
+}
+/* large computer screens: the exercise screen uses more of the width, with a bigger picture and controls */
+@media (min-width:1800px) and (min-height:1000px) and (orientation:landscape){
+  body.focusing #app{max-width:1720px}
+  .fmain{gap:24px}
+  .fname{font-size:52px}
+  .grp,.hint,.u,.last,.next{font-size:18px}
+  .how{font-size:19px}
+  .big{font-size:140px}
+  .step button{min-width:92px;height:92px;border-radius:46px;font-size:28px}
+  .set{width:76px;height:76px;border-radius:38px;font-size:22px}
+  .cta{min-height:82px;border-radius:41px;font-size:23px}
+  .rest-t{font-size:64px}
+  .wu-name{font-size:52px}
+  .wu-t{font-size:150px}
 }
 @media (max-height:500px) and (orientation:landscape){
   .fpic svg{max-height:calc(100vh - 90px)}
@@ -484,7 +513,7 @@ const ORDER = ["noge","ruke","stomak","zivotinje","ravnoteza","skokovi"];
 const PLACES = {in:"Unutra", out:"Napolju"};
 const MAX_REPS = 15, MAX_SEC = 60, MIN_SEC = 5;
 const LS_KEY = "trening-za-decu-v1";
-const APP_VERSION = "1.7";   // keep in step with CACHE in sw.js (tools/release.py does both)
+const APP_VERSION = "1.8";   // keep in step with CACHE in sw.js (tools/release.py does both)
 const SAFETY = "Zagrej se pre treninga i koristi stabilnu stolicu koja ne klizi.";
 const LOCALE = "sr-Latn-RS";
 const $app = document.getElementById("app");
@@ -767,8 +796,8 @@ function viewToday(){
     const n = S.sessions.length, needBackup = !(dv && dv.connected) && n >= 3 && (n - (S.settings.backupN||0) >= 8 || !S.settings.backupAt);
     const reconnect = dv && dv.connected && dv.needsReconnect && dv.pending
       ? `<div class="banner"><span>Veza sa Google Drive-om je istekla, pa poslednji treninzi nisu sačuvani na Drive-u.</span><button data-act="drvreconnect">Poveži</button></div>` : "";
-    const install = !isStandalone() && !S.settings.installSeen
-      ? `<div class="banner"><span>Instaliraj aplikaciju na početni ekran, da radi kao prava aplikacija i čuva treninge.</span><button data-act="installinfo">Kako?</button><button class="link" data-act="installlater" style="background:none;color:var(--mut);padding:0 4px">Kasnije</button></div>` : "";
+    const install = canInstall() && !S.settings.installSeen
+      ? `<div class="banner"><span>${isDesktop() ? "Instaliraj aplikaciju na računar, da se otvara u svom prozoru kao prava aplikacija." : "Instaliraj aplikaciju na početni ekran, da radi kao prava aplikacija i čuva treninge."}</span><button data-act="installinfo">Kako?</button><button class="link" data-act="installlater" style="background:none;color:var(--mut);padding:0 4px">Kasnije</button></div>` : "";
     const banner = reconnect || install || (needBackup ? `<div class="banner"><span>Sačuvaj rezervnu kopiju treninga, da se ništa ne izgubi.</span><button data-act="backup">Sačuvaj</button></div>` : "");
     return head + heroBlock() + safetyBlock() + banner + `<p class="lead">${S.sessions.length ? "Svaki trening je nov: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu." : "Napravi prvi trening: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu."}</p>
       <div class="dock"><button class="cta" data-act="gen">Napravi trening</button></div>`;
@@ -813,7 +842,7 @@ function viewFocus(){
         <div class="fbody">
           <div class="grp">${esc(CATS[e.cat]||"")}${e.jump?'<span class="tag j">skok</span>':""}</div>
           <button class="fname" data-act="howtoggle" aria-expanded="${howOpen}">${esc(e.name)}${ICON.info}</button>
-          ${howOpen ? `<p class="how">${esc(e.desc || "Nema opisa.")}</p>` : `<div class="hint">Tapni naziv za opis</div>`}
+          ${howOpen ? `<p class="how">${esc(e.desc || "Nema opisa.")}</p>` : `<div class="hint">${mousePointer() ? `Klikni naziv za opis${isDesktop() ? " · strelice ← → menjaju vežbu" : ""}` : "Tapni naziv za opis"}</div>`}
           <div class="num"><div class="val"><input class="big" inputmode="numeric" pattern="[0-9]*" data-f="v" data-i="${i}" data-j="${j}" value="${esc(s.v)}" aria-label="${timed?"Sekundi":"Ponavljanja"}"><div class="u">${esc(unitWord(e, +s.v))}${e.side?" "+esc(e.side):""}</div></div>
             <div class="step"><button data-act="nudge" data-d="-1" aria-label="Manje">−${step}</button><button data-act="nudge" data-d="1" aria-label="Više">+${step}</button></div></div>
           <div class="sets">${circles}</div>
@@ -1269,15 +1298,27 @@ async function checkUpdateClick(btn){
 // ---- install (same approach as Gitara) ----
 const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const isAndroid = () => /android/i.test(navigator.userAgent);
+const mousePointer = () => !!window.matchMedia && matchMedia("(hover: hover) and (pointer: fine)").matches;
+const isDesktop = () => !isIOS() && !isAndroid() && mousePointer();
+const isFirefox = () => /firefox|fxios/i.test(navigator.userAgent);
+const isMacSafari = () => !isIOS() && /macintosh/i.test(navigator.userAgent) && /safari/i.test(navigator.userAgent) && !/chrome|chromium|edg|firefox/i.test(navigator.userAgent);
+// desktop Firefox can't install web apps; everything else can
+const canInstall = () => !isStandalone() && !(isDesktop() && isFirefox());
 function installSection(){
   if(isStandalone()) return "";
-  const how = isIOS()
-    ? `U Safariju dodirni <b>Podeli</b> (kvadrat sa strelicom), pa <b>Dodaj na početni ekran</b>.`
-    : window.__installPrompt ? `Dodirni <b>Instaliraj</b> i aplikacija dobija svoju ikonicu.` : `U Chrome-u otvori meni (⋮) i izaberi <b>Instaliraj aplikaciju</b> ili <b>Dodaj na početni ekran</b>.`;
+  let how;
+  if(isIOS()) how = `U Safariju dodirni <b>Podeli</b> (kvadrat sa strelicom), pa <b>Dodaj na početni ekran</b>.`;
+  else if(window.__installPrompt) how = isDesktop() ? `Klikni <b>Instaliraj</b> i aplikacija se otvara u svom prozoru, sa ikonicom na računaru.` : `Dodirni <b>Instaliraj</b> i aplikacija dobija svoju ikonicu.`;
+  else if(isDesktop() && isFirefox()) how = `Firefox na računaru ne može da instalira aplikacije. Aplikacija radi i ovako u pregledaču, a za instalaciju je otvori u Chrome-u, Edge-u ili Safariju.`;
+  else if(isMacSafari()) how = `U Safariju izaberi <b>Datoteka</b> (File) → <b>Dodaj u Dock</b>.`;
+  else if(isDesktop()) how = `U Chrome-u ili Edge-u klikni ikonicu za instalaciju na desnom kraju adresne trake, ili u meniju pregledača izaberi <b>Instaliraj</b>.`;
+  else how = `U Chrome-u otvori meni (⋮) i izaberi <b>Instaliraj aplikaciju</b> ili <b>Dodaj na početni ekran</b>.`;
   return `<section class="settings" id="install"><h2>Instaliraj aplikaciju</h2>
     <p class="fine" style="font-size:15px;color:var(--ink)">${how}</p>
     ${!isIOS() && window.__installPrompt ? `<button class="pill" data-act="install" style="margin-top:12px">Instaliraj</button>` : ""}
-    <p class="fine">Važno: treniraj uvek iz ikonice. Na iPhone-u i iPad-u, Safari i ikonica čuvaju treninge odvojeno, pa treninzi urađeni u Safariju neće biti u instaliranoj aplikaciji.</p></section>`;
+    ${isIOS() ? `<p class="fine">Važno: treniraj uvek iz ikonice. Na iPhone-u i iPad-u, Safari i ikonica čuvaju treninge odvojeno, pa treninzi urađeni u Safariju neće biti u instaliranoj aplikaciji.</p>`
+      : `<p class="fine">Treninzi se čuvaju u pregledaču na ovom uređaju. Treniraj uvek iz istog pregledača ili iz instalirane aplikacije.</p>`}</section>`;
 }
 async function promptInstall(){
   const d = window.__installPrompt; if(!d) return;
@@ -1357,7 +1398,21 @@ document.getElementById("restore").addEventListener("change", async e=>{
   }catch(_){ toast("Taj fajl nije rezervna kopija treninga"); }
   e.target.value = "";
 });
-document.addEventListener("keydown", e=>{ if(e.key==="Escape" && sheet){ sheet = null; render(); } });
+document.addEventListener("keydown", e=>{
+  const typing = e.target.closest && e.target.closest("input, textarea");
+  if(e.key === "Escape"){
+    if(sheet){ sheet = null; render(); }
+    else if(party){ party = null; render(false); }
+    else if(warm){ warm = null; render(false); window.scrollTo(0,0); }
+    else if(focus && !typing){ focus = null; render(false); window.scrollTo(0,0); }
+    return;
+  }
+  if(typing || sheet || party || e.altKey || e.ctrlKey || e.metaKey) return;
+  if(e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+  const d = e.key === "ArrowRight" ? 1 : -1;
+  if(focus){ const k = focus.i + d; if(k >= 0 && k < S.plan.items.length){ focus.i = k; selSet = null; howOpen = false; render(false); } e.preventDefault(); }
+  else if(warm && d > 0){ warmNext(); e.preventDefault(); }
+});
 
 /* ---------- rest timer, countdown and warm-up ---------- */
 const PREP_MS = 3000;
