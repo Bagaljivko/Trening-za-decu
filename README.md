@@ -17,6 +17,7 @@ A bodyweight training app for a 10-year-old, built from the same structure as `t
 - Adjustable rest (between sets and before the next exercise), an estimated workout length, a "Za roditelje" summary and a backup reminder.
 - Feels like an installed app on iPhone and Android: no zooming, nothing selectable except typing fields, no long-press menus, no pull-to-refresh; the Android back button closes the open screen or panel; the screen stays on for the whole workout.
 - "Instaliraj aplikaciju" card in Podešavanja and a one-time reminder on the home screen.
+- Laptop/desktop layout (mouse or trackpad, 1024 px and wider): side menu, Danas and Istorija in two columns, place choice shown right away, exercises in a grid, panels as centered windows. Phones and tablets keep their layout.
 - Works on computers too: mouse and keyboard (← → move between exercises, Esc goes back), hover highlights, a larger exercise screen on big monitors, and install steps for Chrome/Edge and Safari on Mac (desktop Firefox can't install web apps).
 - Google Drive backup that merges workouts from several devices (phone + tablet). Switched on by putting the Client ID of the "Trening za decu" Google Cloud project into `CLIENT_ID` in `drive.js`.
 - In Podešavanja: the app version, **Proveri ažuriranja** (loads the newest version right away) and **Podeli** (a QR code another phone or tablet can scan, plus send/copy link).

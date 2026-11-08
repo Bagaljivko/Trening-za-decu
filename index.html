@@ -335,6 +335,45 @@ input,textarea{-webkit-user-select:text;user-select:text;-webkit-touch-callout:d
 img{-webkit-user-drag:none}
 html,body{overscroll-behavior:none}
 
+/* Column wrappers are invisible on phones and tablets (display:contents), so those layouts are unchanged;
+   on laptops and desktops (below) they become two columns. */
+.cols,.col-a,.col-b{display:contents}
+.wide-only{display:none}
+
+/* ---------- laptops and desktops: mouse/trackpad and at least 1024 px wide ---------- */
+@media (min-width:1024px) and (hover:hover) and (pointer:fine){
+  :root{--rail:104px}
+  body:not(.focusing){padding-left:var(--rail)}
+  body:not(.focusing) #app{max-width:1280px;padding-bottom:64px}
+  /* side menu instead of the bottom bar */
+  .nav{top:0;bottom:0;right:auto;width:var(--rail);border-top:0;border-right:1px solid var(--line);display:flex;align-items:center;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+  .nav>div{display:flex;flex-direction:column;gap:6px;width:100%;max-width:none;margin:0}
+  .nav button{min-height:84px;font-size:13px}
+  /* two columns */
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:0 56px;padding:0 48px;align-items:start}
+  .col-a,.col-b{display:block;min-width:0}
+  .col-b{padding-top:28px}
+  .cols .pad{padding-left:0;padding-right:0}
+  .cols .list,.cols .lead,.cols .safety,.cols .banner,.cols .month,.cols .stats,.cols .weeks,.cols .wl,.cols .settings{margin-left:0;margin-right:0}
+  .cols .col-b .list:first-child{margin-top:0}
+  .cols .col-b > .settings:first-child{margin-top:0;padding-top:0;border-top:0}
+  .cols .dock{position:static;max-width:none;margin:28px 0 0;padding:0;background:none}
+  .cols .hero{margin-left:0}
+  .narrow-only{display:none}
+  .wide-only{display:block}
+  .wide-only .places{margin-top:16px}
+  /* Vežbe: a grid instead of one long column */
+  .pad2{max-width:860px}
+  .pad2 .chips{flex-wrap:wrap;overflow:visible;margin-left:0;margin-right:0;padding:0}
+  .exlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));column-gap:40px;margin-left:48px;margin-right:48px}
+  .exlist > .list-foot,.exlist > p{grid-column:1/-1}
+  .pad,.pad2{padding-left:48px;padding-right:48px}
+  /* panels open as a window in the middle */
+  .sheet-bg{align-items:center;padding:24px}
+  .sheet{border-radius:26px;border:1px solid var(--line);max-height:86vh;max-height:86dvh}
+  .toast{bottom:40px}
+}
+
 /* mouse: show what can be clicked */
 @media (hover: hover) and (pointer: fine){
   .row:not(.static):hover{background:var(--s1)}
@@ -513,7 +552,7 @@ const ORDER = ["noge","ruke","stomak","zivotinje","ravnoteza","skokovi"];
 const PLACES = {in:"Unutra", out:"Napolju"};
 const MAX_REPS = 15, MAX_SEC = 60, MIN_SEC = 5;
 const LS_KEY = "trening-za-decu-v1";
-const APP_VERSION = "1.8";   // keep in step with CACHE in sw.js (tools/release.py does both)
+const APP_VERSION = "1.9";   // keep in step with CACHE in sw.js (tools/release.py does both)
 const SAFETY = "Zagrej se pre treninga i koristi stabilnu stolicu koja ne klizi.";
 const LOCALE = "sr-Latn-RS";
 const $app = document.getElementById("app");
@@ -799,8 +838,12 @@ function viewToday(){
     const install = canInstall() && !S.settings.installSeen
       ? `<div class="banner"><span>${isDesktop() ? "Instaliraj aplikaciju na računar, da se otvara u svom prozoru kao prava aplikacija." : "Instaliraj aplikaciju na početni ekran, da radi kao prava aplikacija i čuva treninge."}</span><button data-act="installinfo">Kako?</button><button class="link" data-act="installlater" style="background:none;color:var(--mut);padding:0 4px">Kasnije</button></div>` : "";
     const banner = reconnect || install || (needBackup ? `<div class="banner"><span>Sačuvaj rezervnu kopiju treninga, da se ništa ne izgubi.</span><button data-act="backup">Sačuvaj</button></div>` : "");
-    return head + heroBlock() + safetyBlock() + banner + `<p class="lead">${S.sessions.length ? "Svaki trening je nov: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu." : "Napravi prvi trening: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu."}</p>
-      <div class="dock"><button class="cta" data-act="gen">Napravi trening</button></div>`;
+    // on a computer, the place choice is shown right away in the second column (no extra click)
+    const places = `<section class="wide-only"><h2 style="margin:0 0 4px">Gde treniraš danas?</h2><div class="places">
+      <button class="place" data-act="pickplace" data-g="in">${ICON.home}<b>Unutra</b><small>Tiho, na malo prostora pored stolice</small></button>
+      <button class="place" data-act="pickplace" data-g="out">${ICON.tree}<b>Napolju</b><small>Skokovi i trčanje su dozvoljeni</small></button></div></section>`;
+    return `<div class="cols"><div class="col-a">` + head + heroBlock() + safetyBlock() + banner + `<p class="lead">${S.sessions.length ? "Svaki trening je nov: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu." : "Napravi prvi trening: 6 do 8 vežbi za noge, ruke, stomak i ravnotežu."}</p>
+      <div class="dock narrow-only"><button class="cta" data-act="gen">Napravi trening</button></div></div><div class="col-b">${places}</div></div>`;
   }
   const items = S.plan.items;
   const anyDone = items.some(it=>it.sets.some(s=>s.done));
@@ -809,10 +852,10 @@ function viewToday(){
     const meta = st.all ? `<span class="ok" aria-label="Gotovo">${ICON.check}</span>` : st.d ? `<span class="part">${st.d}/${st.n}</span>` : `<b>${it.sets.length} × ${esc(amountText(e, it.sets[0]?.v))}</b>`;
     return `<button class="row${st.all?" done":""}" data-act="open" data-i="${i}"><span class="n">${i+1}</span>${thumbOf(e)}<span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}${e.side?", "+esc(e.side):""}</small></span><span class="m">${meta}</span></button>`; }).join("");
   const cta = allDone ? `<button class="cta" data-act="finish">Završi trening</button>` : `<button class="cta" data-act="start">${anyDone ? "Nastavi trening" : "Počni trening"}</button>`;
-  return head + heroBlock() + safetyBlock() + `<section class="list">
+  return `<div class="cols"><div class="col-a">` + head + heroBlock() + safetyBlock() + `<div class="dock">${cta}</div></div><div class="col-b"><section class="list">
       <div class="sec"><span>Danas, ${PLACES[S.plan.place].toLowerCase()} <span class="est">· ≈ ${estMin(S.plan)} min</span></span><span class="lnks"><button class="link" data-act="place">Promeni mesto</button><button class="link" data-act="regen">Promešaj</button></span></div>${rows}
       <div class="list-foot"><button class="link" data-act="add">Dodaj vežbu</button>${anyDone&&!allDone?`<button class="link" data-act="finish">Završi sada</button>`:""}<button class="link danger" data-act="discard">Odbaci</button></div>
-    </section><div class="dock">${cta}</div>`;
+    </section></div></div>`;
 }
 function viewFocus(){
   const items = S.plan.items, i = focus.i, it = items[i];
@@ -899,7 +942,7 @@ function viewExercises(){
     <div class="pad2"><input class="search" type="search" placeholder="Pretraži" value="${esc(query)}" data-f="q" aria-label="Pretraži vežbe">
     <div class="chips">${["all","in","out"].map(p=>`<button class="chip${filterPlace===p?" on":""}" data-act="fp" data-g="${p}">${p==="all"?"Svuda":PLACES[p]}</button>`).join("")}</div>
     <div class="chips">${["all",...ORDER].map(g=>`<button class="chip${filterCat===g?" on":""}" data-act="fg" data-g="${g}">${g==="all"?"Sve":CATS[g]}</button>`).join("")}</div></div>
-    <section class="list">${list.map(e=>{ const s = st[e.id];
+    <section class="list exlist">${list.map(e=>{ const s = st[e.id];
       return `<button class="row" data-act="detail" data-id="${esc(e.id)}">${thumbOf(e)}<span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}, ${PLACES[e.place].toLowerCase()}${e.jump?'<span class="tag j">skok</span>':""}${s?`, ${s.count}×`:""}</small></span><span class="m"><b class="${s?"":"dim"}">${esc(amountText(e, s ? maxV(s.last) : e.amount))}</b></span></button>`; }).join("") || `<p class="lead">Nijedna vežba ne odgovara. Probaj drugu reč ili izaberi Sve.</p>`}
     <div class="list-foot"><button class="link" data-act="newex">Dodaj novu vežbu</button></div></section>`;
 }
@@ -907,13 +950,13 @@ function viewHistory(){
   const p = progress(), w = weekCounts(12), stk = streak();
   const grid = w.map(c=>`<div class="wk">${[0,1,2].map(k=>`<i class="${k<c?"on":""}"></i>`).join("")}</div>`).join("");
   const ss = sortedSessions().reverse();
-  return `<header class="pad"><div class="eyebrow">Od početka</div><h1>Istorija</h1></header>
+  return `<div class="cols"><div class="col-a"><header class="pad"><div class="eyebrow">Od početka</div><h1>Istorija</h1></header>
     <div class="stats"><div><b>${p.total}</b><span>${pl(p.total, W.trening)}</span></div><div class="n"><b>${stk}</b><span>${pl(stk, W.nedelja)} zaredom</span></div><div><b>${p.month}</b><span>ovog meseca</span></div></div>
     <div class="weeks" role="img" aria-label="Treninzi po nedeljama u poslednjih 12 nedelja">${grid}</div>
     <div class="wl"><span>Pre 12 nedelja</span><span>Ove nedelje</span></div>
     <section class="list">${ss.map(s=>`<details class="sess"><summary><span><b>${esc(sessionTitle(s))}</b><small>${esc(fmtDate(s.date))}${s.place?", "+PLACES[s.place].toLowerCase():""}</small></span><span class="m">${s.items.length} ${pl(s.items.length, W.vezba)}</span></summary>
       <ul>${s.items.map(it=>`<li><span>${esc(exById(it.ex)?.name||"Nepoznata vežba")}</span><span>${esc(setSummary(it))}</span></li>`).join("")}</ul>
-      <button class="link danger" data-act="delsess" data-id="${esc(s.id)}">Obriši ovaj trening</button></details>`).join("") || `<p class="lead" style="margin:0">Još nema treninga. Prvi je na kartici Danas.</p>`}</section>
+      <button class="link danger" data-act="delsess" data-id="${esc(s.id)}">Obriši ovaj trening</button></details>`).join("") || `<p class="lead" style="margin:0">Još nema treninga. Prvi je na kartici Danas.</p>`}</section></div><div class="col-b">
     ${installSection()}
     ${driveSection()}
     ${badgesSection()}
@@ -927,7 +970,7 @@ function viewHistory(){
       <div class="srow"><span>Aplikacija, verzija ${APP_VERSION}</span><button class="pill" data-act="update" id="bUpdate">Proveri ažuriranja</button></div>
       <div class="srow"><span>Podeli sa drugim telefonom ili tabletom</span><button class="pill" data-act="shareapp" aria-label="Podeli aplikaciju (QR kod)">${QR_ICON}Podeli</button></div>
       <div class="srow"><button class="link" data-act="export">Sačuvaj rezervnu kopiju</button><button class="link" data-act="import">Vrati iz kopije</button></div>
-      <p class="fine">Treninzi se čuvaju samo na ovom uređaju. S vremena na vreme sačuvaj rezervnu kopiju. Pomoću nje možeš da preneseš treninge na novi telefon ili tablet.</p></section>`;
+      <p class="fine">Treninzi se čuvaju samo na ovom uređaju. S vremena na vreme sačuvaj rezervnu kopiju. Pomoću nje možeš da preneseš treninge na novi telefon ili tablet.</p></section></div></div>`;
 }
 function badgesSection(){
   const got = earnedBadges();
