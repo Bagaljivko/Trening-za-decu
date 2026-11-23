@@ -38,7 +38,20 @@ const { check, section, done } = runner("App tests");
     await p.tap('[data-act="warmnext"]'); check((await p.textContent(".cnt")).trim() === "2/5", "warm-up: next move");
     await p.tap("text=Preskoči zagrevanje"); await p.waitForTimeout(200);
     check(await p.isVisible(".fname"), "skipping the warm-up opens the first exercise");
-    check((await p.textContent(".hint")).includes("Tapni naziv za opis"), "phone wording: Tapni naziv za opis");
+    check((await p.textContent(".hint")).includes("Tapni naziv ili sliku za opis"), "phone wording: Tapni naziv ili sliku za opis");
+    // tapping the picture works like tapping the name
+    await p.tap(".fpic"); await p.waitForTimeout(250);
+    check(await p.isVisible(".how") && await p.evaluate(() => !!document.querySelector('.fpic [data-ill*="/anim/"] svg')), "tapping the picture opens the description and starts the animation");
+    await p.tap(".fpic"); await p.waitForTimeout(250);
+    check(!(await p.isVisible(".how")) && await p.evaluate(() => !document.querySelector('.fpic [data-ill*="/anim/"]')), "tapping it again closes the description and stops the animation");
+    // a one-finger swipe across the picture still changes exercise (and doesn't open the description)
+    { const box = await (await p.$(".fpic")).boundingBox(), cdp = await ctx.newCDPSession(p), y = box.y + box.height / 2;
+      const i0 = await p.evaluate(() => focus.i);
+      await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: box.x + box.width - 20, y }] });
+      for (let k = 1; k <= 10; k++) { await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: box.x + box.width - 20 - k * 25, y }] }); await p.waitForTimeout(16); }
+      await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] }); await p.waitForTimeout(300);
+      check(await p.evaluate(i => focus.i === i + 1 && !howOpen, i0), "swiping across the picture moves to the next exercise, description stays closed");
+      await p.evaluate(() => { focus.i = 0; selSet = null; render(false); }); }
     await p.tap(".fname"); await p.waitForTimeout(250);
     check(await p.isVisible(".how") && await p.evaluate(() => !!document.querySelector('.fpic [data-ill*="/anim/"]')), "tapping the name opens the description and the moving picture");
     // reps exercise: +1, complete a set, rest
@@ -244,7 +257,11 @@ const { check, section, done } = runner("App tests");
     await p.click('.wide-only .place[data-g="out"]'); await p.waitForTimeout(200);
     check(await p.evaluate(() => document.querySelector(".col-b").getBoundingClientRect().left > document.querySelector(".col-a").getBoundingClientRect().right - 1), "laptop: two columns");
     await p.evaluate(() => { S.plan.warmed = true; persistPlan(); }); await p.click("text=Počni trening"); await p.waitForTimeout(200);
-    check((await p.textContent(".hint")).includes("Klikni"), "mouse wording: Klikni");
+    check((await p.textContent(".hint")).includes("Klikni naziv ili sliku"), "mouse wording: Klikni naziv ili sliku za opis");
+    await p.click(".fpic"); await p.waitForTimeout(200);
+    check(await p.evaluate(() => howOpen) && await p.isVisible(".how"), "clicking the picture opens the description");
+    await p.focus(".fpic"); await p.keyboard.press("Enter"); await p.waitForTimeout(200);
+    check(await p.evaluate(() => !howOpen), "Enter on the picture closes it again (keyboard)");
     await p.keyboard.press("ArrowRight"); await p.waitForTimeout(100); check(await p.evaluate(() => focus.i === 1), "→ moves to the next exercise");
     await p.keyboard.press("Escape"); await p.waitForTimeout(150); check(await p.evaluate(() => !focus), "Esc leaves the exercise screen");
     await ctx.close();
