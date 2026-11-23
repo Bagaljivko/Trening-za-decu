@@ -2,7 +2,7 @@
 // The page itself is fetched from the network first, so a new version shows up on the first open;
 // everything else comes from the cache and is refreshed in the background.
 // Every release: python3 tools/release.py (bumps CACHE here and APP_VERSION in index.html).
-const CACHE = "trening-za-decu-v10";
+const CACHE = "trening-za-decu-v11";
 const SHELL = [
   "./",
   "index.html",
@@ -21,8 +21,12 @@ const SHELL = [
   "images/brza-stopala.svg",
   "images/cucanj-skok.svg",
   "images/cucanj.svg",
+  "images/decja-poza.svg",
+  "images/disanje.svg",
   "images/gusenica.svg",
   "images/iskorak-unazad.svg",
+  "images/istezanje-butine.svg",
+  "images/istezanje-ruku.svg",
   "images/klizacki-skokovi.svg",
   "images/kruzenje-kukovima.svg",
   "images/kruzenje-rukama.svg",
@@ -40,6 +44,7 @@ const SHELL = [
   "images/plank-dodir-ramena.svg",
   "images/plank.svg",
   "images/podizanje-na-prste.svg",
+  "images/pretklon.svg",
   "images/propadanja-stolica.svg",
   "images/rak-hodanje.svg",
   "images/sklekovi-kolena.svg",
@@ -63,8 +68,12 @@ const SHELL = [
   "images/anim/brza-stopala.svg",
   "images/anim/cucanj-skok.svg",
   "images/anim/cucanj.svg",
+  "images/anim/decja-poza.svg",
+  "images/anim/disanje.svg",
   "images/anim/gusenica.svg",
   "images/anim/iskorak-unazad.svg",
+  "images/anim/istezanje-butine.svg",
+  "images/anim/istezanje-ruku.svg",
   "images/anim/klizacki-skokovi.svg",
   "images/anim/kruzenje-kukovima.svg",
   "images/anim/kruzenje-rukama.svg",
@@ -82,6 +91,7 @@ const SHELL = [
   "images/anim/plank-dodir-ramena.svg",
   "images/anim/plank.svg",
   "images/anim/podizanje-na-prste.svg",
+  "images/anim/pretklon.svg",
   "images/anim/propadanja-stolica.svg",
   "images/anim/rak-hodanje.svg",
   "images/anim/sklekovi-kolena.svg",

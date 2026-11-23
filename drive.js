@@ -6,8 +6,10 @@
 // first reads the copy on Drive, adds any workouts from the other device (index.html: mergeData),
 // then uploads everything. Deleted workouts stay deleted on all devices (S.deleted).
 (function () {
-  // Client ID of the "Trening za decu" Google Cloud project. Empty = Drive section stays hidden.
-  const CLIENT_ID = '';
+  // Google sign-in for the Drive backup. This is the same Google project the Gitara app and the Trening-app use
+  // (all three live on bagaljivko.github.io), so Google's sign-in screen names it "Gitara"; each app keeps its own
+  // folder on Drive. To use a separate "Trening za decu" project, put its Web client ID here. Empty = Drive hidden.
+  const CLIENT_ID = '633765324865-ki9jk8hvnt9cfqbsemipfl8f796g3s1v.apps.googleusercontent.com';
   const SCOPE = 'https://www.googleapis.com/auth/drive.file';
   const GIS_URL = 'https://accounts.google.com/gsi/client';
   const API = 'https://www.googleapis.com/drive/v3';

@@ -472,6 +472,35 @@ POSES.update({
         arrows=[("Q", 300, 196, 226, 300, 140, 226, True)])),
 })
 
+# cool-down stretches (shown after the last exercise)
+POSES.update({
+    "istezanje-butine": ("Istezanje butina", dict(
+        N=(200, 86), P=(200, 162),
+        legs=[((198, 214), (152, 182)), ((202, 212), (202, G))],
+        arms=[((180, 132), (154, 178)), ((230, 112), (262, 110))],
+        arrows=[("Q", 120, 150, 112, 200, 146, 214)])),
+    "pretklon": ("Pretklon", dict(
+        N=(240, 206), P=(205, 160),
+        legs=[((204, 212), (204, G)), ((208, 212), (208, G))],
+        arms=[((244, 234), (238, 258)), ((248, 234), (244, 258))],
+        arrows=[("Q", 292, 110, 316, 190, 280, 236)])),
+    "istezanje-ruku": ("Istezanje ruku", dict(
+        N=(200, 88), P=(200, 164),
+        legs=[((192, 214), (188, G)), ((208, 214), (212, G))],
+        arms=[((222, 122), (178, 110)), ((170, 108), (140, 112))],
+        arrows=[("L", 150, 80, 104, 80)])),
+    "decja-poza": ("Dečja poza", dict(
+        N=(250, 240), P=(178, 232), H=(272, 248),
+        legs=[((228, 255), (168, 258)), ((232, 257), (172, 260))],
+        arms=[((286, 254), (330, 257)), ((290, 256), (334, 259))],
+        arrows=[("L", 205, 214, 205, 156, True)])),
+    "disanje": ("Duboko disanje", dict(
+        N=(140, 250), P=(220, 250), H=(116, 248),
+        legs=[((258, 214), (276, G)), ((262, 216), (282, G))],
+        arms=[((166, 262), (196, 242)), ((170, 264), (200, 244))],
+        arrows=[("L", 198, 214, 198, 150, True)])),
+})
+
 # second pose for the moving pictures: (change, seconds per rep, always 1.5-2.5 s).
 # The app shows the moving version only while the exercise description is open.
 ANIM = {
@@ -541,6 +570,12 @@ ANIM = {
     "kruzenje-rukama": (dict(arms=[((170, 64), (146, 40)), ((230, 64), (254, 40))]), 1.5),
     "kruzenje-kukovima": (mirror(200), 2),
     "zamasi-nogama": (dict(legs=[((200, 210), (200, G)), ((170, 204), (146, 244))]), 1.8),
+    "istezanje-butine": (dict(legs=[((198, 214), (162, 168)), ((202, 212), (202, G))],
+                              arms=[((184, 126), (162, 166)), ((232, 108), (264, 104))]), 2.5),
+    "pretklon": (dict(N=(254, 120), arms=[((270, 150), (272, 186)), ((274, 152), (276, 188))]), 2.5),
+    "istezanje-ruku": (dict(arms=[((218, 114), (168, 104)), ((164, 102), (130, 104))]), 2.5),
+    "decja-poza": (dict(N=(250, 228), H=(272, 236)), 2.5),
+    "disanje": (dict(arms=[((166, 256), (196, 232)), ((170, 258), (200, 234))]), 2.5),
 }
 
 

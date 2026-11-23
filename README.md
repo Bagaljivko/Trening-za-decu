@@ -19,6 +19,9 @@ A bodyweight training app for a 10-year-old, built from the same structure as `t
 - "Instaliraj aplikaciju" card in Podešavanja and a one-time reminder on the home screen.
 - Laptop/desktop layout (mouse or trackpad, 1024 px and wider): side menu, Danas and Istorija in two columns, place choice shown right away, exercises in a grid, panels as centered windows. Phones and tablets keep their layout.
 - Works on computers too: mouse and keyboard (← → move between exercises, Esc goes back), hover highlights, a larger exercise screen on big monitors, and install steps for Chrome/Edge and Safari on Mac (desktop Firefox can't install web apps).
+- Full-screen rest alert for the last 10 seconds, then "Kreni!" with a beep every 3 s until tapped.
+- Cool-down stretch (2 min) after the last exercise.
+- Undo instead of "Are you sure?" pop-ups for deleting, discarding and reshuffling.
 - Automatic full Google Drive backup (workouts, own exercises, settings, an unfinished workout): after every change, when opening the app and when coming back to it. After clearing the browser's data, the empty app offers "Vrati sa Google Drive-a" and one tap restores everything. Workouts from several devices are merged. Switched on by putting the Client ID of the "Trening za decu" Google Cloud project into `CLIENT_ID` in `drive.js`.
 - In Podešavanja: the app version, **Proveri ažuriranja** (loads the newest version right away) and **Podeli** (a QR code another phone or tablet can scan, plus send/copy link).
 
@@ -30,6 +33,9 @@ A bodyweight training app for a 10-year-old, built from the same structure as `t
 - `drive.js`: Google Drive backup and sync, adapted from the Gitara app
 - `screenshots/`: shown by Android when installing
 - `sw.js`, `manifest.webmanifest`, `icons/`: offline support and the home screen install
+
+## Tests
+`node tests/app.test.js` runs the feature tests and `node tests/checklist.js` the release checklist (see `CHECKLIST.md`); both need Playwright with Chromium. GitHub runs them on every push.
 
 ## Releasing a new version
 Run `python3 tools/release.py` before pushing. It raises the version shown in the app and the cache name in `sw.js`, which is what lets "Proveri ažuriranja" find the new version.

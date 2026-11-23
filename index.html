@@ -3,13 +3,69 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<!-- painted before anything else loads, so opening, reloading or waking the app never flashes white -->
+<style>html{background:#F5F5F7}@media (prefers-color-scheme:dark){html{background:#000}}</style>
 <title>Trening za decu</title>
 <meta name="description" content="Trening sa sopstvenom težinom za decu: vežbe unutra ili napolju, tajmer za odmor i nedeljni ciljevi.">
-<meta name="theme-color" content="#000000">
-<meta name="color-scheme" content="light dark">
+<!-- status bar colour follows the phone's light / dark mode (Android) -->
+<meta name="theme-color" content="#F5F5F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<!-- launch screens (tools/make_splash.py) -->
+<link rel="apple-touch-startup-image" href="icons/splash/light-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1206x2622.png" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1260x2736.png" media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1320x2868.png" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1488x2266.png" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-2266x1488.png" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-2048x1536.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1620x2160.png" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-2160x1620.png" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1640x2360.png" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-2360x1640.png" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-2388x1668.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/light-2732x2048.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: light)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1206x2622.png" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1260x2736.png" media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1320x2868.png" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1488x2266.png" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-2266x1488.png" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1536x2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-2048x1536.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1620x2160.png" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-2160x1620.png" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1640x2360.png" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-2360x1640.png" media="(device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-1668x2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-2388x1668.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-2048x2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+<link rel="apple-touch-startup-image" href="icons/splash/dark-2732x2048.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape) and (prefers-color-scheme: dark)">
+<!-- /launch screens -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -386,6 +442,26 @@ html,body{overscroll-behavior:none}
   .nav button:hover{color:var(--ink)}
 }
 
+/* Full-screen rest alert */
+.ralert{position:fixed;inset:0;z-index:33;background:var(--bg);display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:calc(24px + env(safe-area-inset-top,0px)) 24px calc(24px + env(safe-area-inset-bottom,0px))}
+.ra-in{width:100%;max-width:460px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.ra-l{font-size:18px;font-weight:600;color:var(--mut)}
+.ra-t{font-size:clamp(110px,30vw,200px);font-weight:200;line-height:1;letter-spacing:-.05em;color:var(--neon-txt);font-variant-numeric:tabular-nums}
+.ra-next{display:flex;align-items:center;gap:14px;text-align:left;margin:6px 0 8px;padding:12px 16px;border-radius:20px;background:var(--s1);border:1px solid var(--line);width:100%}
+.ra-next .thumb{width:96px;height:72px}
+.ra-next small{display:block;font-size:13px;color:var(--mut)}
+.ra-next b{display:block;font-size:20px;line-height:1.2}
+.ra-next span{display:block;font-size:15px;color:var(--mut);margin-top:2px}
+.ra-b{display:flex;gap:24px;align-items:center}
+
+/* Undo bar */
+.undo{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom,0px));z-index:45;display:flex;align-items:center;gap:16px;
+  width:max-content;max-width:calc(100vw - 32px);padding:10px 10px 10px 18px;border-radius:24px;background:var(--ink);color:var(--bg);font-size:15px;font-weight:500;box-shadow:0 6px 24px rgb(0 0 0 / .25)}
+.undo button{flex:none;height:40px;padding:0 16px;border-radius:20px;background:var(--neon);color:var(--neon-ink);font-weight:700;font-size:15px}
+@keyframes undoIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+@media (prefers-reduced-motion:no-preference){.undo{animation:undoIn .2s ease-out}}
+
 /* app: version, update, share */
 .pill{flex:none;display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 18px;border-radius:24px;border:1.5px solid var(--line);font-size:15.5px;font-weight:600;color:var(--ink);white-space:nowrap}
 .pill:active{background:var(--s2)}
@@ -546,13 +622,22 @@ const WARMUP = {
     {name:"Mali poskoci", sec:20, img:"mekani-poskoci", desc:"Lagani poskoci na prstima."},
   ],
 };
+// short cool-down stretch after the last exercise (about 2.5 minutes)
+const COOLDOWN = [
+  {name:"Istezanje butina", sec:30, img:"istezanje-butine", desc:"Uhvati stopalo iza sebe i privuci ga ka zadnjici. Pola vremena svakom nogom. Drži se za zid ako treba."},
+  {name:"Pretklon", sec:30, img:"pretklon", desc:"Polako se sagni i pruži ruke ka prstima. Kolena smeju malo da se savijaju."},
+  {name:"Istezanje ruku", sec:30, img:"istezanje-ruku", desc:"Pruži ruku preko grudi i drugom rukom je lagano privuci. Pola vremena svakom rukom."},
+  {name:"Dečja poza", sec:30, img:"decja-poza", desc:"Klekni, sedi na pete i ispruži ruke napred po podu. Diši polako."},
+  {name:"Duboko disanje", sec:20, img:"disanje", desc:"Lezi na leđa, ruke na stomak. Udahni kroz nos, pa polako izdahni."},
+];
+const COOL_SEC = COOLDOWN.reduce((a,m)=>a+m.sec, 0);
 const REST_CHOICES = [30, 45, 60, 90];
 const CATS = {noge:"Noge", ruke:"Ruke i stolica", stomak:"Stomak", zivotinje:"Životinjski pokreti", ravnoteza:"Ravnoteža", skokovi:"Skokovi i trčanje"};
 const ORDER = ["noge","ruke","stomak","zivotinje","ravnoteza","skokovi"];
 const PLACES = {in:"Unutra", out:"Napolju"};
 const MAX_REPS = 15, MAX_SEC = 60, MIN_SEC = 5;
 const LS_KEY = "trening-za-decu-v1";
-const APP_VERSION = "1.10";   // keep in step with CACHE in sw.js (tools/release.py does both)
+const APP_VERSION = "1.11";   // keep in step with CACHE in sw.js (tools/release.py does both)
 const SAFETY = "Zagrej se pre treninga i koristi stabilnu stolicu koja ne klizi.";
 const LOCALE = "sr-Latn-RS";
 const $app = document.getElementById("app");
@@ -613,7 +698,14 @@ const thumbOf = e => illHTML(slugOf(e), "", false, "thumb");
 const isTimed = e => !!e && e.type === "sec";
 const allowed = (e, place) => place === "out" || e.place === "in";
 function sortedSessions(){ return S.sessions.slice().sort((a,b)=>a.date.localeCompare(b.date)); }
-function sessionTitle(s){ return "Trening " + (sortedSessions().findIndex(x=>x.id===s.id) + 1); }
+// "Trening N": numbers are worked out once for the whole list (sorting per row made History slow with many workouts)
+let _numCache = {key:"", map:null};
+function sessionNumbers(){
+  const key = S.sessions.length + "|" + S.sessions.map(x=>x.id).join(",");
+  if(_numCache.key !== key){ const m = new Map(); sortedSessions().forEach((x,i)=>m.set(x.id, i+1)); _numCache = {key, map:m}; }
+  return _numCache.map;
+}
+function sessionTitle(s){ return "Trening " + (sessionNumbers().get(s.id) || S.sessions.length + 1); }
 function historyFor(exId){
   const out = [];
   sortedSessions().forEach((s,i)=>s.items.forEach(it=>{ if(it.ex===exId) out.push({s,i,it}); }));
@@ -736,7 +828,7 @@ function generate(place){
 }
 // rough length of a workout in minutes
 function estMin(plan){
-  let sec = plan.warmed ? 0 : 150, sets = 0;
+  let sec = (plan.warmed ? 0 : 150) + (plan.cooled ? 0 : COOL_SEC), sets = 0;
   plan.items.forEach(it=>{
     const e = exById(it.ex) || {type:"reps"}, sides = e.side ? 2 : 1;
     it.sets.forEach(st=>{ const v = +st.v || e.amount || 10;
@@ -770,7 +862,9 @@ function swap(i){
 
 /* ---------- helpers ---------- */
 const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function fmtDate(iso){ return new Date(iso).toLocaleDateString(LOCALE, {weekday:"short", day:"numeric", month:"short"}); }
+// one date formatter for the whole app (creating one per date made History slow with many workouts)
+const DATE_FMT = new Intl.DateTimeFormat(LOCALE, {weekday:"short", day:"numeric", month:"short"});
+function fmtDate(iso){ return DATE_FMT.format(new Date(iso)); }
 let toastTimer;
 function toast(msg){
   document.querySelector(".toast")?.remove();
@@ -853,7 +947,7 @@ function viewToday(){
   const rows = items.map((it,i)=>{ const e = exById(it.ex) || {name:"Nepoznata vežba"}; const st = itemState(it);
     const meta = st.all ? `<span class="ok" aria-label="Gotovo">${ICON.check}</span>` : st.d ? `<span class="part">${st.d}/${st.n}</span>` : `<b>${it.sets.length} × ${esc(amountText(e, it.sets[0]?.v))}</b>`;
     return `<button class="row${st.all?" done":""}" data-act="open" data-i="${i}"><span class="n">${i+1}</span>${thumbOf(e)}<span class="nm">${esc(e.name)}<small>${esc(CATS[e.cat]||"")}${e.side?", "+esc(e.side):""}</small></span><span class="m">${meta}</span></button>`; }).join("");
-  const cta = allDone ? `<button class="cta" data-act="finish">Završi trening</button>` : `<button class="cta" data-act="start">${anyDone ? "Nastavi trening" : "Počni trening"}</button>`;
+  const cta = allDone ? (S.plan.cooled ? `<button class="cta" data-act="finish">Završi trening</button>` : `<button class="cta" data-act="cool">Istezanje (2 min)</button><div style="text-align:center"><button class="link" data-act="finish">Završi bez istezanja</button></div>`) : `<button class="cta" data-act="start">${anyDone ? "Nastavi trening" : "Počni trening"}</button>`;
   return `<div class="cols"><div class="col-a">` + head + heroBlock() + safetyBlock() + `<div class="dock">${cta}</div></div><div class="col-b"><section class="list">
       <div class="sec"><span>Danas, ${PLACES[S.plan.place].toLowerCase()} <span class="est">· ≈ ${estMin(S.plan)} min</span></span><span class="lnks"><button class="link" data-act="place">Promeni mesto</button><button class="link" data-act="regen">Promešaj</button></span></div>${rows}
       <div class="list-foot"><button class="link" data-act="add">Dodaj vežbu</button>${anyDone&&!allDone?`<button class="link" data-act="finish">Završi sada</button>`:""}<button class="link danger" data-act="discard">Odbaci</button></div>
@@ -875,7 +969,7 @@ function viewFocus(){
   let cta;
   if(hold) cta = holdHTML();
   else if(rest && !allDone) cta = restHTML();
-  else if(allDone) cta = `<button class="cta" data-act="finish">Završi trening</button>`;
+  else if(allDone) cta = (S.plan.cooled ? `<button class="cta" data-act="finish">Završi trening</button>` : `<button class="cta" data-act="cool">Istezanje (2 min)</button><div style="text-align:center"><button class="link" data-act="finish">Završi bez istezanja</button></div>`);
   else if(s.done) cta = `<button class="cta ghost" data-act="undo">Poništi seriju ${j+1}</button>`;
   else cta = timed ? `<button class="cta" data-act="hold">Kreni: ${esc(clampV(e, s.v))} s${e.side ? " " + esc(e.side) : ""}</button>` : `<button class="cta" data-act="complete">Serija ${j+1} gotova</button>`;
   const step = timed ? 5 : 1;
@@ -896,6 +990,7 @@ function viewFocus(){
           <div class="tools"><button class="link" data-act="swap" data-i="${i}">Zameni vežbu</button><button class="link" data-act="detail" data-id="${esc(it.ex)}">Istorija</button><button class="link danger" data-act="removefocus" data-i="${i}">Ukloni</button></div>
         </div>
         <div class="fdock">${next&&!allDone?`<div class="next"><span>Sledeća</span><b>${esc(next)}</b></div>`:""}<div id="ctaBox">${cta}</div></div>
+        ${restAlertHTML()}
       </div>
     </div>
   </div>`;
@@ -914,15 +1009,15 @@ function viewWarm(){
       <div class="fpic">${picHTML(m.img, m.name, false)}</div>
       <div class="fside">
         <div class="fbody">
-          <div class="grp">Zagrevanje</div>
+          <div class="grp">${w.kind === "cool" ? "Istezanje" : "Zagrevanje"}</div>
           <div class="wu-name">${esc(m.name)}</div>
           <p class="wu-desc">${esc(m.desc)}</p>
           <div class="wu-t" id="warmT" role="timer">${fmtT(left)}</div>
           <div class="rest-line"><i id="warmL" style="transform:scaleX(${Math.max(0,left/(m.sec*1000)).toFixed(3)})"></i></div>
           <div class="tools">${muteBtn()}</div>
         </div>
-        <div class="fdock"><button class="cta ghost" data-act="warmnext">${w.i+1<w.list.length ? "Sledeće: " + esc(w.list[w.i+1].name) : "Gotovo, na trening"}</button>
-          <div style="text-align:center"><button class="link" data-act="warmskip">Preskoči zagrevanje</button></div></div>
+        <div class="fdock"><button class="cta ghost" data-act="warmnext">${w.i+1<w.list.length ? "Sledeće: " + esc(w.list[w.i+1].name) : (w.kind === "cool" ? "Gotovo!" : "Gotovo, na trening")}</button>
+          <div style="text-align:center"><button class="link" data-act="warmskip">${w.kind === "cool" ? "Preskoči istezanje" : "Preskoči zagrevanje"}</button></div></div>
       </div>
     </div>
   </div>`;
@@ -956,9 +1051,9 @@ function viewHistory(){
     <div class="stats"><div><b>${p.total}</b><span>${pl(p.total, W.trening)}</span></div><div class="n"><b>${stk}</b><span>${pl(stk, W.nedelja)} zaredom</span></div><div><b>${p.month}</b><span>ovog meseca</span></div></div>
     <div class="weeks" role="img" aria-label="Treninzi po nedeljama u poslednjih 12 nedelja">${grid}</div>
     <div class="wl"><span>Pre 12 nedelja</span><span>Ove nedelje</span></div>
-    <section class="list">${ss.map(s=>`<details class="sess"><summary><span><b>${esc(sessionTitle(s))}</b><small>${esc(fmtDate(s.date))}${s.place?", "+PLACES[s.place].toLowerCase():""}</small></span><span class="m">${s.items.length} ${pl(s.items.length, W.vezba)}</span></summary>
-      <ul>${s.items.map(it=>`<li><span>${esc(exById(it.ex)?.name||"Nepoznata vežba")}</span><span>${esc(setSummary(it))}</span></li>`).join("")}</ul>
-      <button class="link danger" data-act="delsess" data-id="${esc(s.id)}">Obriši ovaj trening</button></details>`).join("") || `<p class="lead" style="margin:0">Još nema treninga. Prvi je na kartici Danas.</p>`}</section></div><div class="col-b">
+    <section class="list">${ss.slice(0, histShown).map(s=>`<details class="sess" data-id="${esc(s.id)}"${openSess.has(s.id) ? " open" : ""}><summary><span><b>${esc(sessionTitle(s))}</b><small>${esc(fmtDate(s.date))}${s.place?", "+PLACES[s.place].toLowerCase():""}</small></span><span class="m">${s.items.length} ${pl(s.items.length, W.vezba)}</span></summary>
+      ${openSess.has(s.id) ? sessDetail(s) : ""}</details>`).join("") || `<p class="lead" style="margin:0">Još nema treninga. Prvi je na kartici Danas.</p>`}
+      ${ss.length > histShown ? `<div class="list-foot"><button class="link" data-act="histmore">Prikaži starije (${ss.length - histShown})</button></div>` : ""}</section></div><div class="col-b">
     ${installSection()}
     ${driveSection()}
     ${badgesSection()}
@@ -973,6 +1068,14 @@ function viewHistory(){
       <div class="srow"><span>Podeli sa drugim telefonom ili tabletom</span><button class="pill" data-act="shareapp" aria-label="Podeli aplikaciju (QR kod)">${QR_ICON}Podeli</button></div>
       <div class="srow"><button class="link" data-act="export">Sačuvaj rezervnu kopiju</button><button class="link" data-act="import">Vrati iz kopije</button></div>
       <p class="fine">Treninzi se čuvaju samo na ovom uređaju. S vremena na vreme sačuvaj rezervnu kopiju. Pomoću nje možeš da preneseš treninge na novi telefon ili tablet.</p></section></div></div>`;
+}
+// History shows the latest 40 workouts (more on request); a workout's exercise lines are built only when it is opened
+const HIST_PAGE = 40;
+let histShown = HIST_PAGE;
+const openSess = new Set();
+function sessDetail(s){
+  return `<ul>${s.items.map(it=>`<li><span>${esc(exById(it.ex)?.name||"Nepoznata vežba")}</span><span>${esc(setSummary(it))}</span></li>`).join("")}</ul>
+      <button class="link danger" data-act="delsess" data-id="${esc(s.id)}">Obriši ovaj trening</button>`;
 }
 function badgesSection(){
   const got = earnedBadges();
@@ -1001,6 +1104,10 @@ function viewSheet(){
   if(!sheet) return "";
   const wrap = (title, body) => `<div class="sheet-bg" data-act="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}" data-stop>
     <div class="sheet-h"><h2>${esc(title)}</h2><button class="iconbtn" data-act="close" aria-label="Zatvori">${ICON.x}</button></div><div class="sheet-b">${body}</div></div></div>`;
+  if(sheet.type==="confirm"){
+    return wrap(sheet.title, `<p class="fine" style="font-size:16px;color:var(--ink);margin-top:6px">${esc(sheet.text)}</p>
+      <div class="qr-btns" style="justify-content:flex-start"><button class="pill" data-act="confirmyes" style="color:var(--red);border-color:var(--red)">${esc(sheet.yes)}</button><button class="pill" data-act="close">Odustani</button></div>`);
+  }
   if(sheet.type==="share"){
     const url = appUrl();
     const qr = window.qrSVG ? qrSVG(url, {label:"QR kod sa linkom ka aplikaciji Trening za decu"}) : "";
@@ -1121,6 +1228,13 @@ $app.addEventListener("change", e=>{
   const it = S.plan.items[+t.dataset.i], ex = exById(it.ex), s = it.sets[+t.dataset.j];
   const v = clampV(ex, s.v); if(String(v)!==String(s.v)){ s.v = v; persistPlan(); render(); toast(isTimed(ex) ? `Najviše ${MAX_SEC} sekundi` : `Najviše ${MAX_REPS} ponavljanja`); }
 });
+// opening a workout in History fills in its details; open ones stay open when the screen is redrawn
+$app.addEventListener("toggle", e=>{
+  const d = e.target; if(!d.matches || !d.matches("details.sess")) return;
+  const id = d.dataset.id, s = S.sessions.find(x=>x.id===id); if(!s) return;
+  if(d.open){ openSess.add(id); if(!d.querySelector("ul")) d.insertAdjacentHTML("beforeend", sessDetail(s)); }
+  else openSess.delete(id);
+}, true);
 $app.addEventListener("focusin", e=>{ if(e.target.classList?.contains("big")) e.target.select(); });
 $app.addEventListener("click", e=>{
   const b = e.target.closest("[data-act]"); if(!b) return;
@@ -1129,16 +1243,21 @@ $app.addEventListener("click", e=>{
   switch(a){
     case "gen": case "place": sheet = {type:"place"}; render(); break;
     case "pickplace": {
-      if(S.plan && S.plan.items.some(it=>it.sets.some(s=>s.done)) && !confirm("Napraviti novi trening i izgubiti označene serije?")) return;
-      sheet = null; generate(b.dataset.g); render(false); break; }
+      const prev = S.plan && S.plan.items.some(it=>it.sets.some(s=>s.done)) ? clone(S.plan) : null;
+      sheet = null; generate(b.dataset.g); render(false);
+      if(prev) withUndo("Napravljen je novi trening.", ()=>{ S.plan = prev; persistPlan(); });
+      break; }
     case "regen":
-      if(S.plan.items.some(it=>it.sets.some(s=>s.done)) && !confirm("Promešati i izgubiti označene serije?")) return;
-      generate(S.plan.place); render(false); toast("Novi raspored vežbi"); break;
+    { const prev = S.plan.items.some(it=>it.sets.some(s=>s.done)) ? clone(S.plan) : null;
+      generate(S.plan.place); render(false);
+      if(prev) withUndo("Novi raspored vežbi.", ()=>{ S.plan = prev; persistPlan(); }); else toast("Novi raspored vežbi");
+      break; }
     case "open": openFocus(i); break;
     case "start": {
       if(!S.plan.warmed && !S.plan.items.some(it=>it.sets.some(x=>x.done))){ startWarm(); break; }
       const k = S.plan.items.findIndex(x=>!itemState(x).all); openFocus(k<0 ? 0 : k); break; }
     case "warmnext": warmNext(); break;
+    case "cool": startWarm("cool"); break;
     case "warmskip": warmDone(true); break;
     case "warmback": warm = null; releaseWake(); render(false); window.scrollTo(0,0); break;
     case "harder": {
@@ -1147,6 +1266,7 @@ $app.addEventListener("click", e=>{
       S.plan.items[focus.i] = buildItem(n.id); selSet = null; howOpen = false; persistPlan(); render(); toast(`Bravo! Sad: ${n.name}`); break; }
     case "rs": S.settings[b.dataset.k] = +b.dataset.g; persistSettings(); render(); break;
     case "backup": exportBackup(); break;
+    case "histmore": histShown += 100; render(); break;
     case "install": promptInstall(); break;
     case "drvconnect": driveAction(()=>Drive.connect(), "Google Drive je povezan"); break;
     case "drvrestore": S.settings.restoreAsked = true; saveLocal();
@@ -1155,7 +1275,9 @@ $app.addEventListener("click", e=>{
     case "drvrestoreno": S.settings.restoreAsked = true; saveLocal(); render(); break;
     case "drvreconnect": driveAction(()=>Drive.reconnect(), "Google Drive je ponovo povezan"); break;
     case "drvsync": driveAction(()=>Drive.syncNow(), "Rezervna kopija je sačuvana"); break;
-    case "drvoff": if(confirm("Prekinuti vezu sa Google Drive-om? Automatska kopija se gasi. Fajl koji je već na Drive-u ostaje tamo.")){ Drive.disconnect(); toast("Veza sa Google Drive-om je prekinuta"); render(); } break;
+    case "drvoff": askConfirm("Prekinuti vezu sa Google Drive-om?", "Automatska kopija se gasi. Fajl koji je već na Drive-u ostaje tamo.", "Prekini vezu",
+      ()=>{ Drive.disconnect(); toast("Veza sa Google Drive-om je prekinuta"); }); break;
+    case "confirmyes": { const fn = confirmFn; confirmFn = null; sheet = null; if(fn) fn(); render(); break; }
     case "installinfo": tab = "istorija"; S.settings.installSeen = true; saveLocal(); render(false); setTimeout(()=>document.getElementById("install")?.scrollIntoView({block:"start"}), 50); break;
     case "installlater": S.settings.installSeen = true; saveLocal(); render(); break;
     case "shareapp": sheet = {type:"share"}; render(); break;
@@ -1166,11 +1288,15 @@ $app.addEventListener("click", e=>{
     case "editex": { const c = S.custom.find(x=>x.id===b.dataset.id); if(!c) break;
       sheet = {type:"newex", edit:c.id, name:c.name, cat:c.cat, kind:c.type, place:c.place, jump:c.jump?"yes":"no"}; render(); break; }
     case "delex": {
-      const c = S.custom.find(x=>x.id===b.dataset.id); if(!c || !confirm(`Obrisati vežbu „${c.name}“?`)) break;
+      const c = S.custom.find(x=>x.id===b.dataset.id); if(!c) break;
+      const before = clone(S.custom);
       const used = S.sessions.some(x=>x.items.some(it=>it.ex===c.id)) || (S.plan?.items||[]).some(it=>it.ex===c.id);
-      if(used){ c.deleted = true; c.updated = Date.now(); } else { S.custom = S.custom.filter(x=>x.id!==c.id); forget(c.id); }
-      driveChanged();
-      persistSettings(); sheet = null; render(); toast("Vežba je obrisana"); break; }
+      if(used){ c.deleted = true; c.updated = Date.now(); } else { S.custom = S.custom.filter(x=>x.id!==c.id); softGone.add(c.id); }
+      saveLocal(); sheet = null; render();
+      withUndo(`Vežba „${c.name}“ je obrisana.`,
+        ()=>{ softGone.delete(c.id); S.custom = before; saveLocal(); },
+        ()=>{ softGone.delete(c.id); if(!used) forget(c.id); saveLocal(); driveChanged(); });
+      break; }
     case "back": focus = null; render(false); window.scrollTo(0,0); break;
     case "jump": focus.i = i; selSet = null; howOpen = false; render(false); break;
     case "sel": selSet = j; render(); break;
@@ -1181,12 +1307,13 @@ $app.addEventListener("click", e=>{
       if(s.v===before && d>0) toast(isTimed(ex) ? `Najviše ${MAX_SEC} sekundi` : `Najviše ${MAX_REPS} ponavljanja`);
       persistPlan(); render(); break; }
     case "complete": { const it = S.plan.items[focus.i]; it.sets[selSet].v = clampV(exById(it.ex), it.sets[selSet].v); completeAt(focus.i, selSet); render(false); window.scrollTo(0,0); break; }
-    case "hold": {
-      unlockAudio(); const it = S.plan.items[focus.i], ex = exById(it.ex), s = it.sets[selSet];
-      s.v = clampV(ex, s.v); const sides = ex.side ? 2 : 1, ms = s.v*1000;
-      // 3-second "get ready" before the clock starts
-      rest = null; hold = {start:Date.now()+PREP_MS, side:ms, total:ms*sides, sides, switched:false, i:focus.i, j:selSet, label:ex.side==="po strani" ? "strana" : "noga"};
-      holdWake(); persistPlan(); render(); break; }
+    case "hold": startHold(); render(); break;
+    case "alertgo": {
+      // "Kreni!" on the rest alert: straight into the next set (a timed one starts its 3-2-1 right away)
+      rest = null;
+      const it = S.plan?.items[focus?.i];
+      if(it && isTimed(exById(it.ex))){ if(selSet===null || it.sets[selSet]?.done) selSet = it.sets.findIndex(x=>!x.done); if(selSet>=0) startHold(); }
+      render(); break; }
     case "holdstop": if(hold){
       const h = hold, el = Date.now() - h.start; hold = null;
       if(el <= 0){ releaseWake(); render(); break; }
@@ -1194,8 +1321,8 @@ $app.addEventListener("click", e=>{
       S.plan.items[h.i].sets[h.j].v = Math.max(1, Math.round(el/1000/h.sides));
       completeAt(h.i, h.j, false); render(false); } break;
     case "holdcancel": hold = null; releaseWake(); render(); break;
-    case "restskip": if(rest){ rest.over = true; releaseWake(); render(); } break;
-    case "rest30": if(rest && !rest.over){ rest.end += 30000; rest.total += 30000; tickRest(); } break;
+    case "restskip": rest = null; render(); break;
+    case "rest30": if(rest && !rest.over){ rest.end += 30000; rest.total += 30000; rest.alerted = rest.end - Date.now() <= ALERT_MS; render(); } break;
     case "restgo": rest = null; render(); break;
     case "mute": { S.settings.mute = !S.settings.mute; persistSettings(); const box = document.getElementById("ctaBox");
       if(rest && box) box.innerHTML = restHTML(); else render(); break; }
@@ -1203,7 +1330,13 @@ $app.addEventListener("click", e=>{
     case "addset": { const it = S.plan.items[i], l = it.sets[it.sets.length-1]; it.sets.push({v:l.v, done:false}); persistPlan(); render(); break; }
     case "delsetj": if(S.plan.items[i].sets.length>3 && j>=3){ S.plan.items[i].sets.splice(j,1); if(selSet>=S.plan.items[i].sets.length) selSet = null; persistPlan(); render(); } break;
     case "swap": swap(i); selSet = null; howOpen = false; break;
-    case "removefocus": if(confirm("Ukloniti ovu vežbu iz današnjeg treninga?")){ S.plan.items.splice(i,1); persistPlan(); if(!S.plan.items.length){ focus = null; } else { focus.i = Math.min(i, S.plan.items.length-1); selSet = null; } render(false); } break;
+    case "removefocus": {
+      const prev = clone(S.plan), name = exById(S.plan.items[i].ex)?.name || "Vežba";
+      S.plan.items.splice(i,1); persistPlan();
+      if(!S.plan.items.length){ focus = null; } else { focus.i = Math.min(i, S.plan.items.length-1); selSet = null; }
+      render(false);
+      withUndo(`${name} je uklonjena iz treninga.`, ()=>{ S.plan = prev; persistPlan(); if(focus) { focus.i = i; selSet = null; } });
+      break; }
     case "add": sheet = {type:"pick", q:""}; render(); break;
     case "addthis": {
       const ex = exById(b.dataset.id); if(!ex) return;
@@ -1212,12 +1345,23 @@ $app.addEventListener("click", e=>{
       S.plan.items.push(buildItem(ex.id)); persistPlan(); sheet = null; focus = null; tab = "danas"; render(false); toast("Dodato u današnji trening"); break; }
     case "detail": sheet = {type:"detail", id:b.dataset.id}; render(); break;
     case "close": sheet = null; render(); break;
-    case "discard": if(confirm("Odbaciti današnji trening?")){ S.plan = null; rest = null; hold = null; releaseWake(); persistPlan(); render(false); } break;
+    case "discard": {
+      const prev = clone(S.plan);
+      S.plan = null; rest = null; hold = null; releaseWake(); persistPlan(); render(false);
+      withUndo("Današnji trening je odbačen.", ()=>{ S.plan = prev; persistPlan(); });
+      break; }
     case "finish": finish(); break;
     case "fg": filterCat = b.dataset.g; render(); break;
     case "fp": filterPlace = b.dataset.g; render(); break;
     case "cnt": S.settings.count = clampCount(S.settings.count + +b.dataset.d); persistSettings(); render(); break;
-    case "delsess": if(confirm("Obrisati ovaj trening iz istorije?")){ const id = b.dataset.id; S.sessions = S.sessions.filter(s=>s.id!==id); forget(id); saveLocal(); driveChanged(); render(); } break;
+    case "delsess": {
+      const id = b.dataset.id, sess = S.sessions.find(s=>s.id===id); if(!sess) break;
+      const title = sessionTitle(sess);
+      S.sessions = S.sessions.filter(s=>s.id!==id); softGone.add(id); openSess.delete(id); saveLocal(); render();
+      withUndo(`${title} je obrisan.`,
+        ()=>{ softGone.delete(id); if(!S.sessions.some(s=>s.id===id)) S.sessions.push(sess); saveLocal(); },
+        ()=>{ softGone.delete(id); forget(id); saveLocal(); driveChanged(); });
+      break; }
     case "newex": sheet = {type:"newex", edit:null, name:"", cat:"noge", kind:"reps", place:"in", jump:"no"}; render(); setTimeout(()=>document.getElementById("nx-name")?.focus(), 50); break;
     case "nx": {
       sheet.name = document.getElementById("nx-name").value;
@@ -1399,6 +1543,35 @@ async function driveAction(fn, ok){
   render();
 }
 function askPersist(){ try{ navigator.storage?.persist?.(); }catch(_){} }
+// ---- Undo instead of "Are you sure?" pop-ups ----
+// The change happens at once and a bar offers "Poništi" for 7 seconds. Deletions become final (and go to
+// Google Drive / other devices) only when the bar closes or the app is closed, so Undo always works.
+let undo = null;
+const softGone = new Set();   // deleted, but still undoable: a Drive sync must not bring these back
+const clone = x => JSON.parse(JSON.stringify(x));
+function withUndo(msg, revert, commit){
+  commitUndo();
+  undo = {revert, commit, timer:setTimeout(commitUndo, 7000)};
+  document.querySelector(".toast")?.remove();
+  let bar = document.getElementById("undoBar");
+  if(!bar){ bar = document.createElement("div"); bar.id = "undoBar"; bar.className = "undo"; bar.setAttribute("role","status"); document.body.appendChild(bar); }
+  bar.innerHTML = `<span>${esc(msg)}</span><button data-undo>Poništi</button>`;
+}
+function commitUndo(){
+  if(!undo) return; const u = undo; undo = null; clearTimeout(u.timer);
+  try{ u.commit && u.commit(); }catch(_){}
+  document.getElementById("undoBar")?.remove();
+}
+function doUndo(){
+  if(!undo) return; const u = undo; undo = null; clearTimeout(u.timer);
+  document.getElementById("undoBar")?.remove();
+  u.revert(); render(false); toast("Vraćeno");
+}
+document.addEventListener("click", e=>{ if(e.target.closest("[data-undo]")) doUndo(); });
+window.addEventListener("pagehide", commitUndo);
+let confirmFn = null;   // action for the app-style confirmation panel
+function askConfirm(title, text, yes, fn){ confirmFn = fn; sheet = {type:"confirm", title, text, yes}; render(); }
+
 // ---- backup data, shared by the file backup and Google Drive ----
 // everything that belongs to the user: workouts, own exercises, deletions, settings and an unfinished workout
 function backupData(){
@@ -1430,11 +1603,11 @@ function mergeData(v){
   S.custom = S.custom.filter(x=>!gone.has(x.id));
   const have = new Set(S.sessions.map(x=>x.id)); let added = 0;
   for(const x of Array.isArray(v.sessions) ? v.sessions : []){
-    if(!x || typeof x.id!=="string" || gone.has(x.id) || have.has(x.id) || !x.date || !Array.isArray(x.items)) continue;
+    if(!x || typeof x.id!=="string" || gone.has(x.id) || softGone.has(x.id) || have.has(x.id) || !x.date || !Array.isArray(x.items)) continue;
     S.sessions.push(x); have.add(x.id); added++;
   }
   for(const c of Array.isArray(v.custom) ? v.custom : []){
-    if(!c || typeof c.id!=="string" || gone.has(c.id)) continue;
+    if(!c || typeof c.id!=="string" || gone.has(c.id) || softGone.has(c.id)) continue;
     const mine = S.custom.find(x=>x.id===c.id);
     if(!mine) S.custom.push(c); else if((c.updated||0) > (mine.updated||0)) Object.assign(mine, c);
   }
@@ -1468,6 +1641,7 @@ document.addEventListener("keydown", e=>{
   const typing = e.target.closest && e.target.closest("input, textarea");
   if(e.key === "Escape"){
     if(sheet){ sheet = null; render(); }
+    else if(rest && focus && (rest.over || rest.end - Date.now() <= ALERT_MS)){ rest = null; render(); }
     else if(party){ party = null; render(false); }
     else if(warm){ warm = null; render(false); window.scrollTo(0,0); }
     else if(focus && !typing){ focus = null; render(false); window.scrollTo(0,0); }
@@ -1542,6 +1716,33 @@ async function holdWake(){
 function releaseWake(force){ if(!force && (focus || warm)) return; try{ wakeLock?.release(); }catch(_){} wakeLock = null; }
 // the screen stays on for the whole workout (warm-up, exercises, rest, timers), and sleeps normally otherwise
 function keepAwake(){ if(focus || warm || hold || (rest && !rest.over)) holdWake(); else if(wakeLock) releaseWake(true); }
+function startHold(){
+  unlockAudio(); const it = S.plan.items[focus.i], ex = exById(it.ex), s = it.sets[selSet];
+  s.v = clampV(ex, s.v); const sides = ex.side ? 2 : 1, ms = s.v*1000;
+  // 3-second "get ready" before the clock starts
+  rest = null; hold = {start:Date.now()+PREP_MS, side:ms, total:ms*sides, sides, switched:false, i:focus.i, j:selSet, label:ex.side==="po strani" ? "strana" : "noga"};
+  holdWake(); persistPlan();
+}
+// Full-screen rest alert: the last 10 seconds of rest, then "Kreni!" with a beep every 3 s (up to a minute)
+// until he taps, so a rest that ended while he was away isn't missed.
+const ALERT_MS = 10000, NAG_EVERY = 3000, NAG_FOR = 60000;
+function restAlertHTML(){
+  if(!rest || !focus || !S.plan) return "";
+  const left = rest.end - Date.now();
+  if(!rest.over && left > ALERT_MS) return "";
+  const it = S.plan.items[focus.i]; if(!it) return "";
+  const e = exById(it.ex) || {name:"", type:"reps"};
+  let k = selSet; if(k===null || k===undefined || it.sets[k]?.done) k = it.sets.findIndex(x=>!x.done); if(k<0) k = 0;
+  const v = it.sets[k] ? clampV(e, it.sets[k].v) : e.amount;
+  return `<div class="ralert" role="alertdialog" aria-label="Odmor">
+    <div class="ra-in">
+      <div class="ra-l">${rest.over ? "Odmor je gotov!" : "Još malo odmora"}</div>
+      <div class="ra-t" id="alertT">${rest.over ? "Kreni!" : Math.max(1, Math.ceil(left/1000))}</div>
+      <div class="ra-next">${thumbOf(e)}<div><small>Sledeće</small><b>${esc(e.name)}</b><span>Serija ${k+1} · ${esc(amountLong(e, v))}</span></div></div>
+      <button class="cta${rest.over ? " go" : ""}" data-act="alertgo">Kreni!</button>
+      <div class="ra-b">${rest.over ? "" : `<button class="link" data-act="rest30">+30 s</button>`}${muteBtn()}</div>
+    </div></div>`;
+}
 function startRest(kind){
   unlockAudio();
   const ms = (kind==="ex" ? S.settings.restEx : S.settings.restSet) * 1000;
@@ -1549,10 +1750,8 @@ function startRest(kind){
   holdWake();
 }
 function restOver(){
-  rest.over = true; releaseWake(); ding(); buzz();
-  const box = document.getElementById("ctaBox");
-  if(focus && box) box.innerHTML = restHTML();
-  else toast("Odmor je gotov. Vreme je za sledeću seriju");
+  rest.over = true; rest.overAt = rest.lastNag = Date.now(); ding(); buzz();
+  if(focus) render(); else toast("Odmor je gotov. Vreme je za sledeću seriju");
 }
 function completeAt(i, j, carry=true){
   const it = S.plan.items[i]; if(!it || !it.sets[j]) return;
@@ -1609,10 +1808,10 @@ function tickHold(){
   if(l) l.style.transform = `scaleX(${(h.left/hold.side).toFixed(3)})`;
 }
 // ---- warm-up ----
-function startWarm(){
+function startWarm(kind="warm"){
   unlockAudio();
-  const list = WARMUP[S.plan.place] || WARMUP.in;
-  warm = {list, i:0, end:Date.now()+list[0].sec*1000};
+  const list = kind === "cool" ? COOLDOWN : (WARMUP[S.plan.place] || WARMUP.in);
+  warm = {kind, list, i:0, end:Date.now()+list[0].sec*1000};
   if(!S.plan.started) S.plan.started = new Date().toISOString();
   focus = null; holdWake(); render(false); window.scrollTo(0,0);
 }
@@ -1625,6 +1824,7 @@ function warmNext(){
   render(false);
 }
 function warmDone(skip){
+  if(warm && warm.kind === "cool"){ warm = null; S.plan.cooled = true; persistPlan(); return finish(); }
   warm = null; S.plan.warmed = true; persistPlan(); releaseWake();
   if(!skip){ ding(); buzz(); toast("Zagrejan si! Kreće trening"); }
   const k = S.plan.items.findIndex(x=>!itemState(x).all); openFocus(k<0 ? 0 : k);
@@ -1639,10 +1839,17 @@ function tickWarm(){
 }
 function tickRest(){
   tickHold(); tickWarm();
-  if(!rest || rest.over) return ensureTicker();
+  if(rest && rest.over){
+    const now = Date.now();
+    if(focus && now - rest.overAt < NAG_FOR && now - rest.lastNag >= NAG_EVERY){ rest.lastNag = now; beep(700, .16, .4); buzz(120); }
+    return ensureTicker();
+  }
+  if(!rest) return ensureTicker();
   const left = rest.end - Date.now();
   if(left<=0) return restOver();
   countdownBeeps(rest, "r", left);
+  if(left <= ALERT_MS && !rest.alerted){ rest.alerted = true; if(focus) render(); }
+  const at = document.getElementById("alertT"); if(at) at.textContent = Math.max(1, Math.ceil(left/1000));
   const t = document.getElementById("restT"), l = document.getElementById("restL");
   if(t) t.textContent = fmtT(left);
   if(l) l.style.transform = `scaleX(${(left/rest.total).toFixed(3)})`;
@@ -1650,7 +1857,7 @@ function tickRest(){
 // the 5-times-a-second tick runs only while something is counting down
 let ticker = 0;
 function ensureTicker(){
-  const need = (rest && !rest.over) || hold || warm;
+  const need = (rest && (!rest.over || (focus && Date.now() - rest.overAt < NAG_FOR))) || hold || warm;
   if(need && !ticker) ticker = setInterval(tickRest, 200);
   else if(!need && ticker){ clearInterval(ticker); ticker = 0; }
 }
@@ -1662,7 +1869,7 @@ const h0 = location.hash.slice(1); if(["danas","vezbe","istorija"].includes(h0))
 render();
 reduceMotion.addEventListener?.("change", ()=>render());
 // load all still pictures in the background so lists show them right away
-setTimeout(()=>{ EX.map(e=>e.id).concat("nova-vezba", ...Object.values(WARMUP).flat().map(m=>m.img)).forEach(sl=>loadIll(`images/${sl}.svg`)); }, 300);
+setTimeout(()=>{ EX.map(e=>e.id).concat("nova-vezba", ...Object.values(WARMUP).flat().map(m=>m.img), ...COOLDOWN.map(m=>m.img)).forEach(sl=>loadIll(`images/${sl}.svg`)); }, 300);
 // ask the browser to keep saved workouts permanently (Safari can clear site data that isn't used for a while)
 if(S.sessions.length) askPersist();
 if("serviceWorker" in navigator){
